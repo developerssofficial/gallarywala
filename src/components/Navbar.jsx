@@ -133,9 +133,17 @@ export const Navbar = () => {
           onClick={handleLogoClick}
           title="GallaryWala (Home)"
         >
-          <div className="brand-icon">
-            <Sparkles size={22} />
-          </div>
+          <img
+            src="/logo.png"
+            alt="GallaryWala"
+            style={{
+              width: "38px",
+              height: "38px",
+              objectFit: "contain",
+              borderRadius: "10px",
+              boxShadow: "var(--brand-glow)"
+            }}
+          />
           <span className="brand-text-gradient">GallaryWala</span>
         </div>
 

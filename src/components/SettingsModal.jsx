@@ -244,21 +244,17 @@ export const SettingsModal = () => {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div
+            <img
+              src="/logo.png"
+              alt="GallaryWala"
               style={{
                 width: "36px",
                 height: "36px",
-                borderRadius: "var(--radius-md)",
-                background: "var(--brand-gradient)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#fff",
+                borderRadius: "8px",
+                objectFit: "contain",
                 boxShadow: "var(--brand-glow)"
               }}
-            >
-              <Sliders size={20} />
-            </div>
+            />
             <div>
               <h2 style={{ fontSize: "1.25rem", fontWeight: 800, margin: 0 }}>
                 GallaryWala Settings
