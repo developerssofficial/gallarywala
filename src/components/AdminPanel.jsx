@@ -74,18 +74,18 @@ export const AdminPanel = () => {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      showToast("দয়া করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন", "error");
+      showToast("Please select a valid image file.", "error");
       return;
     }
 
     setScanning(true);
-    showToast("🔍 AI স্ক্যানিং হচ্ছে... ১৮+ ও নিরাপত্তা চেক", "info");
+    showToast("🔍 AI Scanning image for safety...", "info");
 
     try {
       // 1. AI 18+ Image Scan Check
       const moderationResult = await scanImageForAdultContent(file);
       if (!moderationResult.isSafe) {
-        showToast("১৮+ ছবি আপলোড করা সম্পূর্ণ নিষিদ্ধ!", "error");
+        showToast("Adult or NSFW content is strictly prohibited.", "error");
         setSelectedFile(null);
         setPreviewUrl("");
         if (fileInputRef.current) fileInputRef.current.value = "";
@@ -108,11 +108,11 @@ export const AdminPanel = () => {
   const handleUploadSubmit = async (e) => {
     e.preventDefault();
     if (!selectedFile && !previewUrl) {
-      showToast("দয়া করে একটি ছবি নির্বাচন করুন", "error");
+      showToast("Please select an image to upload.", "error");
       return;
     }
     if (!title.trim()) {
-      showToast("ছবির একটি নাম (Title) দিন", "error");
+      showToast("Please enter a title for your image.", "error");
       return;
     }
 
@@ -122,7 +122,7 @@ export const AdminPanel = () => {
     const tagsCheck = validateSafeText(tagsInput);
 
     if (!titleCheck.isValid || !descCheck.isValid || !tagsCheck.isValid) {
-      showToast("দুঃখিত, আপত্তিকর শব্দ ব্যবহার করা যাবে না। দয়া করে লেখাটি পরিবর্তন করুন।", "error");
+      showToast("Inappropriate language detected. Please revise your text.", "error");
       return;
     }
 
@@ -130,7 +130,7 @@ export const AdminPanel = () => {
     if (selectedFile) {
       const reScan = await scanImageForAdultContent(selectedFile);
       if (!reScan.isSafe) {
-        showToast("১৮+ ছবি আপলোড করা সম্পূর্ণ নিষিদ্ধ!", "error");
+        showToast("Adult or NSFW content is strictly prohibited.", "error");
         return;
       }
     }
@@ -142,7 +142,7 @@ export const AdminPanel = () => {
       let finalImageUrl = previewUrl;
 
       if (isCloudinaryActive && selectedFile) {
-        showToast("Cloudinary-তে আপলোড হচ্ছে...", "info");
+        showToast("Uploading to Cloudinary...", "info");
         const res = await uploadToCloudinary(selectedFile, {
           cloudName: cloudinaryConfig.cloudName,
           uploadPreset: cloudinaryConfig.uploadPreset,
@@ -191,7 +191,7 @@ export const AdminPanel = () => {
     // Bad words check on edit
     const check = validateSafeText(editTitleValue);
     if (!check.isValid) {
-      showToast("দুঃখিত, আপত্তিকর শব্দ ব্যবহার করা যাবে না। দয়া করে লেখাটি পরিবর্তন করুন।", "error");
+      showToast("Inappropriate language detected. Please revise your text.", "error");
       return;
     }
 
@@ -513,11 +513,11 @@ export const AdminPanel = () => {
                   const file = e.dataTransfer.files?.[0];
                   if (file && file.type.startsWith("image/")) {
                     setScanning(true);
-                    showToast("🔍 AI স্ক্যানিং হচ্ছে... ১৮+ ও নিরাপত্তা চেক", "info");
+                    showToast("🔍 AI Scanning image for safety...", "info");
                     const mod = await scanImageForAdultContent(file);
                     setScanning(false);
                     if (!mod.isSafe) {
-                      showToast("১৮+ ছবি আপলোড করা সম্পূর্ণ নিষিদ্ধ!", "error");
+                      showToast("Adult or NSFW content is strictly prohibited.", "error");
                       return;
                     }
                     setSelectedFile(file);
@@ -547,7 +547,7 @@ export const AdminPanel = () => {
                   <div style={{ padding: "20px" }}>
                     <Loader2 size={36} className="pulse-heart" color="var(--color-primary)" style={{ margin: "0 auto 12px auto" }} />
                     <div style={{ fontWeight: 700, fontSize: "0.95rem" }}>
-                      AI নিরাপত্তা স্ক্যানিং চলছে...
+                      AI Safety Scanning...
                     </div>
                   </div>
                 ) : previewUrl ? (

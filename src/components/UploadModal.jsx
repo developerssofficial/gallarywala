@@ -53,18 +53,18 @@ export const UploadModal = () => {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      showToast("দয়া করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন", "error");
+      showToast("Please select a valid image file.", "error");
       return;
     }
 
     setScanning(true);
-    showToast("🔍 AI স্ক্যানিং হচ্ছে... ১৮+ ও নিরাপত্তা চেক", "info");
+    showToast("🔍 AI Scanning image for safety and quality...", "info");
 
     try {
       // 1. AI 18+ / NSFW Image Content Scan
       const moderationResult = await scanImageForAdultContent(file);
       if (!moderationResult.isSafe) {
-        showToast("১৮+ ছবি আপলোড করা সম্পূর্ণ নিষিদ্ধ!", "error");
+        showToast("Adult or NSFW content is strictly prohibited.", "error");
         setSelectedFile(null);
         setPreviewUrl("");
         if (fileInputRef.current) fileInputRef.current.value = "";
@@ -92,12 +92,12 @@ export const UploadModal = () => {
     if (!file || !file.type.startsWith("image/")) return;
 
     setScanning(true);
-    showToast("🔍 AI স্ক্যানিং হচ্ছে... ১৮+ ও নিরাপত্তা চেক", "info");
+    showToast("🔍 AI Scanning image for safety...", "info");
 
     try {
       const moderationResult = await scanImageForAdultContent(file);
       if (!moderationResult.isSafe) {
-        showToast("১৮+ ছবি আপলোড করা সম্পূর্ণ নিষিদ্ধ!", "error");
+        showToast("Adult or NSFW content is strictly prohibited.", "error");
         setSelectedFile(null);
         setPreviewUrl("");
         return;
@@ -119,11 +119,11 @@ export const UploadModal = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedFile && !previewUrl) {
-      showToast("দয়া করে আপলোড করার জন্য একটি ছবি নির্বাচন করুন", "error");
+      showToast("Please select an image to upload.", "error");
       return;
     }
     if (!title.trim()) {
-      showToast("ছবির একটি নাম (Title) দিন", "error");
+      showToast("Please enter a title for your image.", "error");
       return;
     }
 
@@ -133,7 +133,7 @@ export const UploadModal = () => {
     const tagsCheck = validateSafeText(tagsInput);
 
     if (!titleCheck.isValid || !descCheck.isValid || !tagsCheck.isValid) {
-      showToast("দুঃখিত, আপত্তিকর শব্দ ব্যবহার করা যাবে না। দয়া করে লেখাটি পরিবর্তন করুন।", "error");
+      showToast("Inappropriate language detected. Please revise your text.", "error");
       return;
     }
 
@@ -141,7 +141,7 @@ export const UploadModal = () => {
     if (selectedFile) {
       const reScan = await scanImageForAdultContent(selectedFile);
       if (!reScan.isSafe) {
-        showToast("১৮+ ছবি আপলোড করা সম্পূর্ণ নিষিদ্ধ!", "error");
+        showToast("Adult or NSFW content is strictly prohibited.", "error");
         return;
       }
     }
@@ -154,7 +154,7 @@ export const UploadModal = () => {
 
       // Upload to Cloudinary if configured
       if (isCloudinaryConfigured && selectedFile) {
-        showToast("Cloudinary-তে ছবি আপলোড হচ্ছে...", "info");
+        showToast("Uploading to Cloudinary...", "info");
         const uploadResult = await uploadToCloudinary(selectedFile, {
           cloudName: cloudinaryConfig.cloudName,
           uploadPreset: cloudinaryConfig.uploadPreset,
@@ -188,7 +188,7 @@ export const UploadModal = () => {
       setTagsInput("");
     } catch (err) {
       console.error(err);
-      showToast(err.message || "ছবি আপলোড করতে ব্যর্থ হয়েছে।", "error");
+      showToast(err.message || "Failed to upload image.", "error");
     } finally {
       setUploading(false);
       setProgress(0);
@@ -214,7 +214,7 @@ export const UploadModal = () => {
 
         <div className="upload-modal-title">
           <UploadCloud size={28} color="var(--color-primary)" />
-          <span>ছবি আপলোড ও প্রকাশ করুন</span>
+          <span>Upload & Publish Image</span>
         </div>
 
         {/* AI & Cloudinary Status Notice */}
@@ -234,7 +234,7 @@ export const UploadModal = () => {
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <ShieldCheck size={18} color="#00dfd8" />
             <span>
-              <strong>AI সিকিউরিটি সক্রিয়:</strong> ১৮+ এবং আপত্তিকর কনটেন্ট স্বয়ংক্রিয়ভাবে ফিল্টার হবে
+              <strong>AI Safety Active:</strong> NSFW & explicit content is automatically filtered
             </span>
           </div>
           <button
@@ -251,7 +251,7 @@ export const UploadModal = () => {
               textDecoration: "underline"
             }}
           >
-            Cloudinary সেটিংস
+            Cloudinary Settings
           </button>
         </div>
 
@@ -276,10 +276,10 @@ export const UploadModal = () => {
                 <div style={{ padding: "20px" }}>
                   <Loader2 size={36} className="pulse-heart" color="var(--color-primary)" style={{ margin: "0 auto 12px auto" }} />
                   <div style={{ fontWeight: 700, fontSize: "0.95rem" }}>
-                    AI স্ক্যানিং চলছে...
+                    AI Safety Scanning...
                   </div>
                   <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "4px" }}>
-                    ১৮+ এবং নিরাপত্তা নিশ্চিত করা হচ্ছে
+                    Screening image safety & resolution
                   </div>
                 </div>
               ) : previewUrl ? (
@@ -301,7 +301,7 @@ export const UploadModal = () => {
                       fontWeight: 600
                     }}
                   >
-                    ছবি পরিবর্তন করতে ক্লিক করুন
+                    Click to change photo
                   </div>
                 </>
               ) : (
@@ -328,7 +328,7 @@ export const UploadModal = () => {
                       marginBottom: "6px"
                     }}
                   >
-                    ছবি সিলেক্ট বা ড্রপ করুন
+                    Choose a file or drag & drop
                   </div>
                   <div
                     style={{
@@ -337,7 +337,7 @@ export const UploadModal = () => {
                       maxWidth: "220px"
                     }}
                   >
-                    শুধুমাত্র নিরাপদ ও হাই কোয়ালিটি ছবি গ্রহণযোগ্য
+                    High quality JPG, PNG, WEBP, or GIF supported
                   </div>
                 </>
               )}
@@ -354,7 +354,7 @@ export const UploadModal = () => {
                     fontWeight: 700
                   }}
                 >
-                  <span>আপলোড হচ্ছে...</span>
+                  <span>Uploading to Cloud...</span>
                   <span>{progress}%</span>
                 </div>
                 <div
@@ -382,11 +382,11 @@ export const UploadModal = () => {
           {/* Form Fields */}
           <div>
             <div className="form-group">
-              <label className="form-label">ছবির নাম (Title) *</label>
+              <label className="form-label">Title *</label>
               <input
                 type="text"
                 className="form-input"
-                placeholder="যেমন: Neon Tokyo Rain, Vintage Car"
+                placeholder="e.g. Neon Tokyo Rain, Vintage Car"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
@@ -394,17 +394,17 @@ export const UploadModal = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">বিবরণ (Description)</label>
+              <label className="form-label">Description</label>
               <textarea
                 className="form-textarea"
-                placeholder="ছবিটি সম্পর্কে কিছু লিখুন..."
+                placeholder="Write a brief description or backstory..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
 
             <div className="form-group">
-              <label className="form-label">ক্যাটাগরি</label>
+              <label className="form-label">Category</label>
               <select
                 className="form-select"
                 value={category}
@@ -419,11 +419,11 @@ export const UploadModal = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">কিওয়ার্ড / ট্যাগ (Keywords)</label>
+              <label className="form-label">Keywords / Tags</label>
               <input
                 type="text"
                 className="form-input"
-                placeholder="যেমন: 4k, wallpaper, dark, city"
+                placeholder="e.g. 4k, wallpaper, dark, city"
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
               />
@@ -441,7 +441,7 @@ export const UploadModal = () => {
               disabled={uploading || scanning}
             >
               <Sparkles size={18} />
-              <span>{uploading ? "আপলোড ও সেভ হচ্ছে..." : "পাবলিশ করুন"}</span>
+              <span>{uploading ? "Publishing..." : "Publish Image"}</span>
             </button>
           </div>
         </form>
