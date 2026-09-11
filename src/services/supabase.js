@@ -81,6 +81,21 @@ export const signInWithEmail = async (email, password) => {
   return data;
 };
 
+export const signInWithGoogle = async () => {
+  const client = getSupabaseClient();
+  if (!client) {
+    throw new Error("Supabase is not configured. Please add your Project URL and Anon Key in Settings.");
+  }
+  const { data, error } = await client.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: window.location.origin
+    }
+  });
+  if (error) throw error;
+  return data;
+};
+
 export const signOutUser = async () => {
   const client = getSupabaseClient();
   if (!client) return;

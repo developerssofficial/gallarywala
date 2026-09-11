@@ -7,6 +7,7 @@ import {
   getSupabaseClient,
   signUpWithEmail,
   signInWithEmail,
+  signInWithGoogle,
   signOutUser,
   updateUserProfile,
   fetchImagesFromSupabase,
@@ -263,6 +264,11 @@ export const PinProvider = ({ children }) => {
       setCurrentUser(data.user);
     }
     showToast("👋 Welcome back to GallaryWala!", "success");
+    return data;
+  };
+
+  const handleGoogleSignIn = async () => {
+    const data = await signInWithGoogle();
     return data;
   };
 
@@ -596,6 +602,7 @@ export const PinProvider = ({ children }) => {
         setIsSupabaseSettingsOpen,
         handleSignUp,
         handleSignIn,
+        handleGoogleSignIn,
         handleSignOut,
         handleUpdateProfile,
         theme,
