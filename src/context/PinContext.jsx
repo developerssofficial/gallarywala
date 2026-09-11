@@ -115,6 +115,7 @@ export const PinProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [activePin, setActivePin] = useState(null);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState("general");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
