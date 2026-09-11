@@ -137,11 +137,11 @@ export const Navbar = () => {
             src="/logo.png"
             alt="GallaryWala"
             style={{
-              width: "38px",
-              height: "38px",
+              width: "36px",
+              height: "36px",
               objectFit: "contain",
-              borderRadius: "10px",
-              boxShadow: "var(--brand-glow)"
+              filter: "drop-shadow(0 2px 8px rgba(255, 0, 128, 0.45))",
+              transition: "transform var(--transition-spring)"
             }}
           />
           <span className="brand-text-gradient">GallaryWala</span>
