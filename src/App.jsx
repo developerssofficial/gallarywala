@@ -17,7 +17,7 @@ import { ToastContainer } from "./components/Toast";
 import { Footer } from "./components/Footer";
 
 const MainContent = () => {
-  const { activeView } = usePins();
+  const { activeView, isAdminAuthenticated } = usePins();
 
   return (
     <div className="app-container">
