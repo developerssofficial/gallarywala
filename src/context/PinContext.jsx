@@ -16,13 +16,13 @@ import {
 const PinContext = createContext();
 
 const STORAGE_KEYS = {
-  PINS: "gallarywala_pins_v3",
-  BOARDS: "gallarywala_boards_v3",
-  LIKED: "gallarywala_liked_v3",
-  CLOUDINARY: "gallarywala_cloudinary_config_v3",
-  THEME: "gallarywala_theme_v3",
-  ADMIN_PIN: "gallarywala_admin_pin_v3",
-  ADMIN_AUTH: "gallarywala_admin_session_v3"
+  PINS: "gallarywala_pins_v4",
+  BOARDS: "gallarywala_boards_v4",
+  LIKED: "gallarywala_liked_v4",
+  CLOUDINARY: "gallarywala_cloudinary_config_v4",
+  THEME: "gallarywala_theme_v4",
+  ADMIN_PIN: "gallarywala_admin_pin_v4",
+  ADMIN_AUTH: "gallarywala_admin_session_v4"
 };
 
 export const PinProvider = ({ children }) => {
@@ -32,7 +32,7 @@ export const PinProvider = ({ children }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isSupabaseSettingsOpen, setIsSupabaseSettingsOpen] = useState(false);
 
-  // 2. Pins / Images State
+  // 2. Pins / Images State (Starts empty until uploaded or loaded from Supabase)
   const [pins, setPins] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.PINS);
@@ -56,9 +56,9 @@ export const PinProvider = ({ children }) => {
   const [likedPinIds, setLikedPinIds] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.LIKED);
-      return saved ? JSON.parse(saved) : ["pin-1", "pin-4"];
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return ["pin-1", "pin-4"];
+      return [];
     }
   });
 
@@ -232,12 +232,23 @@ export const PinProvider = ({ children }) => {
   // Supabase Auth Methods
   const handleSignUp = async (email, password, fullName) => {
     const data = await signUpWithEmail(email, password, fullName);
-    showToast("🎉 Account created successfully! Logged in.", "success");
+    if (data?.session?.user) {
+      setCurrentUser(data.session.user);
+      showToast("🎉 Account created & Logged in!", "success");
+    } else if (data?.user) {
+      setCurrentUser(data.user);
+      showToast("🎉 Account created! Welcome to GallaryWala.", "success");
+    } else {
+      showToast("🎉 Account created successfully!", "success");
+    }
     return data;
   };
 
   const handleSignIn = async (email, password) => {
     const data = await signInWithEmail(email, password);
+    if (data?.user) {
+      setCurrentUser(data.user);
+    }
     showToast("👋 Welcome back to GallaryWala!", "success");
     return data;
   };

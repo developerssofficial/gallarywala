@@ -26,7 +26,9 @@ export const HeroBanner = () => {
           )}
         </h1>
         <p className="hero-sub">
-          {filteredPins.length} high-resolution photographs & digital creations discovered
+          {filteredPins.length > 0
+            ? `${filteredPins.length} high-resolution photographs & digital creations discovered`
+            : "Discover, curate and upload high-resolution photographs & artworks"}
         </p>
       </div>
     </div>
