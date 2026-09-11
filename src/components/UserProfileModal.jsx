@@ -8,7 +8,8 @@ import {
   Folder,
   Layers,
   Sparkles,
-  ArrowLeft
+  ArrowLeft,
+  LogOut
 } from "lucide-react";
 import { PinCard } from "./PinCard";
 
@@ -25,7 +26,8 @@ export const UserProfileModal = () => {
     setActiveView,
     setSelectedBoardId,
     currentUser,
-    setIsAuthModalOpen
+    setIsAuthModalOpen,
+    handleSignOut
   } = usePins();
 
   const [activeTab, setActiveTab] = useState("boards"); // 'boards' | 'created' | 'liked'
@@ -111,20 +113,42 @@ export const UserProfileModal = () => {
           <h2 style={{ fontSize: "1.6rem", fontWeight: 800, marginBottom: "4px" }}>
             {userFullName}
           </h2>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", marginBottom: "8px" }}>
+          <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", marginBottom: "12px" }}>
             @{userHandle} • {currentUser ? "Member Account" : "Guest Mode"}
           </p>
 
-          <button
-            className="nav-tab"
-            style={{ fontSize: "0.82rem", padding: "6px 14px", border: "1px solid var(--border-light)" }}
-            onClick={() => {
-              setIsProfileOpen(false);
-              setIsAuthModalOpen(true);
-            }}
-          >
-            {currentUser ? "Edit Profile & Change Username" : "Log In to claim your @username"}
-          </button>
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
+            <button
+              className="nav-tab"
+              style={{ fontSize: "0.85rem", padding: "8px 16px", border: "1px solid var(--border-light)" }}
+              onClick={() => {
+                setIsProfileOpen(false);
+                setIsAuthModalOpen(true);
+              }}
+            >
+              {currentUser ? "Edit Profile & Username" : "Log In to claim your @username"}
+            </button>
+
+            {currentUser && (
+              <button
+                className="btn-primary"
+                style={{
+                  fontSize: "0.85rem",
+                  padding: "8px 16px",
+                  background: "rgba(239, 68, 68, 0.15)",
+                  color: "#ef4444",
+                  border: "1px solid rgba(239, 68, 68, 0.3)"
+                }}
+                onClick={async () => {
+                  await handleSignOut();
+                  setIsProfileOpen(false);
+                }}
+              >
+                <LogOut size={15} />
+                <span>Log Out</span>
+              </button>
+            )}
+          </div>
 
           {/* Tab Controls */}
           <div

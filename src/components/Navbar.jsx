@@ -10,7 +10,11 @@ import {
   Bookmark,
   Sparkles,
   User,
-  LogIn
+  LogIn,
+  LogOut,
+  ChevronDown,
+  Settings,
+  Heart
 } from "lucide-react";
 
 export const Navbar = () => {
@@ -27,11 +31,27 @@ export const Navbar = () => {
     isAdminAuthenticated,
     setIsAdminAuthModalOpen,
     currentUser,
-    setIsAuthModalOpen
+    setIsAuthModalOpen,
+    handleSignOut
   } = usePins();
 
   const searchInputRef = useRef(null);
+  const userMenuRef = useRef(null);
   const [logoClicks, setLogoClicks] = useState(0);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    if (isUserMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isUserMenuOpen]);
 
   // Secret Hotkeys
   useEffect(() => {
@@ -97,6 +117,10 @@ export const Navbar = () => {
   };
 
   const totalSavedPins = boards.reduce((acc, b) => acc + (b.pinIds?.length || 0), 0);
+
+  const userDisplayName = currentUser?.user_metadata?.full_name || currentUser?.email?.split("@")[0] || "Creator";
+  const userHandle = currentUser?.user_metadata?.username || currentUser?.email?.split("@")[0] || "creator";
+  const userAvatar = currentUser?.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(currentUser?.email || "user")}`;
 
   return (
     <header className="navbar-sticky">
@@ -178,19 +202,182 @@ export const Navbar = () => {
             )}
           </button>
 
-          {/* Supabase User Login / Profile Button */}
+          {/* Supabase User Login / Profile Dropdown */}
           {currentUser ? (
-            <button
-              className="avatar-btn"
-              onClick={() => setIsAuthModalOpen(true)}
-              title={`Logged in as ${currentUser.user_metadata?.full_name || currentUser.email}`}
-            >
-              <img
-                src={currentUser.user_metadata?.avatar_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"}
-                alt="Account"
-                className="avatar-img"
-              />
-            </button>
+            <div style={{ position: "relative" }} ref={userMenuRef}>
+              <button
+                className="avatar-btn"
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                title={`Logged in as ${userDisplayName}`}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "3px 8px 3px 3px",
+                  borderRadius: "var(--radius-full)",
+                  background: isUserMenuOpen ? "var(--bg-surface-elevated)" : "var(--bg-surface)",
+                  border: "1px solid var(--border-light)"
+                }}
+              >
+                <img
+                  src={userAvatar}
+                  alt={userDisplayName}
+                  className="avatar-img"
+                  style={{ width: "32px", height: "32px", borderRadius: "50%" }}
+                />
+                <ChevronDown size={14} style={{ color: "var(--text-muted)" }} />
+              </button>
+
+              {/* User Dropdown Menu */}
+              {isUserMenuOpen && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "calc(100% + 10px)",
+                    right: 0,
+                    width: "260px",
+                    background: "var(--bg-surface)",
+                    border: "1px solid var(--border-light)",
+                    borderRadius: "var(--radius-lg)",
+                    boxShadow: "var(--shadow-xl)",
+                    padding: "12px",
+                    zIndex: 1000,
+                    animation: "scaleIn 0.15s ease-out"
+                  }}
+                >
+                  {/* User Profile Header */}
+                  <div
+                    style={{
+                      padding: "10px",
+                      borderBottom: "1px solid var(--border-light)",
+                      marginBottom: "8px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px"
+                    }}
+                  >
+                    <img
+                      src={userAvatar}
+                      alt={userDisplayName}
+                      style={{
+                        width: "42px",
+                        height: "42px",
+                        borderRadius: "50%",
+                        border: "2px solid var(--color-primary)"
+                      }}
+                    />
+                    <div style={{ overflow: "hidden" }}>
+                      <div
+                        style={{
+                          fontWeight: 700,
+                          fontSize: "0.95rem",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                          overflow: "hidden"
+                        }}
+                      >
+                        {userDisplayName}
+                      </div>
+                      <div
+                        style={{
+                          color: "var(--color-primary)",
+                          fontSize: "0.8rem",
+                          fontWeight: 600
+                        }}
+                      >
+                        @{userHandle}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu Items */}
+                  <button
+                    className="dropdown-item"
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      padding: "10px 12px",
+                      borderRadius: "var(--radius-md)",
+                      background: "transparent",
+                      border: "none",
+                      color: "var(--text-main)",
+                      fontSize: "0.88rem",
+                      cursor: "pointer",
+                      textAlign: "left"
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "var(--bg-surface-elevated)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                    onClick={() => {
+                      setIsUserMenuOpen(false);
+                      setIsProfileOpen(true);
+                    }}
+                  >
+                    <Bookmark size={16} style={{ color: "var(--color-primary)" }} />
+                    <span>My Boards & Saved</span>
+                  </button>
+
+                  <button
+                    className="dropdown-item"
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      padding: "10px 12px",
+                      borderRadius: "var(--radius-md)",
+                      background: "transparent",
+                      border: "none",
+                      color: "var(--text-main)",
+                      fontSize: "0.88rem",
+                      cursor: "pointer",
+                      textAlign: "left"
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "var(--bg-surface-elevated)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                    onClick={() => {
+                      setIsUserMenuOpen(false);
+                      setIsAuthModalOpen(true);
+                    }}
+                  >
+                    <Settings size={16} style={{ color: "var(--text-muted)" }} />
+                    <span>Edit Profile & Handle</span>
+                  </button>
+
+                  <div style={{ height: "1px", background: "var(--border-light)", margin: "6px 0" }} />
+
+                  {/* Direct Log Out Button */}
+                  <button
+                    className="dropdown-item"
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      padding: "10px 12px",
+                      borderRadius: "var(--radius-md)",
+                      background: "transparent",
+                      border: "none",
+                      color: "#ef4444",
+                      fontSize: "0.88rem",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      textAlign: "left"
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                    onClick={async () => {
+                      setIsUserMenuOpen(false);
+                      await handleSignOut();
+                    }}
+                  >
+                    <LogOut size={16} />
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
             <button
               className="btn-primary"
@@ -206,3 +393,4 @@ export const Navbar = () => {
     </header>
   );
 };
+
