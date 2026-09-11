@@ -132,19 +132,26 @@ export const Navbar = () => {
           className="brand-logo"
           onClick={handleLogoClick}
           title="GallaryWala (Home)"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            lineHeight: 1
+          }}
         >
           <img
             src="/logo.png"
             alt="GallaryWala"
             style={{
-              width: "36px",
               height: "36px",
+              width: "auto",
               objectFit: "contain",
-              filter: "drop-shadow(0 2px 8px rgba(255, 0, 128, 0.45))",
+              display: "block",
+              filter: "drop-shadow(0 2px 10px rgba(255, 0, 128, 0.45))",
               transition: "transform var(--transition-spring)"
             }}
           />
-          <span className="brand-text-gradient">GallaryWala</span>
+          <span className="brand-text-gradient" style={{ lineHeight: 1 }}>GallaryWala</span>
         </div>
 
         {/* Search Bar */}
