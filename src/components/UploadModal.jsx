@@ -13,7 +13,10 @@ import {
   Settings,
   ShieldCheck,
   ShieldAlert,
-  Loader2
+  Loader2,
+  DollarSign,
+  BadgePercent,
+  Check
 } from "lucide-react";
 import { CATEGORIES } from "../data/mockPins";
 
@@ -44,6 +47,11 @@ export const UploadModal = () => {
   const [uploading, setUploading] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [progress, setProgress] = useState(0);
+
+  // Commercial Marketplace States
+  const [isPaid, setIsPaid] = useState(false);
+  const [price, setPrice] = useState("4.99");
+  const [licenseModel, setLicenseModel] = useState("Standard Commercial License");
 
   if (!isUploadOpen) return null;
 
@@ -185,7 +193,10 @@ export const UploadModal = () => {
         link: link.trim() || undefined,
         targetBoardId: targetBoardId || undefined,
         authorName: authorNameClean,
-        authorUsername: authorUserClean
+        authorUsername: authorUserClean,
+        isPaid: Boolean(isPaid),
+        price: isPaid ? Number(price) : 0,
+        license: isPaid ? licenseModel : "Free License"
       });
 
       setSelectedFile(null);
@@ -195,6 +206,8 @@ export const UploadModal = () => {
       setGuestAuthorName("");
       setLink("");
       setTagsInput("");
+      setIsPaid(false);
+      setPrice("4.99");
     } catch (err) {
       console.error(err);
       showToast(err.message || "Failed to upload image.", "error");
@@ -481,6 +494,167 @@ export const UploadModal = () => {
                     onChange={(e) => setGuestAuthorName(e.target.value)}
                     style={{ padding: "8px 12px", fontSize: "0.85rem" }}
                   />
+                </div>
+              )}
+            </div>
+
+            {/* Commercial Monetization Section */}
+            <div
+              style={{
+                background: isPaid ? "linear-gradient(135deg, rgba(121, 40, 202, 0.15) 0%, rgba(0, 223, 216, 0.1) 100%)" : "var(--bg-surface)",
+                border: isPaid ? "1px solid rgba(0, 223, 216, 0.4)" : "1px solid var(--border-light)",
+                borderRadius: "var(--radius-md)",
+                padding: "14px",
+                marginBottom: "18px",
+                transition: "all 0.3s ease"
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: isPaid ? "14px" : 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div
+                    style={{
+                      width: "32px",
+                      height: "32px",
+                      borderRadius: "8px",
+                      background: isPaid ? "var(--brand-gradient)" : "var(--bg-input)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: isPaid ? "#fff" : "var(--text-muted)"
+                    }}
+                  >
+                    <DollarSign size={18} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: "0.9rem" }}>
+                      Sell as Commercial Asset
+                    </div>
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                      Watermark protected preview + Instant Paddle payout
+                    </div>
+                  </div>
+                </div>
+
+                {/* Toggle switch */}
+                <label style={{ position: "relative", display: "inline-block", width: "44px", height: "24px", cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    checked={isPaid}
+                    onChange={(e) => setIsPaid(e.target.checked)}
+                    style={{ opacity: 0, width: 0, height: 0 }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      cursor: "pointer",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: isPaid ? "var(--color-primary)" : "var(--border-light)",
+                      transition: ".3s",
+                      borderRadius: "24px"
+                    }}
+                  >
+                    <span
+                      style={{
+                        position: "absolute",
+                        content: "",
+                        height: "18px",
+                        width: "18px",
+                        left: isPaid ? "23px" : "3px",
+                        bottom: "3px",
+                        backgroundColor: "#fff",
+                        transition: ".3s",
+                        borderRadius: "50%",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+                      }}
+                    />
+                  </span>
+                </label>
+              </div>
+
+              {isPaid && (
+                <div style={{ paddingTop: "10px", borderTop: "1px solid var(--border-light)" }}>
+                  {/* Price Row */}
+                  <div style={{ marginBottom: "12px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                      <label className="form-label" style={{ marginBottom: 0, fontSize: "0.8rem" }}>Set Price ($ USD)</label>
+                      <div style={{ display: "flex", gap: "6px" }}>
+                        {["2.99", "4.99", "9.99", "19.99"].map((preset) => (
+                          <button
+                            key={preset}
+                            type="button"
+                            style={{
+                              fontSize: "0.75rem",
+                              padding: "2px 8px",
+                              borderRadius: "4px",
+                              background: price === preset ? "var(--color-primary)" : "var(--bg-input)",
+                              color: price === preset ? "#fff" : "var(--text-main)",
+                              border: "1px solid var(--border-light)",
+                              cursor: "pointer",
+                              fontWeight: 600
+                            }}
+                            onClick={() => setPrice(preset)}
+                          >
+                            ${preset}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div style={{ position: "relative" }}>
+                      <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", fontWeight: 700 }}>
+                        $
+                      </span>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0.99"
+                        max="999.00"
+                        className="form-input"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        style={{ paddingLeft: "28px" }}
+                        required={isPaid}
+                      />
+                    </div>
+                  </div>
+
+                  {/* License Dropdown */}
+                  <div className="form-group" style={{ marginBottom: "12px" }}>
+                    <label className="form-label" style={{ fontSize: "0.8rem" }}>Commercial License Type</label>
+                    <select
+                      className="form-select"
+                      value={licenseModel}
+                      onChange={(e) => setLicenseModel(e.target.value)}
+                      style={{ fontSize: "0.85rem", padding: "8px 12px" }}
+                    >
+                      <option value="Standard Commercial License">Standard Commercial (Web, Social, Digital Ads)</option>
+                      <option value="Extended Commercial License">Extended Unlimited (Physical Products, Resale, Merch)</option>
+                      <option value="Editorial Only License">Editorial / Non-Commercial</option>
+                    </select>
+                  </div>
+
+                  {/* Revenue Breakdown */}
+                  <div
+                    style={{
+                      background: "rgba(0,0,0,0.25)",
+                      padding: "10px 12px",
+                      borderRadius: "var(--radius-sm)",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      fontSize: "0.8rem"
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-muted)" }}>
+                      <BadgePercent size={15} color="#00dfd8" />
+                      <span>Creator Split (80%):</span>
+                    </div>
+                    <div style={{ fontWeight: 800, color: "#10b981", fontSize: "0.9rem" }}>
+                      +${(Number(price || 0) * 0.8).toFixed(2)} USD / sale
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

@@ -124,6 +124,81 @@ export const PinProvider = ({ children }) => {
   const [selectedBoardId, setSelectedBoardId] = useState(null);
   const [toasts, setToasts] = useState([]);
 
+  // 9. Commercial Marketplace & Purchases State
+  const [checkoutPin, setCheckoutPin] = useState(null);
+  const [purchasedPinIds, setPurchasedPinIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gallarywala_purchased_pins_v1");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [salesHistory, setSalesHistory] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gallarywala_sales_history_v1");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [creatorEarnings, setCreatorEarnings] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gallarywala_creator_earnings_v1");
+      return saved ? JSON.parse(saved) : { balance: 0.0, totalSales: 0, pendingPayout: 0.0 };
+    } catch {
+      return { balance: 0.0, totalSales: 0, pendingPayout: 0.0 };
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("gallarywala_purchased_pins_v1", JSON.stringify(purchasedPinIds));
+    } catch (e) {
+      console.warn("Storage error", e);
+    }
+  }, [purchasedPinIds]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("gallarywala_sales_history_v1", JSON.stringify(salesHistory));
+    } catch (e) {
+      console.warn("Storage error", e);
+    }
+  }, [salesHistory]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("gallarywala_creator_earnings_v1", JSON.stringify(creatorEarnings));
+    } catch (e) {
+      console.warn("Storage error", e);
+    }
+  }, [creatorEarnings]);
+
+  const isPinUnlocked = (pin) => {
+    if (!pin) return false;
+    if (!pin.isPaid && !pin.price) return true; // Free asset
+    if (purchasedPinIds.includes(pin.id)) return true; // Purchased
+    if (currentUser && (pin.author?.username === `@${currentUser.user_metadata?.username}` || pin.author?.name === currentUser.user_metadata?.full_name)) {
+      return true; // Author owns the asset
+    }
+    return false;
+  };
+
+  const handleCompletePurchase = (pinId, orderData) => {
+    setPurchasedPinIds((prev) => [...new Set([...prev, pinId])]);
+    setSalesHistory((prev) => [orderData, ...prev]);
+    const creatorCut = Number((orderData.amount * 0.8).toFixed(2));
+    setCreatorEarnings((prev) => ({
+      balance: Number((prev.balance + creatorCut).toFixed(2)),
+      totalSales: prev.totalSales + 1,
+      pendingPayout: Number((prev.pendingPayout + creatorCut).toFixed(2))
+    }));
+    showToast(`🎉 Commercial License Unlocked! Order Ref: ${orderData.orderId}`, "success");
+  };
+
   // Supabase Auth State Listener & Images Fetcher
   useEffect(() => {
     try {
@@ -640,6 +715,14 @@ export const PinProvider = ({ children }) => {
         savePinToBoard,
         createBoard,
         addComment,
+        checkoutPin,
+        setCheckoutPin,
+        purchasedPinIds,
+        salesHistory,
+        creatorEarnings,
+        setCreatorEarnings,
+        isPinUnlocked,
+        handleCompletePurchase,
         downloadImage,
         filteredPins
       }}

@@ -9,7 +9,12 @@ import {
   Send,
   Bookmark,
   ChevronDown,
-  Sparkles
+  Sparkles,
+  Lock,
+  Unlock,
+  BadgeCheck,
+  DollarSign,
+  ShieldCheck
 } from "lucide-react";
 
 export const PinDetailModal = () => {
@@ -22,7 +27,9 @@ export const PinDetailModal = () => {
     savePinToBoard,
     addComment,
     downloadImage,
-    showToast
+    showToast,
+    isPinUnlocked,
+    setCheckoutPin
   } = usePins();
 
   const [commentText, setCommentText] = useState("");
@@ -41,8 +48,15 @@ export const PinDetailModal = () => {
   if (!activePin) return null;
 
   const isLiked = likedPinIds.includes(activePin.id);
+  const isPaid = Boolean(activePin.isPaid || activePin.price);
+  const isUnlocked = isPinUnlocked(activePin);
 
   const handleDownload = () => {
+    if (isPaid && !isUnlocked) {
+      setCheckoutPin(activePin);
+      showToast(`🔒 Commercial License required: $${activePin.price ? Number(activePin.price).toFixed(2) : "4.99"}`, "info");
+      return;
+    }
     downloadImage(activePin.imageUrl, activePin.title);
   };
 
@@ -78,13 +92,98 @@ export const PinDetailModal = () => {
           <X size={20} />
         </button>
 
-        {/* Left Side: Image Display */}
-        <div className="detail-image-side">
+        {/* Left Side: Image Display with Smart Watermark */}
+        <div className="detail-image-side" style={{ position: "relative", overflow: "hidden" }}>
           <img
             src={activePin.imageUrl}
             alt={activePin.title}
             className="detail-image"
+            style={{
+              userSelect: isPaid && !isUnlocked ? "none" : "auto",
+              pointerEvents: isPaid && !isUnlocked ? "none" : "auto"
+            }}
+            onContextMenu={(e) => {
+              if (isPaid && !isUnlocked) e.preventDefault();
+            }}
           />
+
+          {/* Dynamic Watermark Grid Overlay for Protected Paid Pins */}
+          {isPaid && !isUnlocked && (
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gridTemplateRows: "repeat(4, 1fr)",
+                pointerEvents: "none",
+                userSelect: "none",
+                zIndex: 5,
+                background: "rgba(0, 0, 0, 0.08)"
+              }}
+            >
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transform: "rotate(-25deg)",
+                    opacity: 0.35,
+                    color: "#ffffff",
+                    textShadow: "0 1px 4px rgba(0,0,0,0.8)",
+                    fontSize: "0.85rem",
+                    fontWeight: 800,
+                    letterSpacing: "1px",
+                    textAlign: "center",
+                    padding: "10px"
+                  }}
+                >
+                  GALLARYWALA PROTECTED PREVIEW
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Protected Preview Pill Tag */}
+          {isPaid && (
+            <div
+              style={{
+                position: "absolute",
+                top: "14px",
+                left: "14px",
+                zIndex: 10,
+                background: isUnlocked ? "rgba(16, 185, 129, 0.95)" : "rgba(15, 15, 25, 0.9)",
+                backdropFilter: "blur(10px)",
+                color: "#fff",
+                padding: "6px 14px",
+                borderRadius: "var(--radius-full)",
+                fontSize: "0.8rem",
+                fontWeight: 800,
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                boxShadow: "0 4px 15px rgba(0,0,0,0.4)",
+                border: isUnlocked ? "1px solid #10b981" : "1px solid rgba(255,255,255,0.2)"
+              }}
+            >
+              {isUnlocked ? (
+                <>
+                  <BadgeCheck size={15} color="#fff" />
+                  <span>COMMERCIAL LICENSE UNLOCKED</span>
+                </>
+              ) : (
+                <>
+                  <Lock size={14} color="#00dfd8" />
+                  <span>PROTECTED PREVIEW • ${activePin.price ? Number(activePin.price).toFixed(2) : "4.99"}</span>
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right Side: Details & Comments */}
@@ -106,9 +205,12 @@ export const PinDetailModal = () => {
               <button
                 className="icon-btn"
                 onClick={handleDownload}
-                title="Download full image"
+                title={isPaid && !isUnlocked ? "Unlock to Download" : "Download full image"}
+                style={{
+                  color: isPaid && !isUnlocked ? "#00dfd8" : "inherit"
+                }}
               >
-                <Download size={20} />
+                {isPaid && !isUnlocked ? <Lock size={20} /> : <Download size={20} />}
               </button>
               <button
                 className="icon-btn"
@@ -252,6 +354,103 @@ export const PinDetailModal = () => {
               ))}
             </div>
           )}
+
+          {/* Commercial Monetization & License Box */}
+          {isPaid ? (
+            <div
+              style={{
+                margin: "18px 0",
+                background: isUnlocked
+                  ? "linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.05) 100%)"
+                  : "linear-gradient(135deg, rgba(121, 40, 202, 0.18) 0%, rgba(0, 223, 216, 0.12) 100%)",
+                border: isUnlocked
+                  ? "1px solid rgba(16, 185, 129, 0.4)"
+                  : "1px solid rgba(121, 40, 202, 0.4)",
+                borderRadius: "var(--radius-lg)",
+                padding: "18px",
+                position: "relative",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.2)"
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                    <ShieldCheck size={18} color={isUnlocked ? "#10b981" : "#00dfd8"} />
+                    <span style={{ fontWeight: 800, fontSize: "0.95rem" }}>
+                      {isUnlocked ? "Commercial License Unlocked" : (activePin.license || "Commercial License Available")}
+                    </span>
+                  </div>
+                  <p style={{ color: "var(--text-muted)", fontSize: "0.8rem", margin: 0 }}>
+                    {isUnlocked
+                      ? "You own full rights to use this unwatermarked 4K asset for client and commercial projects."
+                      : "Direct creator purchase with instant unwatermarked 4K high-resolution download."}
+                  </p>
+                </div>
+
+                {!isUnlocked && (
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: "1.3rem", fontWeight: 900, color: "var(--color-primary)" }}>
+                      ${activePin.price ? Number(activePin.price).toFixed(2) : "4.99"}
+                    </div>
+                    <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>One-time payment</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Button */}
+              {isUnlocked ? (
+                <button
+                  className="btn-primary"
+                  style={{
+                    width: "100%",
+                    justifyContent: "center",
+                    padding: "12px",
+                    background: "#10b981",
+                    color: "#fff",
+                    fontWeight: 700
+                  }}
+                  onClick={handleDownload}
+                >
+                  <Download size={18} />
+                  <span>Download Original 4K (Unwatermarked)</span>
+                </button>
+              ) : (
+                <button
+                  className="btn-primary"
+                  style={{
+                    width: "100%",
+                    justifyContent: "center",
+                    padding: "12px",
+                    fontWeight: 700,
+                    boxShadow: "var(--brand-glow)"
+                  }}
+                  onClick={() => setCheckoutPin(activePin)}
+                >
+                  <Lock size={18} />
+                  <span>Unlock Original 4K (${activePin.price ? Number(activePin.price).toFixed(2) : "4.99"}) via Paddle</span>
+                </button>
+              )}
+
+              {/* Features List */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "6px",
+                  marginTop: "12px",
+                  paddingTop: "10px",
+                  borderTop: "1px solid var(--border-light)",
+                  fontSize: "0.75rem",
+                  color: "var(--text-muted)"
+                }}
+              >
+                <div>✓ No Watermark in 4K/8K</div>
+                <div>✓ Lifetime Download Access</div>
+                <div>✓ Commercial & Social Rights</div>
+                <div>✓ 80% Creator Revenue Split</div>
+              </div>
+            </div>
+          ) : null}
 
           {/* Comments Section */}
           <div className="comments-section">

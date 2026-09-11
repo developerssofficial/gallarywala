@@ -9,7 +9,11 @@ import {
   Layers,
   Sparkles,
   ArrowLeft,
-  LogOut
+  LogOut,
+  ShoppingBag,
+  BadgeCheck,
+  Download,
+  CreditCard
 } from "lucide-react";
 import { PinCard } from "./PinCard";
 
@@ -20,6 +24,7 @@ export const UserProfileModal = () => {
     pins,
     boards,
     likedPinIds,
+    purchasedPinIds,
     createBoard,
     showToast,
     setActivePin,
@@ -28,10 +33,11 @@ export const UserProfileModal = () => {
     currentUser,
     setIsSettingsOpen,
     setSettingsTab,
-    handleSignOut
+    handleSignOut,
+    downloadImage
   } = usePins();
 
-  const [activeTab, setActiveTab] = useState("boards"); // 'boards' | 'created' | 'liked'
+  const [activeTab, setActiveTab] = useState("boards"); // 'boards' | 'created' | 'liked' | 'purchased'
   const [newBoardName, setNewBoardName] = useState("");
   const [isCreatingBoard, setIsCreatingBoard] = useState(false);
 
@@ -47,6 +53,7 @@ export const UserProfileModal = () => {
       (currentUser && p.author?.name === userFullName)
   );
   const myLikedPins = pins.filter((p) => likedPinIds.includes(p.id));
+  const myPurchasedPins = pins.filter((p) => purchasedPinIds.includes(p.id));
 
   const handleCreateBoardSubmit = (e) => {
     e.preventDefault();
@@ -183,6 +190,13 @@ export const UserProfileModal = () => {
             >
               <Heart size={15} style={{ display: "inline", marginRight: "6px" }} />
               Liked ({myLikedPins.length})
+            </button>
+            <button
+              className={`category-pill ${activeTab === "purchased" ? "active" : ""}`}
+              onClick={() => setActiveTab("purchased")}
+            >
+              <ShoppingBag size={15} style={{ display: "inline", marginRight: "6px" }} />
+              Purchased ({myPurchasedPins.length})
             </button>
           </div>
         </div>
@@ -352,6 +366,123 @@ export const UserProfileModal = () => {
               <div className="masonry-columns" style={{ columnCount: 3 }}>
                 {myLikedPins.map((pin) => (
                   <PinCard key={pin.id} pin={pin} />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Tab 4: Purchased & Unlocked Assets */}
+        {activeTab === "purchased" && (
+          <div>
+            <div style={{ marginBottom: "20px" }}>
+              <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: 0 }}>
+                Purchased Commercial Library
+              </h3>
+              <p style={{ color: "var(--text-muted)", fontSize: "0.82rem", margin: 0 }}>
+                All high-resolution 4K/8K unwatermarked assets you have unlocked with lifetime download access
+              </p>
+            </div>
+
+            {myPurchasedPins.length === 0 ? (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "50px 20px",
+                  background: "var(--bg-surface)",
+                  borderRadius: "var(--radius-lg)",
+                  border: "1px dashed var(--border-light)",
+                  color: "var(--text-muted)"
+                }}
+              >
+                <ShoppingBag size={40} color="var(--color-primary)" style={{ marginBottom: "12px", opacity: 0.8 }} />
+                <h4 style={{ fontSize: "1.05rem", fontWeight: 700, color: "var(--text-main)", marginBottom: "6px" }}>
+                  No purchased assets yet
+                </h4>
+                <p style={{ fontSize: "0.85rem", maxWidth: "360px", margin: "0 auto 16px auto" }}>
+                  Browse premium creator artworks in the gallery and unlock commercial licenses via Paddle to see them here.
+                </p>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={() => setIsProfileOpen(false)}
+                >
+                  Explore Premium Gallery
+                </button>
+              </div>
+            ) : (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+                  gap: "18px"
+                }}
+              >
+                {myPurchasedPins.map((pin) => (
+                  <div
+                    key={pin.id}
+                    style={{
+                      background: "var(--bg-surface)",
+                      borderRadius: "var(--radius-lg)",
+                      border: "1px solid rgba(16, 185, 129, 0.3)",
+                      overflow: "hidden",
+                      boxShadow: "var(--shadow-sm)"
+                    }}
+                  >
+                    <div style={{ height: "160px", overflow: "hidden", position: "relative", cursor: "pointer" }} onClick={() => { setActivePin(pin); setIsProfileOpen(false); }}>
+                      <img
+                        src={pin.imageUrl}
+                        alt={pin.title}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "8px",
+                          right: "8px",
+                          background: "#10b981",
+                          color: "#fff",
+                          fontSize: "0.7rem",
+                          fontWeight: 800,
+                          padding: "3px 8px",
+                          borderRadius: "var(--radius-full)",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.3)"
+                        }}
+                      >
+                        <BadgeCheck size={12} />
+                        <span>LICENSED</span>
+                      </div>
+                    </div>
+
+                    <div style={{ padding: "14px" }}>
+                      <div style={{ fontWeight: 700, fontSize: "0.95rem", marginBottom: "4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {pin.title}
+                      </div>
+                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "12px" }}>
+                        By {pin.author?.name || "Creator"} • Full 4K Resolution
+                      </div>
+
+                      <button
+                        type="button"
+                        className="btn-primary"
+                        style={{
+                          width: "100%",
+                          justifyContent: "center",
+                          padding: "8px 12px",
+                          fontSize: "0.8rem",
+                          background: "#10b981",
+                          color: "#fff"
+                        }}
+                        onClick={() => downloadImage(pin.imageUrl, pin.title)}
+                      >
+                        <Download size={14} />
+                        <span>Download 4K Asset</span>
+                      </button>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}

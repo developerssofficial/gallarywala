@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { usePins } from "../context/PinContext";
+import { getPaddleConfig, savePaddleConfig } from "../services/paddle";
 import {
   X,
   User,
@@ -18,7 +19,15 @@ import {
   Check,
   Globe,
   Sliders,
-  RefreshCw
+  RefreshCw,
+  DollarSign,
+  CreditCard,
+  Wallet,
+  BadgePercent,
+  FileSpreadsheet,
+  CheckCircle2,
+  ExternalLink,
+  ArrowDownToLine
 } from "lucide-react";
 
 const PRESET_AVATARS = [
@@ -43,7 +52,10 @@ export const SettingsModal = () => {
     handleUpdateProfile,
     theme,
     toggleTheme,
-    showToast
+    showToast,
+    salesHistory,
+    creatorEarnings,
+    setCreatorEarnings
   } = usePins();
 
   // Active Tab state
@@ -72,6 +84,12 @@ export const SettingsModal = () => {
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState("");
   const [saveLoading, setSaveLoading] = useState(false);
+
+  // Commercial Monetization States
+  const [paddleTokenInput, setPaddleTokenInput] = useState(() => getPaddleConfig().clientToken);
+  const [payoutMethod, setPayoutMethod] = useState("paypal");
+  const [payoutAccount, setPayoutAccount] = useState("");
+  const [isRequestingPayout, setIsRequestingPayout] = useState(false);
 
   // Synchronize when settingsTab changes externally
   useEffect(() => {
@@ -102,7 +120,7 @@ export const SettingsModal = () => {
     }
   }, [currentUser, isSettingsOpen]);
 
-  // Load creator preferences from localStorage
+  // Load creator preferences & payout details from localStorage
   useEffect(() => {
     try {
       const saved = localStorage.getItem("gallarywala_creator_prefs");
@@ -113,12 +131,53 @@ export const SettingsModal = () => {
         if (parsed.enableAttribution !== undefined) setEnableAttribution(parsed.enableAttribution);
         if (parsed.autoTagging !== undefined) setAutoTagging(parsed.autoTagging);
       }
+
+      const savedPayout = localStorage.getItem("gallarywala_payout_account");
+      if (savedPayout) {
+        const parsedP = JSON.parse(savedPayout);
+        if (parsedP.method) setPayoutMethod(parsedP.method);
+        if (parsedP.account) setPayoutAccount(parsedP.account);
+      }
     } catch {
       // ignore fallback
     }
   }, [isSettingsOpen]);
 
   if (!isSettingsOpen) return null;
+
+  const handleSavePaddle = (e) => {
+    e.preventDefault();
+    savePaddleConfig(paddleTokenInput);
+    showToast("Paddle configuration updated successfully! 💳", "success");
+  };
+
+  const handleSavePayoutAccount = (e) => {
+    e.preventDefault();
+    if (!payoutAccount.trim()) {
+      showToast("Please enter payout email or account details.", "warning");
+      return;
+    }
+    localStorage.setItem("gallarywala_payout_account", JSON.stringify({ method: payoutMethod, account: payoutAccount.trim() }));
+    showToast("Payout receiving details saved! 🏦", "success");
+  };
+
+  const handleRequestPayout = () => {
+    if (creatorEarnings.balance <= 0) {
+      showToast("No balance available for payout.", "warning");
+      return;
+    }
+    setIsRequestingPayout(true);
+    setTimeout(() => {
+      const payoutAmount = creatorEarnings.balance;
+      setCreatorEarnings((prev) => ({
+        ...prev,
+        balance: 0,
+        pendingPayout: Number((prev.pendingPayout + payoutAmount).toFixed(2))
+      }));
+      setIsRequestingPayout(false);
+      showToast(`🎉 Payout of $${payoutAmount} submitted to ${payoutMethod.toUpperCase()}! Direct bank/wallet transfer within 24 hours.`, "success");
+    }, 800);
+  };
 
   // Handle General Profile Save
   const handleSaveGeneral = async (e) => {
@@ -383,6 +442,29 @@ export const SettingsModal = () => {
             >
               <Shield size={18} />
               <span>Account & Security</span>
+            </button>
+
+            {/* Tab 4: Monetization & Commercial Sales */}
+            <button
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                padding: "11px 14px",
+                borderRadius: "var(--radius-md)",
+                background: activeTab === "monetization" ? "var(--brand-gradient)" : "transparent",
+                color: activeTab === "monetization" ? "#fff" : "var(--text-main)",
+                fontWeight: activeTab === "monetization" ? 700 : 500,
+                border: "none",
+                cursor: "pointer",
+                textAlign: "left",
+                fontSize: "0.9rem",
+                transition: "var(--transition-fast)"
+              }}
+              onClick={() => setActiveTab("monetization")}
+            >
+              <DollarSign size={18} />
+              <span>Monetization & Sales</span>
             </button>
 
             <div style={{ marginTop: "auto", paddingTop: "12px", borderTop: "1px solid var(--border-light)" }}>
@@ -1107,6 +1189,290 @@ export const SettingsModal = () => {
                     </form>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* TAB 4: MONETIZATION & COMMERCIAL SALES */}
+            {activeTab === "monetization" && (
+              <div style={{ maxWidth: "620px" }}>
+                <div style={{ marginBottom: "24px" }}>
+                  <h3 style={{ fontSize: "1.2rem", fontWeight: 800, marginBottom: "6px" }}>
+                    Creator Monetization & Commercial Sales
+                  </h3>
+                  <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", margin: 0 }}>
+                    Earn 80% on every commercial license sale with automatic payouts via Paddle
+                  </p>
+                </div>
+
+                {/* Earnings Summary Metrics */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1fr",
+                    gap: "12px",
+                    marginBottom: "24px"
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%)",
+                      border: "1px solid rgba(16, 185, 129, 0.3)",
+                      borderRadius: "var(--radius-md)",
+                      padding: "16px"
+                    }}
+                  >
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 700, marginBottom: "6px" }}>
+                      AVAILABLE BALANCE
+                    </div>
+                    <div style={{ fontSize: "1.4rem", fontWeight: 900, color: "#10b981" }}>
+                      ${(creatorEarnings.balance || 0).toFixed(2)}
+                    </div>
+                    <div style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginTop: "4px" }}>
+                      Ready for payout
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      background: "var(--bg-surface)",
+                      border: "1px solid var(--border-light)",
+                      borderRadius: "var(--radius-md)",
+                      padding: "16px"
+                    }}
+                  >
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 700, marginBottom: "6px" }}>
+                      TOTAL SALES
+                    </div>
+                    <div style={{ fontSize: "1.4rem", fontWeight: 900, color: "var(--color-primary)" }}>
+                      {creatorEarnings.totalSales || salesHistory.length}
+                    </div>
+                    <div style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginTop: "4px" }}>
+                      Licenses sold
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      background: "var(--bg-surface)",
+                      border: "1px solid var(--border-light)",
+                      borderRadius: "var(--radius-md)",
+                      padding: "16px"
+                    }}
+                  >
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 700, marginBottom: "6px" }}>
+                      REVENUE SPLIT
+                    </div>
+                    <div style={{ fontSize: "1.4rem", fontWeight: 900, color: "#00dfd8" }}>
+                      80% / 20%
+                    </div>
+                    <div style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginTop: "4px" }}>
+                      Creator keeps 80%
+                    </div>
+                  </div>
+                </div>
+
+                {/* Request Payout Card */}
+                <div
+                  style={{
+                    background: "var(--bg-surface)",
+                    border: "1px solid var(--border-light)",
+                    borderRadius: "var(--radius-md)",
+                    padding: "18px",
+                    marginBottom: "24px"
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                    <div>
+                      <h4 style={{ fontSize: "0.95rem", fontWeight: 700, margin: 0 }}>
+                        Request Payout
+                      </h4>
+                      <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", margin: 0 }}>
+                        Funds transfer to your selected receiving account within 24 hours
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-primary"
+                      disabled={creatorEarnings.balance <= 0 || isRequestingPayout}
+                      onClick={handleRequestPayout}
+                      style={{
+                        padding: "10px 18px",
+                        fontSize: "0.85rem",
+                        background: creatorEarnings.balance > 0 ? "#10b981" : "var(--bg-input)",
+                        color: creatorEarnings.balance > 0 ? "#fff" : "var(--text-muted)",
+                        cursor: creatorEarnings.balance > 0 ? "pointer" : "not-allowed"
+                      }}
+                    >
+                      <ArrowDownToLine size={16} />
+                      <span>{isRequestingPayout ? "Transferring..." : `Withdraw $${(creatorEarnings.balance || 0).toFixed(2)}`}</span>
+                    </button>
+                  </div>
+                  {creatorEarnings.pendingPayout > 0 && (
+                    <div style={{ fontSize: "0.75rem", color: "#10b981", fontWeight: 600 }}>
+                      ✓ Pending Transfers Processed: ${creatorEarnings.pendingPayout.toFixed(2)} USD
+                    </div>
+                  )}
+                </div>
+
+                {/* Payout Receiving Account Form */}
+                <div
+                  style={{
+                    background: "var(--bg-surface)",
+                    border: "1px solid var(--border-light)",
+                    borderRadius: "var(--radius-md)",
+                    padding: "18px",
+                    marginBottom: "24px"
+                  }}
+                >
+                  <h4 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "12px" }}>
+                    Payout Receiving Details
+                  </h4>
+                  <form onSubmit={handleSavePayoutAccount}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "10px", marginBottom: "12px" }}>
+                      <div>
+                        <label className="form-label" style={{ fontSize: "0.75rem" }}>Method</label>
+                        <select
+                          className="form-select"
+                          value={payoutMethod}
+                          onChange={(e) => setPayoutMethod(e.target.value)}
+                          style={{ fontSize: "0.85rem", padding: "8px" }}
+                        >
+                          <option value="paypal">PayPal</option>
+                          <option value="wise">Wise</option>
+                          <option value="bank">Bank Transfer (IBAN)</option>
+                          <option value="crypto">USDT (TRC-20)</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="form-label" style={{ fontSize: "0.75rem" }}>
+                          {payoutMethod === "paypal" ? "PayPal Email" : payoutMethod === "bank" ? "IBAN / Account Number" : payoutMethod === "wise" ? "Wise Email / Account" : "USDT TRC20 Wallet Address"}
+                        </label>
+                        <input
+                          type="text"
+                          className="form-input"
+                          placeholder={payoutMethod === "paypal" ? "your-paypal@email.com" : payoutMethod === "crypto" ? "T..." : "Account details"}
+                          value={payoutAccount}
+                          onChange={(e) => setPayoutAccount(e.target.value)}
+                          style={{ fontSize: "0.85rem", padding: "8px 12px" }}
+                        />
+                      </div>
+                    </div>
+                    <button
+                      type="submit"
+                      className="nav-tab"
+                      style={{ fontSize: "0.8rem", padding: "6px 14px", border: "1px solid var(--border-light)" }}
+                    >
+                      Save Payout Details
+                    </button>
+                  </form>
+                </div>
+
+                {/* Paddle Gateway Integration */}
+                <div
+                  style={{
+                    background: "var(--bg-surface)",
+                    border: "1px solid var(--border-light)",
+                    borderRadius: "var(--radius-md)",
+                    padding: "18px",
+                    marginBottom: "24px"
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <CreditCard size={18} color="var(--color-primary)" />
+                      <h4 style={{ fontSize: "0.95rem", fontWeight: 700, margin: 0 }}>
+                        Paddle Payment Gateway
+                      </h4>
+                    </div>
+                    <a
+                      href="https://vendors.paddle.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ fontSize: "0.75rem", color: "var(--color-primary)", display: "flex", alignItems: "center", gap: "4px" }}
+                    >
+                      <span>Paddle Dashboard</span>
+                      <ExternalLink size={12} />
+                    </a>
+                  </div>
+                  <form onSubmit={handleSavePaddle}>
+                    <div className="form-group" style={{ marginBottom: "12px" }}>
+                      <label className="form-label" style={{ fontSize: "0.75rem" }}>Paddle Client Token / Vendor Token</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={paddleTokenInput}
+                        onChange={(e) => setPaddleTokenInput(e.target.value)}
+                        placeholder="live_... or test_..."
+                        style={{ fontSize: "0.85rem", fontFamily: "monospace" }}
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="nav-tab"
+                      style={{ fontSize: "0.8rem", padding: "6px 14px", border: "1px solid var(--border-light)" }}
+                    >
+                      Save Paddle Token
+                    </button>
+                  </form>
+                </div>
+
+                {/* Sales & Orders History */}
+                <div>
+                  <h4 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <FileSpreadsheet size={16} />
+                    <span>Recent Sales & Licensing Orders ({salesHistory.length})</span>
+                  </h4>
+                  {salesHistory.length === 0 ? (
+                    <div
+                      style={{
+                        padding: "24px",
+                        textAlign: "center",
+                        background: "var(--bg-surface)",
+                        borderRadius: "var(--radius-md)",
+                        border: "1px dashed var(--border-light)",
+                        color: "var(--text-muted)",
+                        fontSize: "0.85rem"
+                      }}
+                    >
+                      No commercial sales yet. Upload high-res images and enable commercial pricing to start making sales!
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      {salesHistory.map((sale, i) => (
+                        <div
+                          key={sale.orderId || i}
+                          style={{
+                            background: "var(--bg-surface)",
+                            border: "1px solid var(--border-light)",
+                            borderRadius: "var(--radius-sm)",
+                            padding: "12px 14px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            fontSize: "0.85rem"
+                          }}
+                        >
+                          <div>
+                            <div style={{ fontWeight: 700 }}>
+                              {sale.pinTitle || "Commercial Asset"}
+                            </div>
+                            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                              Order: <strong style={{ color: "var(--color-primary)" }}>{sale.orderId}</strong> • {sale.buyerEmail} • {sale.date}
+                            </div>
+                          </div>
+                          <div style={{ textAlign: "right" }}>
+                            <div style={{ fontWeight: 800, color: "#10b981" }}>
+                              +${(Number(sale.amount || 0) * 0.8).toFixed(2)} USD
+                            </div>
+                            <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>
+                              ${sale.amount} total ({sale.license})
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>

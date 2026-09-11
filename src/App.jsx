@@ -12,6 +12,7 @@ import { UploadModal } from "./components/UploadModal";
 import { CloudinarySettingsModal } from "./components/CloudinarySettingsModal";
 import { SettingsModal } from "./components/SettingsModal";
 import { UserProfileModal } from "./components/UserProfileModal";
+import { PurchaseCheckoutModal } from "./components/PurchaseCheckoutModal";
 import { BoardView } from "./components/BoardView";
 import { ToastContainer } from "./components/Toast";
 import { Footer } from "./components/Footer";
@@ -43,6 +44,7 @@ const MainContent = () => {
       <PinDetailModal />
       <UploadModal />
       <UserProfileModal />
+      <PurchaseCheckoutModal />
       <ToastContainer />
 
       {/* Backend Infrastructure Modals (Owner/Admin Only) */}
