@@ -11,6 +11,7 @@ import { SupabaseSettingsModal } from "./components/SupabaseSettingsModal";
 import { PinDetailModal } from "./components/PinDetailModal";
 import { UploadModal } from "./components/UploadModal";
 import { CloudinarySettingsModal } from "./components/CloudinarySettingsModal";
+import { SettingsModal } from "./components/SettingsModal";
 import { UserProfileModal } from "./components/UserProfileModal";
 import { BoardView } from "./components/BoardView";
 import { ToastContainer } from "./components/Toast";
@@ -42,6 +43,7 @@ const MainContent = () => {
       <Footer />
 
       {/* Interactive, Security & Auth Modals */}
+      <SettingsModal />
       <AuthModal />
       <AdminAuthModal />
       <PinDetailModal />

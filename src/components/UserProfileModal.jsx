@@ -26,7 +26,8 @@ export const UserProfileModal = () => {
     setActiveView,
     setSelectedBoardId,
     currentUser,
-    setIsAuthModalOpen,
+    setIsSettingsOpen,
+    setSettingsTab,
     handleSignOut
   } = usePins();
 
@@ -123,10 +124,11 @@ export const UserProfileModal = () => {
               style={{ fontSize: "0.85rem", padding: "8px 16px", border: "1px solid var(--border-light)" }}
               onClick={() => {
                 setIsProfileOpen(false);
-                setIsAuthModalOpen(true);
+                setSettingsTab(currentUser ? "general" : "account");
+                setIsSettingsOpen(true);
               }}
             >
-              {currentUser ? "Edit Profile & Username" : "Log In to claim your @username"}
+              {currentUser ? "Settings & Profile" : "Sign In to claim your @username"}
             </button>
 
             {currentUser && (

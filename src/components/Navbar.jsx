@@ -31,7 +31,9 @@ export const Navbar = () => {
     isAdminAuthenticated,
     setIsAdminAuthModalOpen,
     currentUser,
-    setIsAuthModalOpen,
+    isSettingsOpen,
+    setIsSettingsOpen,
+    setSettingsTab,
     handleSignOut
   } = usePins();
 
@@ -202,6 +204,18 @@ export const Navbar = () => {
             )}
           </button>
 
+          {/* Website Settings Button */}
+          <button
+            className="icon-btn"
+            onClick={() => {
+              setSettingsTab("general");
+              setIsSettingsOpen(true);
+            }}
+            title="Settings & Preferences"
+          >
+            <Settings size={20} />
+          </button>
+
           {/* Supabase User Login / Profile Dropdown */}
           {currentUser ? (
             <div style={{ position: "relative" }} ref={userMenuRef}>
@@ -338,11 +352,12 @@ export const Navbar = () => {
                     onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                     onClick={() => {
                       setIsUserMenuOpen(false);
-                      setIsAuthModalOpen(true);
+                      setSettingsTab("general");
+                      setIsSettingsOpen(true);
                     }}
                   >
                     <Settings size={16} style={{ color: "var(--text-muted)" }} />
-                    <span>Edit Profile & Handle</span>
+                    <span>Settings & Profile</span>
                   </button>
 
                   <div style={{ height: "1px", background: "var(--border-light)", margin: "6px 0" }} />
@@ -382,7 +397,10 @@ export const Navbar = () => {
             <button
               className="btn-primary"
               style={{ padding: "8px 18px", fontSize: "0.88rem", gap: "6px" }}
-              onClick={() => setIsAuthModalOpen(true)}
+              onClick={() => {
+                setSettingsTab("account");
+                setIsSettingsOpen(true);
+              }}
             >
               <LogIn size={15} />
               <span>Log In</span>
