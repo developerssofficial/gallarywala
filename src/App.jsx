@@ -1,7 +1,6 @@
 import React from "react";
 import { PinProvider, usePins } from "./context/PinContext";
 import { Navbar } from "./components/Navbar";
-import { HeroBanner } from "./components/HeroBanner";
 import { CategoryBar } from "./components/CategoryBar";
 import { MasonryGrid } from "./components/MasonryGrid";
 import { AdminPanel } from "./components/AdminPanel";
@@ -27,12 +26,7 @@ const MainContent = () => {
 
       <Navbar />
       
-      {activeView === "gallery" && (
-        <>
-          <HeroBanner />
-          <CategoryBar />
-        </>
-      )}
+      {activeView === "gallery" && <CategoryBar />}
       
       <main className="main-content">
         {activeView === "gallery" && <MasonryGrid />}
