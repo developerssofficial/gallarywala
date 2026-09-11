@@ -217,12 +217,12 @@ export const UploadModal = () => {
           <span>Upload & Publish Image</span>
         </div>
 
-        {/* AI & Cloudinary Status Notice */}
+        {/* AI Safety Status Notice */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            gap: "8px",
             background: "rgba(121, 40, 202, 0.12)",
             border: "1px solid rgba(121, 40, 202, 0.3)",
             borderRadius: "var(--radius-md)",
@@ -231,28 +231,10 @@ export const UploadModal = () => {
             fontSize: "0.85rem"
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <ShieldCheck size={18} color="#00dfd8" />
-            <span>
-              <strong>AI Safety Active:</strong> NSFW & explicit content is automatically filtered
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              setIsUploadOpen(false);
-              setIsSettingsOpen(true);
-            }}
-            style={{
-              color: "var(--text-main)",
-              fontWeight: 700,
-              fontSize: "0.8rem",
-              cursor: "pointer",
-              textDecoration: "underline"
-            }}
-          >
-            Cloudinary Settings
-          </button>
+          <ShieldCheck size={18} color="#00dfd8" />
+          <span>
+            <strong>AI Safety Active:</strong> NSFW & explicit content is automatically filtered
+          </span>
         </div>
 
         <form onSubmit={handleSubmit} className="upload-grid">

@@ -140,35 +140,6 @@ export const AuthModal = () => {
               </p>
             </div>
 
-            {/* Supabase connection indicator */}
-            {!isSupabaseConfigured && (
-              <div
-                style={{
-                  background: "rgba(245, 158, 11, 0.12)",
-                  border: "1px solid rgba(245, 158, 11, 0.3)",
-                  borderRadius: "var(--radius-md)",
-                  padding: "10px 14px",
-                  fontSize: "0.82rem",
-                  color: "#f59e0b",
-                  marginBottom: "16px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between"
-                }}
-              >
-                <span>Supabase API not connected yet</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsAuthModalOpen(false);
-                    setIsSupabaseSettingsOpen(true);
-                  }}
-                  style={{ textDecoration: "underline", color: "inherit", fontWeight: 700, cursor: "pointer" }}
-                >
-                  Configure
-                </button>
-              </div>
-            )}
 
             {/* Tab switch */}
             <div

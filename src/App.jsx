@@ -43,13 +43,19 @@ const MainContent = () => {
 
       {/* Interactive, Security & Auth Modals */}
       <AuthModal />
-      <SupabaseSettingsModal />
       <AdminAuthModal />
       <PinDetailModal />
       <UploadModal />
-      <CloudinarySettingsModal />
       <UserProfileModal />
       <ToastContainer />
+
+      {/* Backend Infrastructure Modals (Owner/Admin Only) */}
+      {isAdminAuthenticated && (
+        <>
+          <SupabaseSettingsModal />
+          <CloudinarySettingsModal />
+        </>
+      )}
     </div>
   );
 };
