@@ -33,6 +33,30 @@ export const Footer = () => {
           © {new Date().getFullYear()} <strong style={{ color: "var(--text-main)" }}>GallaryWala</strong>. All rights reserved.
         </div>
 
+        <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
+          <a
+            href="/privacy.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "var(--text-muted)", textDecoration: "none" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
+          >
+            Privacy Policy
+          </a>
+          <span style={{ opacity: 0.3 }}>•</span>
+          <a
+            href="/terms.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "var(--text-muted)", textDecoration: "none" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
+          >
+            Terms of Service
+          </a>
+        </div>
+
         {/* Discreet hidden lock trigger */}
         <div
           onClick={handleSecretTrigger}
