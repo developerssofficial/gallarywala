@@ -243,11 +243,11 @@ export const PinDetailModal = () => {
           )}
 
           {/* Tags */}
-          {activePin.tags && activePin.tags.length > 0 && (
+          {Array.isArray(activePin.tags) && activePin.tags.length > 0 && (
             <div className="detail-tags">
               {activePin.tags.map((tag, idx) => (
                 <span key={idx} className="tag-badge">
-                  #{tag}
+                  #{String(tag)}
                 </span>
               ))}
             </div>
@@ -256,7 +256,7 @@ export const PinDetailModal = () => {
           {/* Comments Section */}
           <div className="comments-section">
             <h4 className="comments-title">
-              Comments ({(activePin.comments || []).length})
+              Comments ({(Array.isArray(activePin.comments) ? activePin.comments : []).length})
             </h4>
 
             <div className="comments-list">

@@ -556,18 +556,25 @@ export const PinProvider = ({ children }) => {
   };
 
   // Live Instant Search
-  const filteredPins = pins.filter((pin) => {
+  const filteredPins = (Array.isArray(pins) ? pins : []).filter((pin) => {
+    if (!pin) return false;
     const matchesCategory =
       selectedCategory === "All" || pin.category === selectedCategory;
-    const q = searchQuery.toLowerCase().trim();
+    const q = (searchQuery || "").toLowerCase().trim();
+    const tagsArr = Array.isArray(pin.tags)
+      ? pin.tags
+      : typeof pin.tags === "string"
+      ? pin.tags.split(",")
+      : [];
+
     const matchesSearch =
       !q ||
-      pin.title?.toLowerCase().includes(q) ||
-      pin.description?.toLowerCase().includes(q) ||
-      pin.tags?.some((t) => t.toLowerCase().includes(q)) ||
-      pin.category?.toLowerCase().includes(q);
+      Boolean(pin.title && typeof pin.title === "string" && pin.title.toLowerCase().includes(q)) ||
+      Boolean(pin.description && typeof pin.description === "string" && pin.description.toLowerCase().includes(q)) ||
+      tagsArr.some((t) => Boolean(t && typeof t === "string" && t.toLowerCase().includes(q))) ||
+      Boolean(pin.category && typeof pin.category === "string" && pin.category.toLowerCase().includes(q));
 
-    return matchesCategory && matchesSearch;
+    return Boolean(matchesCategory && matchesSearch);
   });
 
   return (

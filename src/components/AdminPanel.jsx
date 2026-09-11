@@ -207,13 +207,19 @@ export const AdminPanel = () => {
     }
   };
 
-  const filteredAdminPins = pins.filter((pin) => {
-    const q = adminSearch.toLowerCase().trim();
+  const filteredAdminPins = (Array.isArray(pins) ? pins : []).filter((pin) => {
+    if (!pin) return false;
+    const q = (adminSearch || "").toLowerCase().trim();
+    const tagsArr = Array.isArray(pin.tags)
+      ? pin.tags
+      : typeof pin.tags === "string"
+      ? pin.tags.split(",")
+      : [];
     return (
       !q ||
-      pin.title?.toLowerCase().includes(q) ||
-      pin.category?.toLowerCase().includes(q) ||
-      pin.tags?.some((t) => t.toLowerCase().includes(q))
+      Boolean(pin.title && typeof pin.title === "string" && pin.title.toLowerCase().includes(q)) ||
+      Boolean(pin.category && typeof pin.category === "string" && pin.category.toLowerCase().includes(q)) ||
+      tagsArr.some((t) => Boolean(t && typeof t === "string" && t.toLowerCase().includes(q)))
     );
   });
 
