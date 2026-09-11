@@ -16,6 +16,7 @@ export const PinCard = ({ pin }) => {
     setActivePin,
     boards,
     savePinToBoard,
+    downloadImage,
     showToast
   } = usePins();
 
@@ -26,15 +27,7 @@ export const PinCard = ({ pin }) => {
 
   const handleDownload = (e) => {
     e.stopPropagation();
-    const link = document.createElement("a");
-    link.href = pin.imageUrl;
-    link.download = `${pin.title.replace(/\s+/g, "-").toLowerCase()}.jpg`;
-    link.target = "_blank";
-    link.rel = "noreferrer";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    showToast("Downloading image... 📥", "info");
+    downloadImage(pin.imageUrl, pin.title);
   };
 
   const handleShare = (e) => {

@@ -470,6 +470,51 @@ export const PinProvider = ({ children }) => {
     showToast("Comment posted! 💬", "info");
   };
 
+  // Universal Fast Image Downloader (Supports Cloudinary, Supabase & Blob URLs)
+  const downloadImage = async (imageUrl, title = "gallarywala-image") => {
+    if (!imageUrl) return;
+    showToast("Downloading high resolution image... 📥", "info");
+
+    const safeFilename = `${(title || "image")
+      .replace(/[^a-zA-Z0-9_-]/g, "_")
+      .toLowerCase()}.jpg`;
+
+    try {
+      let fetchUrl = imageUrl;
+      if (imageUrl.includes("res.cloudinary.com") && imageUrl.includes("/upload/")) {
+        fetchUrl = imageUrl.replace("/upload/", "/upload/fl_attachment/");
+      }
+
+      const response = await fetch(fetchUrl);
+      if (!response.ok) throw new Error("Fetch failed");
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = safeFilename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+      showToast("Download complete! 🎉", "success");
+    } catch {
+      // Fallback: direct anchor with Cloudinary attachment
+      let fallbackUrl = imageUrl;
+      if (imageUrl.includes("res.cloudinary.com") && imageUrl.includes("/upload/")) {
+        fallbackUrl = imageUrl.replace("/upload/", "/upload/fl_attachment/");
+      }
+      const a = document.createElement("a");
+      a.href = fallbackUrl;
+      a.download = safeFilename;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  };
+
   // Live Instant Search
   const filteredPins = pins.filter((pin) => {
     const matchesCategory =
@@ -537,6 +582,7 @@ export const PinProvider = ({ children }) => {
         savePinToBoard,
         createBoard,
         addComment,
+        downloadImage,
         filteredPins
       }}
     >

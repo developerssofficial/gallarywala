@@ -21,6 +21,7 @@ export const PinDetailModal = () => {
     boards,
     savePinToBoard,
     addComment,
+    downloadImage,
     showToast
   } = usePins();
 
@@ -42,15 +43,7 @@ export const PinDetailModal = () => {
   const isLiked = likedPinIds.includes(activePin.id);
 
   const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = activePin.imageUrl;
-    link.download = `${activePin.title.replace(/\s+/g, "-").toLowerCase()}.jpg`;
-    link.target = "_blank";
-    link.rel = "noreferrer";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    showToast("Downloading high resolution image... 📥", "info");
+    downloadImage(activePin.imageUrl, activePin.title);
   };
 
   const handleShare = () => {
