@@ -9,7 +9,20 @@ import {
   ChevronDown
 } from "lucide-react";
 
+const getSafeHostname = (urlStr) => {
+  if (!urlStr || typeof urlStr !== "string") return "link";
+  try {
+    const formatted = urlStr.startsWith("http://") || urlStr.startsWith("https://")
+      ? urlStr
+      : `https://${urlStr}`;
+    return new URL(formatted).hostname.replace(/^www\./, "");
+  } catch {
+    return urlStr.replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0] || "link";
+  }
+};
+
 export const PinCard = ({ pin }) => {
+  if (!pin) return null;
   const {
     likedPinIds,
     toggleLike,
@@ -168,7 +181,7 @@ export const PinCard = ({ pin }) => {
             <div className="pin-overlay-bottom">
               {pin.link ? (
                 <a
-                  href={pin.link}
+                  href={pin.link.startsWith("http") ? pin.link : `https://${pin.link}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="pin-link-chip"
@@ -176,7 +189,7 @@ export const PinCard = ({ pin }) => {
                   title={pin.link}
                 >
                   <ExternalLink size={12} />
-                  <span>{new URL(pin.link).hostname.replace("www.", "")}</span>
+                  <span>{getSafeHostname(pin.link)}</span>
                 </a>
               ) : (
                 <div />

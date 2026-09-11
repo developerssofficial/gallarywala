@@ -124,46 +124,57 @@ export const PinProvider = ({ children }) => {
 
   // Supabase Auth State Listener & Images Fetcher
   useEffect(() => {
-    const client = getSupabaseClient();
-    if (client) {
-      // Check current session
-      client.auth.getSession().then(({ data: { session } }) => {
-        setCurrentUser(session?.user ?? null);
-      });
-
-      const { data: authListener } = client.auth.onAuthStateChange(
-        (_event, session) => {
+    try {
+      const client = getSupabaseClient();
+      if (client) {
+        // Check current session
+        client.auth.getSession().then(({ data: { session } }) => {
           setCurrentUser(session?.user ?? null);
-        }
-      );
+        }).catch((err) => {
+          console.warn("Session error:", err);
+        });
 
-      // Fetch images from Supabase
-      fetchImagesFromSupabase().then((spImages) => {
-        if (spImages && spImages.length > 0) {
-          const formatted = spImages.map((row) => ({
-            id: "sp-" + row.id,
-            title: row.title,
-            description: row.description,
-            imageUrl: row.image_url,
-            category: row.category,
-            tags: row.tags || [],
-            likes: row.likes || 0,
-            link: row.link,
-            author: {
-              name: row.author_name || "GallaryWala Member",
-              avatar: row.author_avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${row.id}`,
-              username: row.author_username || "@member"
-            },
-            comments: [],
-            createdAt: row.created_at?.split("T")[0]
-          }));
-          setPins(formatted);
-        }
-      });
+        const { data: authListener } = client.auth.onAuthStateChange(
+          (_event, session) => {
+            setCurrentUser(session?.user ?? null);
+          }
+        );
 
-      return () => {
-        authListener?.subscription?.unsubscribe();
-      };
+        // Fetch images from Supabase
+        fetchImagesFromSupabase().then((spImages) => {
+          if (spImages && Array.isArray(spImages) && spImages.length > 0) {
+            const formatted = spImages.map((row) => ({
+              id: "sp-" + (row.id || Math.random()),
+              title: row.title || "Untitled",
+              description: row.description || "",
+              imageUrl: row.image_url,
+              category: row.category || "General",
+              tags: Array.isArray(row.tags) ? row.tags : [],
+              likes: Number(row.likes) || 0,
+              link: row.link || null,
+              author: {
+                name: row.author_name || "GallaryWala Member",
+                avatar: row.author_avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${row.id || "user"}`,
+                username: row.author_username || "@member"
+              },
+              comments: [],
+              createdAt: row.created_at ? row.created_at.split("T")[0] : new Date().toISOString().split("T")[0]
+            })).filter(p => Boolean(p.imageUrl));
+            
+            if (formatted.length > 0) {
+              setPins(formatted);
+            }
+          }
+        }).catch((err) => {
+          console.warn("Images fetch error:", err);
+        });
+
+        return () => {
+          authListener?.subscription?.unsubscribe();
+        };
+      }
+    } catch (err) {
+      console.warn("Supabase init error:", err);
     }
   }, [supabaseConfig]);
 

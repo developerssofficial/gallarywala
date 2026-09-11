@@ -119,7 +119,7 @@ export const PinDetailModal = () => {
               </button>
               {activePin.link && (
                 <a
-                  href={activePin.link}
+                  href={activePin.link.startsWith("http") ? activePin.link : `https://${activePin.link}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="icon-btn"
