@@ -21,8 +21,7 @@ export const AuthModal = () => {
     handleSignUp,
     handleSignIn,
     handleSignOut,
-    setIsSupabaseSettingsOpen,
-    isSupabaseConfigured
+    handleUpdateProfile
   } = usePins();
 
   const [mode, setMode] = useState("login"); // 'login' | 'signup'
@@ -33,7 +32,34 @@ export const AuthModal = () => {
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState("");
 
+  // Edit Profile States
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editUsername, setEditUsername] = useState("");
+
+  useEffect(() => {
+    if (currentUser) {
+      setEditName(currentUser.user_metadata?.full_name || currentUser.email?.split("@")[0] || "");
+      setEditUsername(currentUser.user_metadata?.username || currentUser.email?.split("@")[0] || "");
+    }
+  }, [currentUser]);
+
   if (!isAuthModalOpen) return null;
+
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    if (!editName.trim()) return;
+    setLoading(true);
+    const cleanUser = editUsername.trim().replace(/^@/, "").toLowerCase();
+    const avatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(cleanUser || editName)}`;
+    await handleUpdateProfile({
+      fullName: editName.trim(),
+      username: cleanUser || editName.trim().toLowerCase().replace(/\s+/g, "_"),
+      avatarUrl
+    });
+    setLoading(false);
+    setIsEditingProfile(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,8 +105,8 @@ export const AuthModal = () => {
           <div style={{ textAlign: "center", padding: "10px 0" }}>
             <div
               style={{
-                width: "80px",
-                height: "80px",
+                width: "84px",
+                height: "84px",
                 borderRadius: "50%",
                 overflow: "hidden",
                 margin: "0 auto 16px auto",
@@ -89,28 +115,91 @@ export const AuthModal = () => {
               }}
             >
               <img
-                src={currentUser.user_metadata?.avatar_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"}
+                src={currentUser.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(currentUser.email || "user")}`}
                 alt="Profile"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             </div>
-            <h3 style={{ fontSize: "1.4rem", fontWeight: 800 }}>
-              {currentUser.user_metadata?.full_name || "GallaryWala Member"}
-            </h3>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", marginBottom: "24px" }}>
-              {currentUser.email}
-            </p>
 
-            <button
-              className="btn-primary"
-              style={{ width: "100%", justifyContent: "center", background: "#ef4444", marginBottom: "12px" }}
-              onClick={async () => {
-                await handleSignOut();
-                setIsAuthModalOpen(false);
-              }}
-            >
-              Log Out of Account
-            </button>
+            {!isEditingProfile ? (
+              <>
+                <h3 style={{ fontSize: "1.4rem", fontWeight: 800, marginBottom: "4px" }}>
+                  {currentUser.user_metadata?.full_name || currentUser.email?.split("@")[0] || "GallaryWala Creator"}
+                </h3>
+                <div style={{ color: "var(--color-primary)", fontWeight: 700, fontSize: "0.95rem", marginBottom: "4px" }}>
+                  @{currentUser.user_metadata?.username || currentUser.email?.split("@")[0] || "creator"}
+                </div>
+                <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "20px" }}>
+                  {currentUser.email}
+                </p>
+
+                <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
+                  <button
+                    className="nav-tab"
+                    style={{ flex: 1, justifyContent: "center", border: "1px solid var(--border-light)" }}
+                    onClick={() => setIsEditingProfile(true)}
+                  >
+                    Edit Profile & Handle
+                  </button>
+                  <button
+                    className="btn-primary"
+                    style={{ flex: 1, justifyContent: "center", background: "#ef4444" }}
+                    onClick={async () => {
+                      await handleSignOut();
+                      setIsAuthModalOpen(false);
+                    }}
+                  >
+                    Log Out
+                  </button>
+                </div>
+              </>
+            ) : (
+              <form onSubmit={handleSaveProfile} style={{ textAlign: "left", marginTop: "16px" }}>
+                <div className="form-group">
+                  <label className="form-label">Display Name / Full Name</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Username / Handle (@)</label>
+                  <div style={{ position: "relative" }}>
+                    <input
+                      type="text"
+                      className="form-input"
+                      placeholder="e.g. john_doe"
+                      value={editUsername}
+                      onChange={(e) => setEditUsername(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+                  <button
+                    type="button"
+                    className="nav-tab"
+                    style={{ flex: 1, justifyContent: "center" }}
+                    onClick={() => setIsEditingProfile(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn-primary"
+                    style={{ flex: 1, justifyContent: "center" }}
+                    disabled={loading}
+                  >
+                    {loading ? "Saving..." : "Save Changes"}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         ) : (
           <div>

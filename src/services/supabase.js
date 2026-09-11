@@ -88,6 +88,20 @@ export const signOutUser = async () => {
   if (error) throw error;
 };
 
+export const updateUserProfile = async ({ fullName, username, avatarUrl }) => {
+  const client = getSupabaseClient();
+  if (!client) return null;
+  const { data, error } = await client.auth.updateUser({
+    data: {
+      full_name: fullName,
+      username: username,
+      avatar_url: avatarUrl
+    }
+  });
+  if (error) throw error;
+  return data.user;
+};
+
 /**
  * Supabase Images Database API
  */

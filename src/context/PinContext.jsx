@@ -8,6 +8,7 @@ import {
   signUpWithEmail,
   signInWithEmail,
   signOutUser,
+  updateUserProfile,
   fetchImagesFromSupabase,
   insertImageToSupabase,
   deleteImageFromSupabase
@@ -259,6 +260,30 @@ export const PinProvider = ({ children }) => {
     showToast("Logged out successfully.", "info");
   };
 
+  const handleUpdateProfile = async ({ fullName, username, avatarUrl }) => {
+    try {
+      const updatedUser = await updateUserProfile({ fullName, username, avatarUrl });
+      if (updatedUser) {
+        setCurrentUser(updatedUser);
+      } else if (currentUser) {
+        setCurrentUser((prev) => ({
+          ...prev,
+          user_metadata: {
+            ...prev?.user_metadata,
+            full_name: fullName,
+            username: username,
+            avatar_url: avatarUrl
+          }
+        }));
+      }
+      showToast("Profile & Username updated! ✨", "success");
+      return true;
+    } catch (err) {
+      showToast(err.message || "Failed to update profile", "error");
+      return false;
+    }
+  };
+
   const updateSupabaseCredentials = (url, key) => {
     saveSupabaseConfig(url, key);
     setSupabaseConfig({ url, key });
@@ -336,16 +361,20 @@ export const PinProvider = ({ children }) => {
 
   // Add / Upload New Image (Cloudinary + Supabase persistence)
   const addPin = async (pinData) => {
+    const cleanEmailName = currentUser?.email
+      ? currentUser.email.split("@")[0]
+      : null;
+
     const authorInfo = currentUser
       ? {
-          name: currentUser.user_metadata?.full_name || "GallaryWala Creator",
-          avatar: currentUser.user_metadata?.avatar_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
-          username: `@${currentUser.email?.split("@")[0] || "creator"}`
+          name: currentUser.user_metadata?.full_name || cleanEmailName || "Creator",
+          avatar: currentUser.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(currentUser.email || "user")}`,
+          username: `@${currentUser.user_metadata?.username || cleanEmailName || "creator"}`
         }
       : {
-          name: "Admin",
-          avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
-          username: "@gallarywala"
+          name: pinData.authorName || "Creator",
+          avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(pinData.authorName || "creator")}`,
+          username: `@${pinData.authorUsername ? pinData.authorUsername.replace(/^@/, '') : "creator"}`
         };
 
     const newPinBase = {
@@ -549,6 +578,7 @@ export const PinProvider = ({ children }) => {
         handleSignUp,
         handleSignIn,
         handleSignOut,
+        handleUpdateProfile,
         theme,
         toggleTheme,
         searchQuery,

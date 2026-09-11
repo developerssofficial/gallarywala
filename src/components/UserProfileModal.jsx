@@ -23,7 +23,9 @@ export const UserProfileModal = () => {
     showToast,
     setActivePin,
     setActiveView,
-    setSelectedBoardId
+    setSelectedBoardId,
+    currentUser,
+    setIsAuthModalOpen
   } = usePins();
 
   const [activeTab, setActiveTab] = useState("boards"); // 'boards' | 'created' | 'liked'
@@ -32,7 +34,15 @@ export const UserProfileModal = () => {
 
   if (!isProfileOpen) return null;
 
-  const myCreatedPins = pins.filter((p) => p.author?.username === "@you");
+  const userHandle = currentUser?.user_metadata?.username || currentUser?.email?.split("@")[0] || "guest";
+  const userFullName = currentUser?.user_metadata?.full_name || currentUser?.email?.split("@")[0] || "Creator Studio";
+  const userAvatar = currentUser?.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(currentUser?.email || "guest")}`;
+
+  const myCreatedPins = pins.filter(
+    (p) =>
+      p.author?.username === `@${userHandle}` ||
+      (currentUser && p.author?.name === userFullName)
+  );
   const myLikedPins = pins.filter((p) => likedPinIds.includes(p.id));
 
   const handleCreateBoardSubmit = (e) => {
@@ -89,21 +99,32 @@ export const UserProfileModal = () => {
               overflow: "hidden",
               border: "3px solid var(--color-primary)",
               marginBottom: "14px",
-              boxShadow: "var(--shadow-glow)"
+              boxShadow: "var(--brand-glow)"
             }}
           >
             <img
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80"
+              src={userAvatar}
               alt="Your Profile"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </div>
           <h2 style={{ fontSize: "1.6rem", fontWeight: 800, marginBottom: "4px" }}>
-            Your Studio & Collections
+            {userFullName}
           </h2>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>
-            @you • Cloudinary Connected Creator
+          <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", marginBottom: "8px" }}>
+            @{userHandle} • {currentUser ? "Member Account" : "Guest Mode"}
           </p>
+
+          <button
+            className="nav-tab"
+            style={{ fontSize: "0.82rem", padding: "6px 14px", border: "1px solid var(--border-light)" }}
+            onClick={() => {
+              setIsProfileOpen(false);
+              setIsAuthModalOpen(true);
+            }}
+          >
+            {currentUser ? "Edit Profile & Change Username" : "Log In to claim your @username"}
+          </button>
 
           {/* Tab Controls */}
           <div

@@ -25,7 +25,9 @@ export const UploadModal = () => {
     setIsSettingsOpen,
     boards,
     addPin,
-    showToast
+    showToast,
+    currentUser,
+    setIsAuthModalOpen
   } = usePins();
 
   const fileInputRef = useRef(null);
@@ -34,6 +36,7 @@ export const UploadModal = () => {
   const [previewUrl, setPreviewUrl] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [guestAuthorName, setGuestAuthorName] = useState("");
   const [link, setLink] = useState("");
   const [category, setCategory] = useState(CATEGORIES[1] || "Cyberpunk & Sci-Fi");
   const [tagsInput, setTagsInput] = useState("");
@@ -170,6 +173,9 @@ export const UploadModal = () => {
         .map((t) => t.trim().replace(/^#/, ""))
         .filter(Boolean);
 
+      const authorNameClean = guestAuthorName.trim() || undefined;
+      const authorUserClean = authorNameClean ? authorNameClean.toLowerCase().replace(/\s+/g, "_") : undefined;
+
       addPin({
         title: title.trim(),
         description: description.trim(),
@@ -177,13 +183,16 @@ export const UploadModal = () => {
         category,
         tags: tags.length > 0 ? tags : [category.toLowerCase()],
         link: link.trim() || undefined,
-        targetBoardId: targetBoardId || undefined
+        targetBoardId: targetBoardId || undefined,
+        authorName: authorNameClean,
+        authorUsername: authorUserClean
       });
 
       setSelectedFile(null);
       setPreviewUrl("");
       setTitle("");
       setDescription("");
+      setGuestAuthorName("");
       setLink("");
       setTagsInput("");
     } catch (err) {
@@ -409,6 +418,71 @@ export const UploadModal = () => {
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
               />
+            </div>
+
+            {/* Creator / Author Attribution Row */}
+            <div
+              style={{
+                background: "var(--bg-surface)",
+                padding: "12px 14px",
+                borderRadius: "var(--radius-md)",
+                marginBottom: "16px",
+                border: "1px solid var(--border-light)"
+              }}
+            >
+              {currentUser ? (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <img
+                      src={currentUser.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(currentUser.email || "user")}`}
+                      alt="Creator"
+                      style={{ width: "32px", height: "32px", borderRadius: "50%", objectFit: "cover" }}
+                    />
+                    <div>
+                      <div style={{ fontSize: "0.85rem", fontWeight: 700 }}>
+                        {currentUser.user_metadata?.full_name || currentUser.email?.split("@")[0]}
+                      </div>
+                      <div style={{ fontSize: "0.75rem", color: "var(--color-primary)", fontWeight: 600 }}>
+                        @{currentUser.user_metadata?.username || currentUser.email?.split("@")[0]}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    style={{ fontSize: "0.75rem", color: "var(--text-muted)", textDecoration: "underline", cursor: "pointer" }}
+                    onClick={() => {
+                      setIsUploadOpen(false);
+                      setIsAuthModalOpen(true);
+                    }}
+                  >
+                    Edit Handle
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                    <label className="form-label" style={{ marginBottom: 0, fontSize: "0.8rem" }}>Creator / Artist Name</label>
+                    <button
+                      type="button"
+                      style={{ fontSize: "0.75rem", color: "var(--color-primary)", fontWeight: 700, cursor: "pointer" }}
+                      onClick={() => {
+                        setIsUploadOpen(false);
+                        setIsAuthModalOpen(true);
+                      }}
+                    >
+                      Log in to sync account
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="e.g. Your Name (defaults to Creator)"
+                    value={guestAuthorName}
+                    onChange={(e) => setGuestAuthorName(e.target.value)}
+                    style={{ padding: "8px 12px", fontSize: "0.85rem" }}
+                  />
+                </div>
+              )}
             </div>
 
             <button
