@@ -7,6 +7,60 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://gallarywala.vercel.app/?category=Anime+%26+Manga</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?category=Cyberpunk+%26+Sci-Fi</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?category=4K+Wallpapers+%26+AMOLED</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?category=3D+Renders+%26+Abstract</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?category=Nature+%26+Landscapes</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?category=Gaming+%26+Esports</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?category=Architecture+%26+Interiors</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?category=Supercars+%26+Automotive</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?category=Lo-Fi+%26+Chill+Vibes</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://gallarywala.vercel.app/privacy.html</loc>
     <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
