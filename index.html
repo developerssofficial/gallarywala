@@ -3,9 +3,69 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="canonical" href="https://gallarywala.vercel.app/" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="description" content="GallaryWala - Discover, curate and upload high-resolution photographs & artworks" />
-    <title>GallaryWala — Visual Discovery & Inspiration</title>
+    <meta name="theme-color" content="#07090e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="GallaryWala" />
+
+    <!-- Primary SEO Meta Tags -->
+    <title>GallaryWala — Visual Discovery, 4K Wallpapers & Digital Art Marketplace</title>
+    <meta name="title" content="GallaryWala — Visual Discovery, 4K Wallpapers & Digital Art Marketplace" />
+    <meta name="description" content="Discover, curate, and license ultra high-resolution 4K wallpapers, anime art, cyberpunk renders, and commercial visual media. Instant creator payouts and verified licensing." />
+    <meta name="keywords" content="wallpapers, 4K wallpapers, digital art, anime wallpapers, cyberpunk art, photography, visual discovery, buy photos, sell artwork, stock images, creative marketplace, image licensing, aesthetic art" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="GallaryWala" />
+
+    <!-- Open Graph / Facebook / WhatsApp / LinkedIn / Discord -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gallarywala.vercel.app/" />
+    <meta property="og:title" content="GallaryWala — Visual Discovery, 4K Wallpapers & Digital Art Marketplace" />
+    <meta property="og:description" content="Explore and license 4K aesthetic wallpapers, digital artworks, and commercial visual media. Direct creator payouts and instant high-res downloads." />
+    <meta property="og:image" content="https://gallarywala.vercel.app/logo.png" />
+    <meta property="og:site_name" content="GallaryWala" />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://gallarywala.vercel.app/" />
+    <meta name="twitter:title" content="GallaryWala — Visual Discovery & 4K Digital Asset Marketplace" />
+    <meta name="twitter:description" content="Explore and license 4K aesthetic wallpapers, digital artworks, and commercial visual media. Direct creator payouts." />
+    <meta name="twitter:image" content="https://gallarywala.vercel.app/logo.png" />
+
+    <!-- Schema.org JSON-LD Structured Data for Google Rich Results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://gallarywala.vercel.app/#website",
+          "url": "https://gallarywala.vercel.app/",
+          "name": "GallaryWala",
+          "description": "Visual Discovery & 4K Digital Asset Marketplace",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://gallarywala.vercel.app/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "ImageGallery",
+          "@id": "https://gallarywala.vercel.app/#gallery",
+          "name": "GallaryWala Visual Inspiration & 4K Wallpapers",
+          "url": "https://gallarywala.vercel.app/",
+          "description": "Curated collection of 4K wallpapers, digital art, anime, and photography.",
+          "provider": {
+            "@type": "Organization",
+            "name": "GallaryWala",
+            "logo": "https://gallarywala.vercel.app/logo.png"
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
