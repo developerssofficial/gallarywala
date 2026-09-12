@@ -40,7 +40,7 @@ export const AdminPanel = () => {
     updatePin,
     deletePin,
     cloudinaryConfig,
-    setIsSettingsOpen,
+    setIsCloudinarySettingsOpen,
     setIsSupabaseSettingsOpen,
     isSupabaseConfigured,
     showToast,
@@ -387,7 +387,7 @@ export const AdminPanel = () => {
           <button
             className="icon-btn"
             style={{ width: "auto", padding: "10px 18px", borderRadius: "var(--radius-full)", gap: "8px" }}
-            onClick={() => setIsSettingsOpen(true)}
+            onClick={() => setIsCloudinarySettingsOpen(true)}
           >
             <Cloud size={18} color={isCloudinaryActive ? "#00dfd8" : "currentColor"} />
             <span>

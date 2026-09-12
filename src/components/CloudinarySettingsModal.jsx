@@ -13,8 +13,8 @@ import {
 
 export const CloudinarySettingsModal = () => {
   const {
-    isSettingsOpen,
-    setIsSettingsOpen,
+    isCloudinarySettingsOpen,
+    setIsCloudinarySettingsOpen,
     cloudinaryConfig,
     setCloudinaryConfig,
     showToast
@@ -23,7 +23,7 @@ export const CloudinarySettingsModal = () => {
   const [cloudName, setCloudName] = useState(cloudinaryConfig.cloudName || "");
   const [uploadPreset, setUploadPreset] = useState(cloudinaryConfig.uploadPreset || "");
 
-  if (!isSettingsOpen) return null;
+  if (!isCloudinarySettingsOpen) return null;
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ export const CloudinarySettingsModal = () => {
       uploadPreset: uploadPreset.trim()
     });
     showToast("Cloudinary configuration saved successfully! 🚀", "success");
-    setIsSettingsOpen(false);
+    setIsCloudinarySettingsOpen(false);
   };
 
   const handleClear = () => {
@@ -47,7 +47,7 @@ export const CloudinarySettingsModal = () => {
   return (
     <div
       className="modal-backdrop"
-      onClick={() => setIsSettingsOpen(false)}
+      onClick={() => setIsCloudinarySettingsOpen(false)}
     >
       <div
         className="modal-container"
@@ -56,7 +56,7 @@ export const CloudinarySettingsModal = () => {
       >
         <button
           className="modal-close-btn"
-          onClick={() => setIsSettingsOpen(false)}
+          onClick={() => setIsCloudinarySettingsOpen(false)}
         >
           <X size={20} />
         </button>

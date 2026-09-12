@@ -119,6 +119,7 @@ export const PinProvider = ({ children }) => {
   const [activePin, setActivePin] = useState(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isCloudinarySettingsOpen, setIsCloudinarySettingsOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState("general");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [activeView, setActiveView] = useState("gallery"); // 'gallery' | 'admin' | 'board'
@@ -822,6 +823,8 @@ export const PinProvider = ({ children }) => {
         setIsUploadOpen,
         isSettingsOpen,
         setIsSettingsOpen,
+        isCloudinarySettingsOpen,
+        setIsCloudinarySettingsOpen,
         settingsTab,
         setSettingsTab,
         isProfileOpen,
