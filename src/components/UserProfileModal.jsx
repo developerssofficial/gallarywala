@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { usePins } from "../context/PinContext";
+import { VerifiedBadge } from "./VerifiedBadge";
 import {
   X,
   Plus,
@@ -34,7 +35,8 @@ export const UserProfileModal = () => {
     setIsSettingsOpen,
     setSettingsTab,
     handleSignOut,
-    downloadImage
+    downloadImage,
+    isUserVerified
   } = usePins();
 
   const [activeTab, setActiveTab] = useState("boards"); // 'boards' | 'created' | 'liked' | 'purchased'
@@ -118,8 +120,11 @@ export const UserProfileModal = () => {
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </div>
-          <h2 style={{ fontSize: "1.6rem", fontWeight: 800, marginBottom: "4px" }}>
-            {userFullName}
+          <h2 style={{ fontSize: "1.6rem", fontWeight: 800, marginBottom: "4px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+            <span>{userFullName}</span>
+            {isUserVerified(userFullName) && (
+              <VerifiedBadge size={20} title={`Verified Creator: ${userFullName}`} />
+            )}
           </h2>
           <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", marginBottom: "12px" }}>
             @{userHandle} • {currentUser ? "Member Account" : "Guest Mode"}

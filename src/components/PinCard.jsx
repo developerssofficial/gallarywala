@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { usePins } from "../context/PinContext";
+import { VerifiedBadge } from "./VerifiedBadge";
 import {
   Heart,
   Download,
@@ -36,7 +37,8 @@ export const PinCard = ({ pin }) => {
     downloadImage,
     showToast,
     isPinUnlocked,
-    setCheckoutPin
+    setCheckoutPin,
+    isUserVerified
   } = usePins();
 
   const [isBoardMenuOpen, setIsBoardMenuOpen] = useState(false);
@@ -336,7 +338,12 @@ export const PinCard = ({ pin }) => {
                   className="pin-author-avatar"
                 />
               )}
-              <span>{pin.author?.name || "Anonymous"}</span>
+              <span style={{ display: "inline-flex", alignItems: "center" }}>
+                {pin.author?.name || "Anonymous"}
+                {isUserVerified(pin.author?.name) && (
+                  <VerifiedBadge size={13} title={`Verified Creator: ${pin.author?.name}`} />
+                )}
+              </span>
             </div>
             <div className="pin-likes-count">
               <Heart

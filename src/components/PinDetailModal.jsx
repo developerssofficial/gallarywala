@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { usePins } from "../context/PinContext";
+import { VerifiedBadge } from "./VerifiedBadge";
 import {
   X,
   Heart,
@@ -29,7 +30,8 @@ export const PinDetailModal = () => {
     downloadImage,
     showToast,
     isPinUnlocked,
-    setCheckoutPin
+    setCheckoutPin,
+    isUserVerified
   } = usePins();
 
   const [commentText, setCommentText] = useState("");
@@ -329,8 +331,11 @@ export const PinDetailModal = () => {
               />
             )}
             <div>
-              <div style={{ fontWeight: 700, fontSize: "0.95rem" }}>
-                {activePin.author?.name || "Creator"}
+              <div style={{ fontWeight: 700, fontSize: "0.95rem", display: "flex", alignItems: "center" }}>
+                <span>{activePin.author?.name || "Creator"}</span>
+                {isUserVerified(activePin.author?.name) && (
+                  <VerifiedBadge size={16} title={`Verified Creator: ${activePin.author?.name}`} />
+                )}
               </div>
               <div style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
                 {activePin.author?.username || "@creator"} • {activePin.likes || 0} likes

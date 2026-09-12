@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { usePins } from "../context/PinContext";
+import { VerifiedBadge } from "./VerifiedBadge";
 import {
   Search,
   Plus,
@@ -35,7 +36,8 @@ export const Navbar = () => {
     isSettingsOpen,
     setIsSettingsOpen,
     setSettingsTab,
-    handleSignOut
+    handleSignOut,
+    isUserVerified
   } = usePins();
 
   const searchInputRef = useRef(null);
@@ -313,10 +315,15 @@ export const Navbar = () => {
                           fontSize: "0.95rem",
                           whiteSpace: "nowrap",
                           textOverflow: "ellipsis",
-                          overflow: "hidden"
+                          overflow: "hidden",
+                          display: "flex",
+                          alignItems: "center"
                         }}
                       >
-                        {userDisplayName}
+                        <span>{userDisplayName}</span>
+                        {isUserVerified(userDisplayName) && (
+                          <VerifiedBadge size={14} title={`Verified Creator: ${userDisplayName}`} />
+                        )}
                       </div>
                       <div
                         style={{

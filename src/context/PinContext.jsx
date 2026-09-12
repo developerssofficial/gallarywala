@@ -24,7 +24,8 @@ const STORAGE_KEYS = {
   CLOUDINARY: "gallarywala_cloudinary_config_v4",
   THEME: "gallarywala_theme_v4",
   ADMIN_PIN: "gallarywala_admin_pin_v4",
-  ADMIN_AUTH: "gallarywala_admin_session_v4"
+  ADMIN_AUTH: "gallarywala_admin_session_v4",
+  VERIFIED_USERS: "gallarywala_verified_users_v1"
 };
 
 export const PinProvider = ({ children }) => {
@@ -134,6 +135,72 @@ export const PinProvider = ({ children }) => {
       return [];
     }
   });
+
+  // 10. Verified Creators & Blue Tick Badges
+  const [verifiedUsers, setVerifiedUsers] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.VERIFIED_USERS);
+      return saved
+        ? JSON.parse(saved)
+        : [
+            "GallaryWala Official",
+            "Admin",
+            "NeonArtist",
+            "CyberCreator",
+            "TokyoVisuals"
+          ];
+    } catch {
+      return ["GallaryWala Official", "Admin", "NeonArtist"];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.VERIFIED_USERS, JSON.stringify(verifiedUsers));
+    } catch (e) {
+      console.error("Failed to save verified users", e);
+    }
+  }, [verifiedUsers]);
+
+  const isUserVerified = (userOrAuthor) => {
+    if (!userOrAuthor) return false;
+    const target = String(userOrAuthor).trim().toLowerCase();
+    return verifiedUsers.some((u) => String(u).trim().toLowerCase() === target);
+  };
+
+  const toggleUserVerification = (userOrAuthor) => {
+    if (!userOrAuthor) return;
+    const clean = String(userOrAuthor).trim();
+    const isCurrently = isUserVerified(clean);
+
+    if (isCurrently) {
+      setVerifiedUsers((prev) =>
+        prev.filter((u) => String(u).trim().toLowerCase() !== clean.toLowerCase())
+      );
+      showToast(`Removed Blue Tick from "${clean}"`, "info");
+    } else {
+      setVerifiedUsers((prev) => [...prev, clean]);
+      showToast(`Granted Blue Tick Verified Badge to "${clean}"! 🏅`, "success");
+    }
+  };
+
+  const grantVerifiedBadge = (userOrAuthor) => {
+    if (!userOrAuthor) return;
+    const clean = String(userOrAuthor).trim();
+    if (!isUserVerified(clean)) {
+      setVerifiedUsers((prev) => [...prev, clean]);
+      showToast(`Granted Blue Tick to "${clean}"! 🏅`, "success");
+    }
+  };
+
+  const revokeVerifiedBadge = (userOrAuthor) => {
+    if (!userOrAuthor) return;
+    const clean = String(userOrAuthor).trim();
+    setVerifiedUsers((prev) =>
+      prev.filter((u) => String(u).trim().toLowerCase() !== clean.toLowerCase())
+    );
+    showToast(`Revoked Blue Tick from "${clean}"`, "info");
+  };
 
   const [salesHistory, setSalesHistory] = useState(() => {
     try {
@@ -565,7 +632,7 @@ export const PinProvider = ({ children }) => {
     const newComment = {
       id: "c-" + Date.now(),
       user: currentUser?.user_metadata?.full_name || "Explorer",
-      avatar: currentUser?.user_metadata?.avatar_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80",
+      avatar: currentUser?.user_metadata?.avatar_url || "https://api.dicebear.com/7.x/bottts/svg?seed=Explorer",
       text: text.trim(),
       time: "Just now"
     };
@@ -724,6 +791,12 @@ export const PinProvider = ({ children }) => {
         isPinUnlocked,
         handleCompletePurchase,
         downloadImage,
+        verifiedUsers,
+        setVerifiedUsers,
+        isUserVerified,
+        toggleUserVerification,
+        grantVerifiedBadge,
+        revokeVerifiedBadge,
         filteredPins
       }}
     >

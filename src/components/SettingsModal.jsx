@@ -33,10 +33,10 @@ import {
 const PRESET_AVATARS = [
   { name: "Cyber Bot", url: "https://api.dicebear.com/7.x/bottts/svg?seed=CyberBot" },
   { name: "Pixel Hero", url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=PixelHero" },
-  { name: "Neon Vibes", url: "https://api.dicebear.com/7.x/bottts/svg?seed=NeonVibes" },
-  { name: "Creator 3D", url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" },
-  { name: "Minimalist", url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" },
-  { name: "Art Director", url: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80" }
+  { name: "Neon Matrix", url: "https://api.dicebear.com/7.x/bottts/svg?seed=NeonMatrix" },
+  { name: "Abstract 3D", url: "https://api.dicebear.com/7.x/shapes/svg?seed=Abstract3D" },
+  { name: "Geometric Orb", url: "https://api.dicebear.com/7.x/identicon/svg?seed=GeometricOrb" },
+  { name: "Quantum Core", url: "https://api.dicebear.com/7.x/rings/svg?seed=QuantumCore" }
 ];
 
 export const SettingsModal = () => {
