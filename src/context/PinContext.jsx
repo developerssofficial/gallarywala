@@ -14,6 +14,7 @@ import {
   insertImageToSupabase,
   deleteImageFromSupabase
 } from "../services/supabase";
+import { calculateRevenueSplit } from "../services/paddle";
 
 const PinContext = createContext();
 
@@ -186,6 +187,7 @@ export const PinProvider = ({ children }) => {
 
   // 9. Commercial Marketplace & Purchases State
   const [checkoutPin, setCheckoutPin] = useState(null);
+  const [activeInvoice, setActiveInvoice] = useState(null); // Active invoice displayed in modal
   const [purchasedPinIds, setPurchasedPinIds] = useState(() => {
     try {
       const saved = localStorage.getItem("gallarywala_purchased_pins_v1");
@@ -273,9 +275,9 @@ export const PinProvider = ({ children }) => {
   const [creatorEarnings, setCreatorEarnings] = useState(() => {
     try {
       const saved = localStorage.getItem("gallarywala_creator_earnings_v1");
-      return saved ? JSON.parse(saved) : { balance: 0.0, totalSales: 0, pendingPayout: 0.0 };
+      return saved ? JSON.parse(saved) : { balance: 0.0, totalSales: 0, pendingPayout: 0.0, totalPlatformProfit: 0.0 };
     } catch {
-      return { balance: 0.0, totalSales: 0, pendingPayout: 0.0 };
+      return { balance: 0.0, totalSales: 0, pendingPayout: 0.0, totalPlatformProfit: 0.0 };
     }
   });
 
@@ -313,16 +315,35 @@ export const PinProvider = ({ children }) => {
     return false;
   };
 
-  const handleCompletePurchase = (pinId, orderData) => {
+  const handleCompletePurchase = (pinId, rawOrderData) => {
+    const gross = Number(rawOrderData.amount || rawOrderData.grossAmount || 0);
+    const split = calculateRevenueSplit(gross);
+    
+    const invoiceNumber = rawOrderData.invoiceNumber || `INV-GW-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const completeOrder = {
+      ...rawOrderData,
+      invoiceNumber,
+      grossAmount: split.gross,
+      paddleFee: split.paddleFee,
+      netAvailable: split.netAvailable,
+      platformCut: split.platformCut,
+      creatorCut: split.creatorCut,
+      timestamp: rawOrderData.timestamp || new Date().toISOString()
+    };
+
     setPurchasedPinIds((prev) => [...new Set([...prev, pinId])]);
-    setSalesHistory((prev) => [orderData, ...prev]);
-    const creatorCut = Number((orderData.amount * 0.8).toFixed(2));
+    setSalesHistory((prev) => [completeOrder, ...prev]);
+
     setCreatorEarnings((prev) => ({
-      balance: Number((prev.balance + creatorCut).toFixed(2)),
+      balance: Number((prev.balance + split.creatorCut).toFixed(2)),
       totalSales: prev.totalSales + 1,
-      pendingPayout: Number((prev.pendingPayout + creatorCut).toFixed(2))
+      pendingPayout: Number((prev.pendingPayout + split.creatorCut).toFixed(2)),
+      totalPlatformProfit: Number(((prev.totalPlatformProfit || 0) + split.platformCut).toFixed(2))
     }));
-    showToast(`🎉 Commercial License Unlocked! Order Ref: ${orderData.orderId}`, "success");
+
+    showToast(`🎉 Commercial License Unlocked! Invoice: ${invoiceNumber}`, "success");
+    return completeOrder;
   };
 
   // Supabase Auth State Listener & Images Fetcher
@@ -850,6 +871,9 @@ export const PinProvider = ({ children }) => {
         addComment,
         checkoutPin,
         setCheckoutPin,
+        activeInvoice,
+        setActiveInvoice,
+        calculateRevenueSplit,
         purchasedPinIds,
         salesHistory,
         creatorEarnings,

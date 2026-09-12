@@ -1502,3 +1502,52 @@ a {
   }
 }
 
+/* ================= PRINT STYLES FOR AUTO-INVOICES ================= */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Hide everything except the invoice modal */
+  .app-container > *:not(.invoice-modal-backdrop),
+  .navbar,
+  .category-bar,
+  .mobile-bottom-nav,
+  .footer,
+  .ambient-glow,
+  .no-print {
+    display: none !important;
+  }
+
+  .invoice-modal-backdrop {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .invoice-modal-container {
+    max-width: 100% !important;
+    max-height: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    animation: none !important;
+  }
+
+  .printable-invoice {
+    color: #000000 !important;
+    background: #ffffff !important;
+  }
+
+  .printable-invoice * {
+    color: #000000 !important;
+    border-color: #e2e8f0 !important;
+    background: transparent !important;
+  }
+}
+
+

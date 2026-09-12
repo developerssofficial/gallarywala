@@ -13,6 +13,7 @@ import { CloudinarySettingsModal } from "./components/CloudinarySettingsModal";
 import { SettingsModal } from "./components/SettingsModal";
 import { UserProfileModal } from "./components/UserProfileModal";
 import { PurchaseCheckoutModal } from "./components/PurchaseCheckoutModal";
+import { InvoiceModal } from "./components/InvoiceModal";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { BoardView } from "./components/BoardView";
 import { ToastContainer } from "./components/Toast";
@@ -49,6 +50,7 @@ const MainContent = () => {
       <UploadModal />
       <UserProfileModal />
       <PurchaseCheckoutModal />
+      <InvoiceModal />
       <ToastContainer />
 
       {/* Backend Infrastructure Modals (Owner/Admin Only) */}

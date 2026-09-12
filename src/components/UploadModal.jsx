@@ -19,6 +19,7 @@ import {
   Check
 } from "lucide-react";
 import { CATEGORIES } from "../data/mockPins";
+import { calculateRevenueSplit } from "../services/paddle";
 
 export const UploadModal = () => {
   const {
@@ -581,7 +582,7 @@ export const UploadModal = () => {
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
                       <label className="form-label" style={{ marginBottom: 0, fontSize: "0.8rem" }}>Set Price ($ USD)</label>
                       <div style={{ display: "flex", gap: "6px" }}>
-                        {["2.99", "4.99", "9.99", "19.99"].map((preset) => (
+                        {["2.99", "4.99", "9.99", "19.99", "49.99"].map((preset) => (
                           <button
                             key={preset}
                             type="button"
@@ -610,8 +611,9 @@ export const UploadModal = () => {
                         type="number"
                         step="0.01"
                         min="0.99"
-                        max="999.00"
+                        max="9999.00"
                         className="form-input"
+                        placeholder="Enter your custom price (e.g. 5.00)"
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
                         style={{ paddingLeft: "28px" }}
@@ -635,26 +637,41 @@ export const UploadModal = () => {
                     </select>
                   </div>
 
-                  {/* Revenue Breakdown */}
-                  <div
-                    style={{
-                      background: "rgba(0,0,0,0.25)",
-                      padding: "10px 12px",
-                      borderRadius: "var(--radius-sm)",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      fontSize: "0.8rem"
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-muted)" }}>
-                      <BadgePercent size={15} color="#00dfd8" />
-                      <span>Creator Split (80%):</span>
-                    </div>
-                    <div style={{ fontWeight: 800, color: "#10b981", fontSize: "0.9rem" }}>
-                      +${(Number(price || 0) * 0.8).toFixed(2)} USD / sale
-                    </div>
-                  </div>
+                  {/* Real-time Transparent Revenue Split Breakdown */}
+                  {(() => {
+                    const split = calculateRevenueSplit(price);
+                    return (
+                      <div
+                        style={{
+                          background: "var(--bg-card)",
+                          border: "1px solid var(--border-light)",
+                          borderRadius: "var(--radius-sm)",
+                          padding: "12px",
+                          fontSize: "0.8rem"
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px", color: "var(--text-muted)" }}>
+                          <span>Customer Pays (Gross):</span>
+                          <span style={{ fontWeight: 600, color: "var(--text-main)" }}>${split.gross.toFixed(2)} USD</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px", color: "var(--text-muted)" }}>
+                          <span>Paddle Processing Fee:</span>
+                          <span style={{ color: "#ef4444" }}>-${split.paddleFee.toFixed(2)} USD</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", color: "var(--text-muted)" }}>
+                          <span>GallaryWala Platform (20% Net):</span>
+                          <span style={{ color: "#00dfd8" }}>-${split.platformCut.toFixed(2)} USD</span>
+                        </div>
+                        <div style={{ height: "1px", background: "var(--border-light)", margin: "6px 0" }} />
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span style={{ fontWeight: 700, color: "var(--text-main)" }}>Your Net Profit (80%):</span>
+                          <span style={{ fontWeight: 900, color: "#10b981", fontSize: "0.95rem" }}>
+                            +${split.creatorCut.toFixed(2)} USD / sale
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               )}
             </div>

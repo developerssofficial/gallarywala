@@ -12,9 +12,12 @@ import {
   FileText,
   BadgeCheck,
   ArrowRight,
-  ExternalLink
+  ExternalLink,
+  Printer,
+  BadgePercent
 } from "lucide-react";
 import confetti from "canvas-confetti";
+import { calculateRevenueSplit } from "../services/paddle";
 
 export const PurchaseCheckoutModal = () => {
   const {
@@ -23,6 +26,7 @@ export const PurchaseCheckoutModal = () => {
     currentUser,
     handleCompletePurchase,
     downloadImage,
+    setActiveInvoice,
     showToast
   } = usePins();
 
@@ -35,6 +39,7 @@ export const PurchaseCheckoutModal = () => {
 
   const basePrice = Number(checkoutPin.price || 4.99);
   const finalPrice = licenseType === "commercial" ? basePrice : Math.max(1.99, Number((basePrice * 0.6).toFixed(2)));
+  const split = calculateRevenueSplit(finalPrice);
 
   const handlePay = async (e) => {
     e.preventDefault();
@@ -47,22 +52,31 @@ export const PurchaseCheckoutModal = () => {
 
     // Simulate Paddle secure transaction
     setTimeout(() => {
+      const invoiceNumber = `INV-GW-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
       const orderData = {
         orderId: "GW-" + Math.random().toString(36).substring(2, 9).toUpperCase(),
+        invoiceNumber,
         pinId: checkoutPin.id,
         pinTitle: checkoutPin.title || "Commercial Asset",
         amount: finalPrice,
+        grossAmount: split.gross,
+        paddleFee: split.paddleFee,
+        netAvailable: split.netAvailable,
+        platformCut: split.platformCut,
+        creatorCut: split.creatorCut,
         currency: "USD",
         license: licenseType === "commercial" ? "Commercial & Extended Use" : "Personal Use Only",
+        buyerName: currentUser?.user_metadata?.full_name || emailInput.split("@")[0],
         buyerEmail: emailInput.trim(),
         creator: checkoutPin.author?.name || "Creator",
         creatorHandle: checkoutPin.author?.username || "@creator",
         date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-        downloadUrl: checkoutPin.imageUrl
+        downloadUrl: checkoutPin.imageUrl,
+        timestamp: new Date().toISOString()
       };
 
-      handleCompletePurchase(checkoutPin.id, orderData);
-      setSuccessOrder(orderData);
+      const completed = handleCompletePurchase(checkoutPin.id, orderData);
+      setSuccessOrder(completed || orderData);
       setLoading(false);
 
       // Trigger Celebration Confetti
@@ -81,6 +95,12 @@ export const PurchaseCheckoutModal = () => {
   const handleClose = () => {
     setCheckoutPin(null);
     setSuccessOrder(null);
+  };
+
+  const handleOpenInvoice = () => {
+    if (successOrder) {
+      setActiveInvoice(successOrder);
+    }
   };
 
   return (
@@ -124,7 +144,7 @@ export const PurchaseCheckoutModal = () => {
                   Unlock Original 4K Asset
                 </h3>
                 <p style={{ color: "var(--text-muted)", fontSize: "0.82rem", margin: 0 }}>
-                  Direct creator payout powered by Paddle Payment Gateway
+                  Powered by Paddle Payment Gateway & Auto-Invoicing
                 </p>
               </div>
             </div>
@@ -245,7 +265,7 @@ export const PurchaseCheckoutModal = () => {
             {/* Email / Delivery Receipt */}
             <form onSubmit={handlePay}>
               <div className="form-group" style={{ marginBottom: "20px" }}>
-                <label className="form-label">Email for Instant Receipt & License</label>
+                <label className="form-label">Email for Instant Receipt & Auto-Invoice</label>
                 <input
                   type="email"
                   className="form-input"
@@ -256,7 +276,7 @@ export const PurchaseCheckoutModal = () => {
                 />
               </div>
 
-              {/* Price Summary */}
+              {/* Price & Fee Summary */}
               <div
                 style={{
                   background: "var(--bg-surface)",
@@ -266,17 +286,21 @@ export const PurchaseCheckoutModal = () => {
                   marginBottom: "20px"
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.88rem", marginBottom: "6px" }}>
-                  <span style={{ color: "var(--text-muted)" }}>Item Total:</span>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", marginBottom: "6px" }}>
+                  <span style={{ color: "var(--text-muted)" }}>Item Gross Price:</span>
                   <span>${finalPrice.toFixed(2)} USD</span>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.88rem", marginBottom: "8px" }}>
-                  <span style={{ color: "var(--text-muted)" }}>Creator Share (80%):</span>
-                  <span style={{ color: "#10b981", fontWeight: 600 }}>${(finalPrice * 0.8).toFixed(2)} USD</span>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.78rem", color: "var(--text-muted)", marginBottom: "6px" }}>
+                  <span>Paddle Processing Fee:</span>
+                  <span>-${split.paddleFee.toFixed(2)} USD</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.78rem", marginBottom: "8px" }}>
+                  <span style={{ color: "var(--text-muted)" }}>Creator Royalty (80% net):</span>
+                  <span style={{ color: "#10b981", fontWeight: 700 }}>+${split.creatorCut.toFixed(2)} USD</span>
                 </div>
                 <div style={{ height: "1px", background: "var(--border-light)", margin: "8px 0" }} />
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.1rem", fontWeight: 800 }}>
-                  <span>Total Amount:</span>
+                  <span>Total Due:</span>
                   <span style={{ color: "var(--color-primary)" }}>${finalPrice.toFixed(2)} USD</span>
                 </div>
               </div>
@@ -310,7 +334,7 @@ export const PurchaseCheckoutModal = () => {
                 }}
               >
                 <ShieldCheck size={14} style={{ color: "#10b981" }} />
-                <span>256-bit encrypted checkout • Apple Pay, Google Pay & Cards supported</span>
+                <span>256-bit encrypted checkout • Paddle Merchant of Record • Auto-Tax Invoice</span>
               </div>
             </form>
           </div>
@@ -353,8 +377,8 @@ export const PurchaseCheckoutModal = () => {
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>Order Reference:</span>
-                <span style={{ fontSize: "0.8rem", fontWeight: 700, fontFamily: "monospace" }}>{successOrder.orderId}</span>
+                <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>Invoice / Receipt #:</span>
+                <span style={{ fontSize: "0.8rem", fontWeight: 700, fontFamily: "monospace", color: "var(--color-primary)" }}>{successOrder.invoiceNumber || successOrder.orderId}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>License Granted:</span>
@@ -370,27 +394,48 @@ export const PurchaseCheckoutModal = () => {
               </div>
             </div>
 
-            {/* Download Original File Button */}
-            <button
-              className="btn-primary"
-              style={{
-                width: "100%",
-                justifyContent: "center",
-                padding: "14px",
-                fontSize: "1rem",
-                gap: "10px",
-                background: "linear-gradient(135deg, #10b981, #059669)",
-                borderColor: "#10b981",
-                boxShadow: "0 4px 20px rgba(16, 185, 129, 0.35)",
-                marginBottom: "12px"
-              }}
-              onClick={() => {
-                downloadImage(checkoutPin.imageUrl, `${checkoutPin.title || "artwork"}-unwatermarked-4k.png`);
-              }}
-            >
-              <Download size={20} />
-              <span>Download Original Unwatermarked 4K</span>
-            </button>
+            {/* Action Buttons: Download + View Official Invoice */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "12px" }}>
+              <button
+                className="btn-primary"
+                style={{
+                  width: "100%",
+                  justifyContent: "center",
+                  padding: "14px",
+                  fontSize: "1rem",
+                  gap: "10px",
+                  background: "linear-gradient(135deg, #10b981, #059669)",
+                  borderColor: "#10b981",
+                  boxShadow: "0 4px 20px rgba(16, 185, 129, 0.35)"
+                }}
+                onClick={() => {
+                  downloadImage(checkoutPin.imageUrl, `${checkoutPin.title || "artwork"}-unwatermarked-4k.png`);
+                }}
+              >
+                <Download size={20} />
+                <span>Download Original Unwatermarked 4K</span>
+              </button>
+
+              <button
+                type="button"
+                className="nav-tab"
+                style={{
+                  width: "100%",
+                  justifyContent: "center",
+                  padding: "12px",
+                  fontSize: "0.95rem",
+                  gap: "8px",
+                  border: "1px solid var(--border-light)",
+                  background: "var(--bg-surface)",
+                  color: "var(--text-main)",
+                  fontWeight: 700
+                }}
+                onClick={handleOpenInvoice}
+              >
+                <Printer size={18} />
+                <span>View & Print Official Auto-Invoice</span>
+              </button>
+            </div>
 
             <button
               className="nav-tab"
@@ -405,3 +450,4 @@ export const PurchaseCheckoutModal = () => {
     </div>
   );
 };
+

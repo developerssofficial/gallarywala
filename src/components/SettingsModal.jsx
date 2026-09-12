@@ -27,8 +27,11 @@ import {
   FileSpreadsheet,
   CheckCircle2,
   ExternalLink,
-  ArrowDownToLine
+  ArrowDownToLine,
+  FileText,
+  Printer
 } from "lucide-react";
+import { calculateRevenueSplit } from "../services/paddle";
 
 const PRESET_AVATARS = [
   { name: "Cyber Bot", url: "https://api.dicebear.com/7.x/bottts/svg?seed=CyberBot" },
@@ -55,7 +58,8 @@ export const SettingsModal = () => {
     showToast,
     salesHistory,
     creatorEarnings,
-    setCreatorEarnings
+    setCreatorEarnings,
+    setActiveInvoice
   } = usePins();
 
   // Active Tab state
@@ -1312,7 +1316,7 @@ export const SettingsModal = () => {
                 <div>
                   <h4 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
                     <FileSpreadsheet size={16} />
-                    <span>Recent Sales & Licensing Orders ({salesHistory.length})</span>
+                    <span>Recent Sales & Auto-Invoices ({salesHistory.length})</span>
                   </h4>
                   {salesHistory.length === 0 ? (
                     <div
@@ -1329,39 +1333,74 @@ export const SettingsModal = () => {
                       No commercial sales yet. Upload high-res images and enable commercial pricing to start making sales!
                     </div>
                   ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                      {salesHistory.map((sale, i) => (
-                        <div
-                          key={sale.orderId || i}
-                          style={{
-                            background: "var(--bg-surface)",
-                            border: "1px solid var(--border-light)",
-                            borderRadius: "var(--radius-sm)",
-                            padding: "12px 14px",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            fontSize: "0.85rem"
-                          }}
-                        >
-                          <div>
-                            <div style={{ fontWeight: 700 }}>
-                              {sale.pinTitle || "Commercial Asset"}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                      {salesHistory.map((sale, i) => {
+                        const gross = Number(sale.amount || sale.grossAmount || 0);
+                        const split = calculateRevenueSplit(gross);
+                        const creatorCut = Number(sale.creatorCut || split.creatorCut);
+                        const invNum = sale.invoiceNumber || `INV-GW-${sale.orderId}`;
+
+                        return (
+                          <div
+                            key={sale.orderId || i}
+                            style={{
+                              background: "var(--bg-surface)",
+                              border: "1px solid var(--border-light)",
+                              borderRadius: "var(--radius-sm)",
+                              padding: "14px",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              fontSize: "0.85rem",
+                              gap: "12px",
+                              flexWrap: "wrap"
+                            }}
+                          >
+                            <div style={{ flex: 1, minWidth: "200px" }}>
+                              <div style={{ fontWeight: 700, fontSize: "0.92rem", marginBottom: "2px" }}>
+                                {sale.pinTitle || "Commercial Asset"}
+                              </div>
+                              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", lineHeight: "1.4" }}>
+                                Invoice: <strong style={{ color: "var(--color-primary)", fontFamily: "monospace" }}>{invNum}</strong> • {sale.buyerEmail} • {sale.date}
+                              </div>
+                              <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "2px" }}>
+                                Paddle fee: ${Number(sale.paddleFee || split.paddleFee).toFixed(2)} | Net Platform: ${Number(sale.platformCut || split.platformCut).toFixed(2)} (20%)
+                              </div>
                             </div>
-                            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                              Order: <strong style={{ color: "var(--color-primary)" }}>{sale.orderId}</strong> • {sale.buyerEmail} • {sale.date}
+
+                            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                              <div style={{ textAlign: "right" }}>
+                                <div style={{ fontWeight: 900, color: "#10b981", fontSize: "1rem" }}>
+                                  +${creatorCut.toFixed(2)} USD
+                                </div>
+                                <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>
+                                  ${gross.toFixed(2)} total ({sale.license || "Commercial"})
+                                </div>
+                              </div>
+
+                              <button
+                                type="button"
+                                className="nav-tab"
+                                onClick={() => setActiveInvoice(sale)}
+                                style={{
+                                  fontSize: "0.78rem",
+                                  padding: "6px 10px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "4px",
+                                  border: "1px solid var(--border-light)",
+                                  background: "var(--bg-card)",
+                                  whiteSpace: "nowrap"
+                                }}
+                                title="View and print official tax invoice"
+                              >
+                                <Printer size={13} />
+                                <span>Invoice</span>
+                              </button>
                             </div>
                           </div>
-                          <div style={{ textAlign: "right" }}>
-                            <div style={{ fontWeight: 800, color: "#10b981" }}>
-                              +${(Number(sale.amount || 0) * 0.8).toFixed(2)} USD
-                            </div>
-                            <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>
-                              ${sale.amount} total ({sale.license})
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>
