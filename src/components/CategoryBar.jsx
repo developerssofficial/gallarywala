@@ -1,7 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
-  ChevronLeft,
-  ChevronRight,
   Sparkles,
   Search,
   X,
@@ -16,8 +14,6 @@ export const CategoryBar = () => {
   const { selectedCategory, setSelectedCategory, activeView } = usePins();
   const scrollRef = useRef(null);
   const dropdownRef = useRef(null);
-  const [showLeftArrow, setShowLeftArrow] = useState(false);
-  const [showRightArrow, setShowRightArrow] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -30,25 +26,6 @@ export const CategoryBar = () => {
     if (!q) return CATEGORIES;
     return CATEGORIES.filter((cat) => cat.toLowerCase().includes(q));
   }, [searchTerm]);
-
-  const checkScroll = () => {
-    if (!scrollRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-    setShowLeftArrow(scrollLeft > 10);
-    setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
-  };
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    checkScroll();
-    el.addEventListener("scroll", checkScroll, { passive: true });
-    window.addEventListener("resize", checkScroll);
-    return () => {
-      el.removeEventListener("scroll", checkScroll);
-      window.removeEventListener("resize", checkScroll);
-    };
-  }, []);
 
   // Close dropdown on outside click or escape
   useEffect(() => {
@@ -70,12 +47,6 @@ export const CategoryBar = () => {
     };
   }, [isMenuOpen]);
 
-  const handleScroll = (direction) => {
-    if (!scrollRef.current) return;
-    const amount = direction === "left" ? -240 : 240;
-    scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
-  };
-
   const handleCategorySelect = (cat, e) => {
     setSelectedCategory(cat);
     setIsMenuOpen(false);
@@ -93,44 +64,22 @@ export const CategoryBar = () => {
 
   return (
     <div className="category-bar-outer" ref={dropdownRef}>
-      <div className="category-scroll-area">
-        {/* Left Scroll Arrow */}
-        <button
-          type="button"
-          className={`category-nav-btn category-nav-left ${showLeftArrow ? "visible" : ""}`}
-          onClick={() => handleScroll("left")}
-          aria-label="Scroll left"
-        >
-          <ChevronLeft size={16} />
-        </button>
-
-        {/* Horizontal Scroll Track */}
-        <div ref={scrollRef} className="category-bar-wrapper">
-          {PRIMARY_CATEGORIES.map((cat) => {
-            const isActive = selectedCategory === cat;
-            return (
-              <button
-                key={cat}
-                type="button"
-                className={`category-pill ${isActive ? "active" : ""}`}
-                onClick={(e) => handleCategorySelect(cat, e)}
-              >
-                {cat === "All" && <Sparkles size={13} style={{ marginRight: 6 }} />}
-                <span>{cat}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Right Scroll Arrow */}
-        <button
-          type="button"
-          className={`category-nav-btn category-nav-right ${showRightArrow ? "visible" : ""}`}
-          onClick={() => handleScroll("right")}
-          aria-label="Scroll right"
-        >
-          <ChevronRight size={16} />
-        </button>
+      {/* Horizontal Scroll Track */}
+      <div ref={scrollRef} className="category-bar-wrapper">
+        {PRIMARY_CATEGORIES.map((cat) => {
+          const isActive = selectedCategory === cat;
+          return (
+            <button
+              key={cat}
+              type="button"
+              className={`category-pill ${isActive ? "active" : ""}`}
+              onClick={(e) => handleCategorySelect(cat, e)}
+            >
+              {cat === "All" && <Sparkles size={13} style={{ marginRight: 6 }} />}
+              <span>{cat}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Dedicated Always-Visible Pinned "Show More" Trigger */}
