@@ -92,51 +92,60 @@ export const CategoryBar = () => {
   if (activeView !== "gallery") return null;
 
   return (
-    <div className="category-bar-outer" style={{ position: "relative" }} ref={dropdownRef}>
-      {/* Left Scroll Arrow */}
-      <button
-        type="button"
-        className={`category-nav-btn category-nav-left ${showLeftArrow ? "visible" : ""}`}
-        onClick={() => handleScroll("left")}
-        aria-label="Scroll left"
-      >
-        <ChevronLeft size={16} />
-      </button>
-
-      {/* Horizontal Scroll Track */}
-      <div ref={scrollRef} className="category-bar-wrapper">
-        {PRIMARY_CATEGORIES.map((cat) => {
-          const isActive = selectedCategory === cat;
-          return (
-            <button
-              key={cat}
-              type="button"
-              className={`category-pill ${isActive ? "active" : ""}`}
-              onClick={(e) => handleCategorySelect(cat, e)}
-            >
-              {cat === "All" && <Sparkles size={13} style={{ marginRight: 6 }} />}
-              <span>{cat}</span>
-            </button>
-          );
-        })}
-
-        {/* Show More Trigger Button */}
+    <div className="category-bar-outer" ref={dropdownRef}>
+      <div className="category-scroll-area">
+        {/* Left Scroll Arrow */}
         <button
           type="button"
-          className={`category-pill ${isMenuOpen || (!PRIMARY_CATEGORIES.includes(selectedCategory) && selectedCategory !== "All") ? "active" : ""}`}
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px",
-            background: isMenuOpen ? "var(--brand-gradient)" : "var(--bg-surface)",
-            border: isMenuOpen ? "1px solid var(--color-primary)" : "1px solid var(--border-light)",
-            fontWeight: 700,
-            whiteSpace: "nowrap"
-          }}
-          title="Browse all 32+ topics"
+          className={`category-nav-btn category-nav-left ${showLeftArrow ? "visible" : ""}`}
+          onClick={() => handleScroll("left")}
+          aria-label="Scroll left"
         >
-          <LayoutGrid size={13} />
+          <ChevronLeft size={16} />
+        </button>
+
+        {/* Horizontal Scroll Track */}
+        <div ref={scrollRef} className="category-bar-wrapper">
+          {PRIMARY_CATEGORIES.map((cat) => {
+            const isActive = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                className={`category-pill ${isActive ? "active" : ""}`}
+                onClick={(e) => handleCategorySelect(cat, e)}
+              >
+                {cat === "All" && <Sparkles size={13} style={{ marginRight: 6 }} />}
+                <span>{cat}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Right Scroll Arrow */}
+        <button
+          type="button"
+          className={`category-nav-btn category-nav-right ${showRightArrow ? "visible" : ""}`}
+          onClick={() => handleScroll("right")}
+          aria-label="Scroll right"
+        >
+          <ChevronRight size={16} />
+        </button>
+      </div>
+
+      {/* Dedicated Always-Visible Pinned "Show More" Trigger */}
+      <div className="category-show-more-wrapper">
+        <button
+          type="button"
+          className={`category-pill category-show-more-btn ${
+            isMenuOpen || (!PRIMARY_CATEGORIES.includes(selectedCategory) && selectedCategory !== "All")
+              ? "active"
+              : ""
+          }`}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          title="Explore all 32+ categories and search"
+        >
+          <LayoutGrid size={14} />
           <span>
             {!PRIMARY_CATEGORIES.includes(selectedCategory) && selectedCategory !== "All"
               ? selectedCategory
@@ -151,16 +160,6 @@ export const CategoryBar = () => {
           />
         </button>
       </div>
-
-      {/* Right Scroll Arrow */}
-      <button
-        type="button"
-        className={`category-nav-btn category-nav-right ${showRightArrow ? "visible" : ""}`}
-        onClick={() => handleScroll("right")}
-        aria-label="Scroll right"
-      >
-        <ChevronRight size={16} />
-      </button>
 
       {/* ================= SHOW MORE DROPDOWN MODAL / GRID ================= */}
       {isMenuOpen && (
