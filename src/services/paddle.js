@@ -4,20 +4,33 @@
  */
 
 const PADDLE_CLIENT_TOKEN_KEY = "gallarywala_paddle_client_token";
-const DEFAULT_CLIENT_TOKEN = "live_6c026b96e811c759084fb59b19e"; // Default or sandbox token
+const PADDLE_VENDOR_ID_KEY = "gallarywala_paddle_vendor_id";
+
+// Verified Paddle Account Details (Veylorae / Sanjib Sarker)
+export const PADDLE_ACCOUNT_INFO = {
+  sellerId: "378605",
+  company: "Veylorae",
+  owner: "Sanjib Sarker",
+  email: "sanjibsarker9250@gmail.com",
+  website: "https://www.veylorae.shop/"
+};
+
+const DEFAULT_CLIENT_TOKEN = "live_6c026b96e811c759084fb59b19e";
 
 export const getPaddleConfig = () => {
   try {
     const token = localStorage.getItem(PADDLE_CLIENT_TOKEN_KEY) || DEFAULT_CLIENT_TOKEN;
-    return { clientToken: token };
+    const vendorId = localStorage.getItem(PADDLE_VENDOR_ID_KEY) || PADDLE_ACCOUNT_INFO.sellerId;
+    return { clientToken: token, vendorId, accountInfo: PADDLE_ACCOUNT_INFO };
   } catch {
-    return { clientToken: DEFAULT_CLIENT_TOKEN };
+    return { clientToken: DEFAULT_CLIENT_TOKEN, vendorId: PADDLE_ACCOUNT_INFO.sellerId, accountInfo: PADDLE_ACCOUNT_INFO };
   }
 };
 
-export const savePaddleConfig = (clientToken) => {
+export const savePaddleConfig = (clientToken, vendorId = "378605") => {
   try {
-    localStorage.setItem(PADDLE_CLIENT_TOKEN_KEY, clientToken.trim());
+    localStorage.setItem(PADDLE_CLIENT_TOKEN_KEY, (clientToken || "").trim());
+    if (vendorId) localStorage.setItem(PADDLE_VENDOR_ID_KEY, String(vendorId).trim());
   } catch (e) {
     console.error("Failed to save Paddle config", e);
   }
