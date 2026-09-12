@@ -11,7 +11,8 @@ import {
   Sparkles,
   Lock,
   Unlock,
-  DollarSign
+  DollarSign,
+  Flag
 } from "lucide-react";
 
 const getSafeHostname = (urlStr) => {
@@ -38,7 +39,8 @@ export const PinCard = ({ pin }) => {
     showToast,
     isPinUnlocked,
     setCheckoutPin,
-    isUserVerified
+    isUserVerified,
+    setReportingPin
   } = usePins();
 
   const [isBoardMenuOpen, setIsBoardMenuOpen] = useState(false);
@@ -302,6 +304,20 @@ export const PinCard = ({ pin }) => {
                   title="Copy link"
                 >
                   <Share2 size={16} />
+                </button>
+
+                <button
+                  className="overlay-action-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setReportingPin(pin);
+                  }}
+                  title="Report / Copyright Claim"
+                  style={{ color: "var(--text-muted)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
+                >
+                  <Flag size={15} />
                 </button>
               </div>
             </div>

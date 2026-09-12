@@ -14,6 +14,7 @@ import { SettingsModal } from "./components/SettingsModal";
 import { UserProfileModal } from "./components/UserProfileModal";
 import { PurchaseCheckoutModal } from "./components/PurchaseCheckoutModal";
 import { InvoiceModal } from "./components/InvoiceModal";
+import { ReportModal } from "./components/ReportModal";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { BoardView } from "./components/BoardView";
 import { ToastContainer } from "./components/Toast";
@@ -51,6 +52,7 @@ const MainContent = () => {
       <UserProfileModal />
       <PurchaseCheckoutModal />
       <InvoiceModal />
+      <ReportModal />
       <ToastContainer />
 
       {/* Backend Infrastructure Modals (Owner/Admin Only) */}

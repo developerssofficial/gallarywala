@@ -15,7 +15,9 @@ import {
   Unlock,
   BadgeCheck,
   DollarSign,
-  ShieldCheck
+  ShieldCheck,
+  ShieldAlert,
+  Flag
 } from "lucide-react";
 
 export const PinDetailModal = () => {
@@ -31,7 +33,8 @@ export const PinDetailModal = () => {
     showToast,
     isPinUnlocked,
     setCheckoutPin,
-    isUserVerified
+    isUserVerified,
+    setReportingPin
   } = usePins();
 
   const [commentText, setCommentText] = useState("");
@@ -220,6 +223,16 @@ export const PinDetailModal = () => {
                 title="Share link"
               >
                 <Share2 size={20} />
+              </button>
+              <button
+                className="icon-btn"
+                onClick={() => setReportingPin(activePin)}
+                title="Report / Copyright Claim (DMCA)"
+                style={{ color: "var(--text-muted)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
+              >
+                <Flag size={18} />
               </button>
               {activePin.link && (
                 <a

@@ -188,6 +188,7 @@ export const PinProvider = ({ children }) => {
   // 9. Commercial Marketplace & Purchases State
   const [checkoutPin, setCheckoutPin] = useState(null);
   const [activeInvoice, setActiveInvoice] = useState(null); // Active invoice displayed in modal
+  const [reportingPin, setReportingPin] = useState(null); // Active pin being reported / DMCA claim
   const [purchasedPinIds, setPurchasedPinIds] = useState(() => {
     try {
       const saved = localStorage.getItem("gallarywala_purchased_pins_v1");
@@ -871,6 +872,8 @@ export const PinProvider = ({ children }) => {
         addComment,
         checkoutPin,
         setCheckoutPin,
+        reportingPin,
+        setReportingPin,
         activeInvoice,
         setActiveInvoice,
         calculateRevenueSplit,
