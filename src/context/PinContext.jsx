@@ -128,7 +128,34 @@ export const PinProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
   const [adminTab, setAdminTab] = useState("catalog"); // 'catalog' | 'badges'
 
-  // Secret URL Routing Listener for /badges, /badge-panel, /admin, etc.
+  // Enhanced setActivePin wrapper to automatically sync URL (?pin=pin_id) & document.title
+  const handleSetActivePin = (pinOrFn) => {
+    setActivePin((prev) => {
+      const nextPin = typeof pinOrFn === "function" ? pinOrFn(prev) : pinOrFn;
+      try {
+        const url = new URL(window.location.href);
+        if (nextPin && nextPin.id) {
+          if (url.searchParams.get("pin") !== String(nextPin.id)) {
+            url.searchParams.set("pin", nextPin.id);
+            window.history.pushState({ pinId: nextPin.id }, "", url.toString());
+          }
+          document.title = `${nextPin.title || "Image Details"} | GallaryWala`;
+        } else {
+          if (url.searchParams.has("pin")) {
+            url.searchParams.delete("pin");
+            const newUrl = url.pathname + (url.search ? url.search : "");
+            window.history.pushState({}, "", newUrl);
+          }
+          document.title = "GallaryWala - Discover & Share Premium 4K Visuals & Wallpapers";
+        }
+      } catch (e) {
+        console.error("URL sync error", e);
+      }
+      return nextPin;
+    });
+  };
+
+  // URL Routing Listener for /badges, /admin, and direct ?pin=pin_id deep links
   useEffect(() => {
     const handleUrlRoute = () => {
       try {
@@ -136,6 +163,25 @@ export const PinProvider = ({ children }) => {
         const search = (window.location.search || "").toLowerCase();
         const hash = (window.location.hash || "").toLowerCase();
 
+        // 1. Direct Pin Deep Link Handler (?pin=xxx or /pin/xxx)
+        const searchParams = new URLSearchParams(window.location.search);
+        let pinId = searchParams.get("pin");
+        if (!pinId && window.location.pathname.startsWith("/pin/")) {
+          pinId = window.location.pathname.replace("/pin/", "").split("/")[0].trim();
+        }
+
+        if (pinId && pins.length > 0) {
+          const match = pins.find((p) => String(p.id) === String(pinId));
+          if (match) {
+            setActivePin(match);
+            document.title = `${match.title || "Image Details"} | GallaryWala`;
+          }
+        } else if (!pinId && activePin) {
+          setActivePin(null);
+          document.title = "GallaryWala - Discover & Share Premium 4K Visuals & Wallpapers";
+        }
+
+        // 2. Badges & Admin Portal Routing
         const isBadgeUrl =
           path.includes("/badges") ||
           path.includes("/badge-panel") ||
@@ -183,7 +229,7 @@ export const PinProvider = ({ children }) => {
       window.removeEventListener("popstate", handleUrlRoute);
       window.removeEventListener("hashchange", handleUrlRoute);
     };
-  }, []);
+  }, [pins]);
 
   // 9. Commercial Marketplace & Purchases State
   const [checkoutPin, setCheckoutPin] = useState(null);
@@ -840,7 +886,7 @@ export const PinProvider = ({ children }) => {
         selectedCategory,
         setSelectedCategory,
         activePin,
-        setActivePin,
+        setActivePin: handleSetActivePin,
         isUploadOpen,
         setIsUploadOpen,
         isSettingsOpen,

@@ -65,10 +65,26 @@ export const PinDetailModal = () => {
     downloadImage(activePin.imageUrl, activePin.title);
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/?pin=${activePin.id}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: activePin.title || "GallaryWala Image",
+          text: `Check out "${activePin.title}" on GallaryWala!`,
+          url: shareUrl
+        });
+        showToast("Shared successfully! 🚀", "success");
+        return;
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.warn("Share fallback", err);
+        }
+      }
+    }
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(activePin.imageUrl);
-      showToast("Link copied to clipboard! 📋", "success");
+      navigator.clipboard.writeText(shareUrl);
+      showToast("Direct pin link copied to clipboard! 📋", "success");
     }
   };
 
