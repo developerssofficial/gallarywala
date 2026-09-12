@@ -13,6 +13,7 @@ import { CloudinarySettingsModal } from "./components/CloudinarySettingsModal";
 import { SettingsModal } from "./components/SettingsModal";
 import { UserProfileModal } from "./components/UserProfileModal";
 import { PurchaseCheckoutModal } from "./components/PurchaseCheckoutModal";
+import { MobileBottomNav } from "./components/MobileBottomNav";
 import { BoardView } from "./components/BoardView";
 import { ToastContainer } from "./components/Toast";
 import { Footer } from "./components/Footer";
@@ -36,6 +37,9 @@ const MainContent = () => {
       </main>
 
       <Footer />
+
+      {/* Mobile Bottom Navigation Bar (Mobile Viewports Only) */}
+      <MobileBottomNav />
 
       {/* Interactive, Security & Auth Modals */}
       <SettingsModal />

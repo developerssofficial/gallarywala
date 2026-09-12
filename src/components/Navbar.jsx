@@ -24,6 +24,7 @@ export const Navbar = () => {
     theme,
     toggleTheme,
     setIsProfileOpen,
+    setIsUploadOpen,
     activeView,
     setActiveView,
     boards,
@@ -182,6 +183,16 @@ export const Navbar = () => {
 
         {/* Nav Actions */}
         <div className="nav-actions">
+          {/* Create Button (Desktop) */}
+          <button
+            className="btn-primary desktop-create-btn hide-on-mobile"
+            onClick={() => setIsUploadOpen(true)}
+            style={{ padding: "8px 18px", fontSize: "0.88rem" }}
+          >
+            <Plus size={16} />
+            <span>Create</span>
+          </button>
+
           {/* Secret Admin Studio indicator (only when admin is logged in) */}
           {isAdminAuthenticated && (
             <button
@@ -207,9 +218,9 @@ export const Navbar = () => {
             {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
           </button>
 
-          {/* User Saved Collections */}
+          {/* User Saved Collections (Desktop) */}
           <button
-            className="icon-btn"
+            className="icon-btn hide-on-mobile"
             onClick={() => setIsProfileOpen(true)}
             title="View Collections & Liked"
           >
@@ -219,9 +230,9 @@ export const Navbar = () => {
             )}
           </button>
 
-          {/* Website Settings Button */}
+          {/* Website Settings Button (Desktop) */}
           <button
-            className="icon-btn"
+            className="icon-btn hide-on-mobile"
             onClick={() => {
               setSettingsTab("general");
               setIsSettingsOpen(true);

@@ -279,29 +279,11 @@ export const SettingsModal = () => {
       onClick={() => !authLoading && !saveLoading && setIsSettingsOpen(false)}
     >
       <div
-        className="modal-container"
-        style={{
-          width: "100%",
-          maxWidth: "880px",
-          padding: 0,
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          maxHeight: "90vh"
-        }}
+        className="modal-container settings-modal-container"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div
-          style={{
-            padding: "20px 28px",
-            borderBottom: "1px solid var(--border-light)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            background: "var(--bg-surface-elevated)"
-          }}
-        >
+        <div className="settings-modal-header">
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <img
               src="/logo.png"
@@ -334,32 +316,11 @@ export const SettingsModal = () => {
         </div>
 
         {/* Modal Body with Sidebar Tabs */}
-        <div style={{ display: "flex", flex: 1, overflow: "hidden", minHeight: "480px" }}>
+        <div className="settings-modal-body">
           {/* Sidebar Navigation */}
-          <div
-            style={{
-              width: "240px",
-              borderRight: "1px solid var(--border-light)",
-              padding: "16px 12px",
-              background: "var(--bg-surface)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "6px"
-            }}
-          >
+          <div className="settings-sidebar">
             {/* User Quick Info */}
-            <div
-              style={{
-                padding: "12px",
-                borderRadius: "var(--radius-md)",
-                background: "var(--bg-surface-elevated)",
-                border: "1px solid var(--border-light)",
-                marginBottom: "12px",
-                display: "flex",
-                alignItems: "center",
-                gap: "10px"
-              }}
-            >
+            <div className="settings-user-card">
               <img
                 src={currentAvatar}
                 alt="Avatar"
@@ -377,21 +338,7 @@ export const SettingsModal = () => {
 
             {/* Tab 1: General */}
             <button
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                padding: "11px 14px",
-                borderRadius: "var(--radius-md)",
-                background: activeTab === "general" ? "var(--brand-gradient)" : "transparent",
-                color: activeTab === "general" ? "#fff" : "var(--text-main)",
-                fontWeight: activeTab === "general" ? 700 : 500,
-                border: "none",
-                cursor: "pointer",
-                textAlign: "left",
-                fontSize: "0.9rem",
-                transition: "var(--transition-fast)"
-              }}
+              className={`settings-tab-btn ${activeTab === "general" ? "active" : ""}`}
               onClick={() => setActiveTab("general")}
             >
               <User size={18} />
@@ -400,21 +347,7 @@ export const SettingsModal = () => {
 
             {/* Tab 2: Creator Studio */}
             <button
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                padding: "11px 14px",
-                borderRadius: "var(--radius-md)",
-                background: activeTab === "creator" ? "var(--brand-gradient)" : "transparent",
-                color: activeTab === "creator" ? "#fff" : "var(--text-main)",
-                fontWeight: activeTab === "creator" ? 700 : 500,
-                border: "none",
-                cursor: "pointer",
-                textAlign: "left",
-                fontSize: "0.9rem",
-                transition: "var(--transition-fast)"
-              }}
+              className={`settings-tab-btn ${activeTab === "creator" ? "active" : ""}`}
               onClick={() => setActiveTab("creator")}
             >
               <Palette size={18} />
@@ -423,21 +356,7 @@ export const SettingsModal = () => {
 
             {/* Tab 3: Account & Auth */}
             <button
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                padding: "11px 14px",
-                borderRadius: "var(--radius-md)",
-                background: activeTab === "account" ? "var(--brand-gradient)" : "transparent",
-                color: activeTab === "account" ? "#fff" : "var(--text-main)",
-                fontWeight: activeTab === "account" ? 700 : 500,
-                border: "none",
-                cursor: "pointer",
-                textAlign: "left",
-                fontSize: "0.9rem",
-                transition: "var(--transition-fast)"
-              }}
+              className={`settings-tab-btn ${activeTab === "account" ? "active" : ""}`}
               onClick={() => setActiveTab("account")}
             >
               <Shield size={18} />
@@ -446,28 +365,14 @@ export const SettingsModal = () => {
 
             {/* Tab 4: Monetization & Commercial Sales */}
             <button
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                padding: "11px 14px",
-                borderRadius: "var(--radius-md)",
-                background: activeTab === "monetization" ? "var(--brand-gradient)" : "transparent",
-                color: activeTab === "monetization" ? "#fff" : "var(--text-main)",
-                fontWeight: activeTab === "monetization" ? 700 : 500,
-                border: "none",
-                cursor: "pointer",
-                textAlign: "left",
-                fontSize: "0.9rem",
-                transition: "var(--transition-fast)"
-              }}
+              className={`settings-tab-btn ${activeTab === "monetization" ? "active" : ""}`}
               onClick={() => setActiveTab("monetization")}
             >
               <DollarSign size={18} />
               <span>Monetization & Sales</span>
             </button>
 
-            <div style={{ marginTop: "auto", paddingTop: "12px", borderTop: "1px solid var(--border-light)" }}>
+            <div className="settings-sidebar-footer">
               {currentUser ? (
                 <button
                   style={{
@@ -523,14 +428,7 @@ export const SettingsModal = () => {
           </div>
 
           {/* Tab Content Panel */}
-          <div
-            style={{
-              flex: 1,
-              padding: "24px 32px",
-              overflowY: "auto",
-              background: "var(--bg-main)"
-            }}
-          >
+          <div className="settings-content-pane">
             {/* ================= TAB 1: GENERAL PROFILE ================= */}
             {activeTab === "general" && (
               <form onSubmit={handleSaveGeneral}>
@@ -1205,14 +1103,7 @@ export const SettingsModal = () => {
                 </div>
 
                 {/* Earnings Summary Metrics */}
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr 1fr",
-                    gap: "12px",
-                    marginBottom: "24px"
-                  }}
-                >
+                <div className="settings-metrics-grid" style={{ marginBottom: "24px" }}>
                   <div
                     style={{
                       background: "linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%)",
@@ -1281,7 +1172,7 @@ export const SettingsModal = () => {
                     marginBottom: "24px"
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                  <div className="settings-payout-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", gap: "12px" }}>
                     <div>
                       <h4 style={{ fontSize: "0.95rem", fontWeight: 700, margin: 0 }}>
                         Request Payout
@@ -1300,7 +1191,8 @@ export const SettingsModal = () => {
                         fontSize: "0.85rem",
                         background: creatorEarnings.balance > 0 ? "#10b981" : "var(--bg-input)",
                         color: creatorEarnings.balance > 0 ? "#fff" : "var(--text-muted)",
-                        cursor: creatorEarnings.balance > 0 ? "pointer" : "not-allowed"
+                        cursor: creatorEarnings.balance > 0 ? "pointer" : "not-allowed",
+                        whiteSpace: "nowrap"
                       }}
                     >
                       <ArrowDownToLine size={16} />
@@ -1328,7 +1220,7 @@ export const SettingsModal = () => {
                     Payout Receiving Details
                   </h4>
                   <form onSubmit={handleSavePayoutAccount}>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "10px", marginBottom: "12px" }}>
+                    <div className="settings-payout-inputs" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "10px", marginBottom: "12px" }}>
                       <div>
                         <label className="form-label" style={{ fontSize: "0.75rem" }}>Method</label>
                         <select
