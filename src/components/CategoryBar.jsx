@@ -5,67 +5,31 @@ import {
   Sparkles,
   Search,
   X,
-  Compass,
-  Flame,
-  Filter
+  ChevronDown,
+  LayoutGrid,
+  Check
 } from "lucide-react";
 import { CATEGORIES } from "../data/mockPins";
 import { usePins } from "../context/PinContext";
 
-const CATEGORY_ICONS = {
-  "All": "✨",
-  "Anime & Manga": "🌸",
-  "Cyberpunk & Sci-Fi": "🌌",
-  "Neon Aesthetic": "⚡",
-  "4K Wallpapers & AMOLED": "🖤",
-  "3D Renders & Abstract": "💎",
-  "Architecture & Interiors": "🏛️",
-  "Nature & Landscapes": "🌿",
-  "Gaming & Esports": "🎮",
-  "Minimalist & Dark Mode": "🌙",
-  "Fantasy & Mythical": "🐉",
-  "Supercars & Automotive": "🏎️",
-  "Space & Astronomy": "🪐",
-  "AI Art & Concepts": "🤖",
-  "Street & Urban Photography": "📷",
-  "Retro & Synthwave": "📼",
-  "Animals & Wildlife": "🦁",
-  "Digital Illustrations": "🎨",
-  "Studio Ghibli Aesthetic": "🍃",
-  "Lo-Fi & Chill Vibes": "☕",
-  "Pixel Art & Retro Gaming": "🕹️",
-  "Vector & UI Graphics": "📐",
-  "Cinematic & Movie Renders": "🎬",
-  "Tokyo & Neon Nights": "🏮",
-  "Macro Photography": "🔍",
-  "Ocean & Underwater": "🌊",
-  "Abstract Fluid Art": "🔮",
-  "Luxury & Modern Living": "👑",
-  "Quotes & Typography": "✍️",
-  "Vintage & Nostalgia": "📻",
-  "Fashion & Streetwear": "👟",
-  "Food & Culinary Art": "🍜"
-};
-
 export const CategoryBar = () => {
   const { selectedCategory, setSelectedCategory, activeView } = usePins();
   const scrollRef = useRef(null);
+  const dropdownRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
-  const [categorySearch, setCategorySearch] = useState("");
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Drag-to-scroll state for desktop & smooth touch
-  const isMouseDown = useRef(false);
-  const startX = useRef(0);
-  const scrollLeftStart = useRef(0);
-  const hasDragged = useRef(false);
+  // Primary categories shown in the horizontal quick bar
+  const PRIMARY_CATEGORIES = CATEGORIES.slice(0, 14);
 
-  const filteredCategories = useMemo(() => {
-    const q = categorySearch.trim().toLowerCase();
+  // Filtered categories for Show More modal/dropdown
+  const modalCategories = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
     if (!q) return CATEGORIES;
     return CATEGORIES.filter((cat) => cat.toLowerCase().includes(q));
-  }, [categorySearch]);
+  }, [searchTerm]);
 
   const checkScroll = () => {
     if (!scrollRef.current) return;
@@ -84,40 +48,38 @@ export const CategoryBar = () => {
       el.removeEventListener("scroll", checkScroll);
       window.removeEventListener("resize", checkScroll);
     };
-  }, [filteredCategories]);
+  }, []);
+
+  // Close dropdown on outside click or escape
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+    const handleEsc = (e) => {
+      if (e.key === "Escape") setIsMenuOpen(false);
+    };
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleOutsideClick);
+      document.addEventListener("keydown", handleEsc);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, [isMenuOpen]);
 
   const handleScroll = (direction) => {
     if (!scrollRef.current) return;
-    const amount = direction === "left" ? -260 : 260;
+    const amount = direction === "left" ? -240 : 240;
     scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
   };
 
-  const handleMouseDown = (e) => {
-    if (!scrollRef.current) return;
-    isMouseDown.current = true;
-    hasDragged.current = false;
-    startX.current = e.pageX - scrollRef.current.offsetLeft;
-    scrollLeftStart.current = scrollRef.current.scrollLeft;
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isMouseDown.current || !scrollRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - scrollRef.current.offsetLeft;
-    const walk = (x - startX.current) * 1.5;
-    if (Math.abs(walk) > 5) {
-      hasDragged.current = true;
-    }
-    scrollRef.current.scrollLeft = scrollLeftStart.current - walk;
-  };
-
-  const handleMouseUpOrLeave = () => {
-    isMouseDown.current = false;
-  };
-
-  const handleCategoryClick = (cat, e) => {
-    if (hasDragged.current) return;
+  const handleCategorySelect = (cat, e) => {
     setSelectedCategory(cat);
+    setIsMenuOpen(false);
+    setSearchTerm("");
     if (e?.currentTarget) {
       e.currentTarget.scrollIntoView({
         behavior: "smooth",
@@ -130,157 +92,233 @@ export const CategoryBar = () => {
   if (activeView !== "gallery") return null;
 
   return (
-    <div className="category-bar-outer" style={{ position: "relative" }}>
-      {/* Search Category Quick Filter Pill (Left) */}
-      <div style={{ display: "flex", alignItems: "center", gap: "8px", zIndex: 10, paddingLeft: "8px" }}>
-        {isSearchOpen ? (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              background: "var(--bg-surface-elevated)",
-              border: "1px solid var(--color-primary)",
-              borderRadius: "var(--radius-full)",
-              padding: "4px 10px",
-              gap: "6px",
-              boxShadow: "0 0 12px rgba(121, 40, 202, 0.25)",
-              animation: "scaleIn 0.15s ease-out"
-            }}
-          >
-            <Search size={14} color="var(--color-primary)" />
-            <input
-              type="text"
-              placeholder="Search 32+ categories..."
-              value={categorySearch}
-              onChange={(e) => setCategorySearch(e.target.value)}
-              autoFocus
-              style={{
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                color: "var(--text-main)",
-                fontSize: "0.8rem",
-                width: "140px",
-                fontWeight: 600
-              }}
-            />
-            <button
-              type="button"
-              onClick={() => {
-                setCategorySearch("");
-                setIsSearchOpen(false);
-              }}
-              style={{
-                background: "transparent",
-                border: "none",
-                color: "var(--text-muted)",
-                cursor: "pointer",
-                padding: "2px",
-                display: "flex"
-              }}
-              title="Close category search"
-            >
-              <X size={14} />
-            </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            className="category-pill"
-            onClick={() => setIsSearchOpen(true)}
-            style={{
-              background: "var(--bg-surface)",
-              border: "1px solid var(--border-light)",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              padding: "6px 12px",
-              color: "var(--text-muted)",
-              whiteSpace: "nowrap"
-            }}
-            title="Search categories"
-          >
-            <Search size={13} color="var(--color-primary)" />
-            <span style={{ fontSize: "0.78rem", fontWeight: 700 }}>Search Topics</span>
-          </button>
-        )}
-      </div>
-
-      {/* Left Arrow Nav */}
+    <div className="category-bar-outer" style={{ position: "relative" }} ref={dropdownRef}>
+      {/* Left Scroll Arrow */}
       <button
         type="button"
         className={`category-nav-btn category-nav-left ${showLeftArrow ? "visible" : ""}`}
         onClick={() => handleScroll("left")}
-        aria-label="Scroll categories left"
+        aria-label="Scroll left"
       >
         <ChevronLeft size={16} />
       </button>
 
-      {/* Categories Scroll Track */}
-      <div
-        ref={scrollRef}
-        className="category-bar-wrapper"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUpOrLeave}
-        onMouseLeave={handleMouseUpOrLeave}
-      >
-        {filteredCategories.length === 0 ? (
-          <div
-            style={{
-              fontSize: "0.82rem",
-              color: "var(--text-muted)",
-              padding: "6px 16px",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
-            }}
-          >
-            <span>No category matching "{categorySearch}"</span>
+      {/* Horizontal Scroll Track */}
+      <div ref={scrollRef} className="category-bar-wrapper">
+        {PRIMARY_CATEGORIES.map((cat) => {
+          const isActive = selectedCategory === cat;
+          return (
             <button
-              onClick={() => setCategorySearch("")}
-              style={{
-                background: "var(--bg-surface)",
-                border: "1px solid var(--border-light)",
-                borderRadius: "4px",
-                color: "var(--color-primary)",
-                padding: "2px 6px",
-                fontSize: "0.75rem",
-                cursor: "pointer"
-              }}
+              key={cat}
+              type="button"
+              className={`category-pill ${isActive ? "active" : ""}`}
+              onClick={(e) => handleCategorySelect(cat, e)}
             >
-              Reset
+              {cat === "All" && <Sparkles size={13} style={{ marginRight: 6 }} />}
+              <span>{cat}</span>
             </button>
-          </div>
-        ) : (
-          filteredCategories.map((cat) => {
-            const isActive = selectedCategory === cat;
-            const icon = CATEGORY_ICONS[cat] || "🏷️";
-            return (
-              <button
-                key={cat}
-                type="button"
-                className={`category-pill ${isActive ? "active" : ""}`}
-                onClick={(e) => handleCategoryClick(cat, e)}
-              >
-                <span style={{ marginRight: 5, fontSize: "0.85rem" }}>{icon}</span>
-                <span>{cat}</span>
-              </button>
-            );
-          })
-        )}
+          );
+        })}
+
+        {/* Show More Trigger Button */}
+        <button
+          type="button"
+          className={`category-pill ${isMenuOpen || (!PRIMARY_CATEGORIES.includes(selectedCategory) && selectedCategory !== "All") ? "active" : ""}`}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            background: isMenuOpen ? "var(--brand-gradient)" : "var(--bg-surface)",
+            border: isMenuOpen ? "1px solid var(--color-primary)" : "1px solid var(--border-light)",
+            fontWeight: 700,
+            whiteSpace: "nowrap"
+          }}
+          title="Browse all 32+ topics"
+        >
+          <LayoutGrid size={13} />
+          <span>
+            {!PRIMARY_CATEGORIES.includes(selectedCategory) && selectedCategory !== "All"
+              ? selectedCategory
+              : "Show More"}
+          </span>
+          <ChevronDown
+            size={14}
+            style={{
+              transform: isMenuOpen ? "rotate(180deg)" : "rotate(0deg)",
+              transition: "transform 0.2s ease"
+            }}
+          />
+        </button>
       </div>
 
-      {/* Right Arrow Nav */}
+      {/* Right Scroll Arrow */}
       <button
         type="button"
         className={`category-nav-btn category-nav-right ${showRightArrow ? "visible" : ""}`}
         onClick={() => handleScroll("right")}
-        aria-label="Scroll categories right"
+        aria-label="Scroll right"
       >
         <ChevronRight size={16} />
       </button>
+
+      {/* ================= SHOW MORE DROPDOWN MODAL / GRID ================= */}
+      {isMenuOpen && (
+        <div
+          style={{
+            position: "absolute",
+            top: "calc(100% + 8px)",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "95%",
+            maxWidth: "720px",
+            maxHeight: "440px",
+            overflowY: "auto",
+            background: "var(--bg-modal)",
+            border: "1px solid var(--border-light)",
+            borderRadius: "var(--radius-lg)",
+            boxShadow: "0 16px 40px rgba(0, 0, 0, 0.4)",
+            padding: "20px",
+            zIndex: 100,
+            animation: "scaleIn 0.18s ease-out"
+          }}
+        >
+          {/* Header & Search Bar */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "12px",
+              marginBottom: "16px",
+              paddingBottom: "12px",
+              borderBottom: "1px solid var(--border-light)"
+            }}
+          >
+            <div>
+              <h4 style={{ fontSize: "1rem", fontWeight: 800, margin: 0 }}>
+                All Categories & Topics
+              </h4>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", margin: 0 }}>
+                Explore 32+ curated visual themes & wallpaper niches
+              </p>
+            </div>
+
+            {/* Search Input */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                background: "var(--bg-surface)",
+                border: "1px solid var(--border-light)",
+                borderRadius: "var(--radius-full)",
+                padding: "6px 12px",
+                gap: "8px",
+                width: "220px"
+              }}
+            >
+              <Search size={14} color="var(--text-muted)" />
+              <input
+                type="text"
+                placeholder="Filter categories..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                autoFocus
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  outline: "none",
+                  color: "var(--text-main)",
+                  fontSize: "0.82rem",
+                  width: "100%",
+                  fontWeight: 500
+                }}
+              />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm("")}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "var(--text-muted)",
+                    cursor: "pointer",
+                    padding: 0,
+                    display: "flex"
+                  }}
+                >
+                  <X size={13} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Categories Grid */}
+          {modalCategories.length === 0 ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "30px",
+                color: "var(--text-muted)",
+                fontSize: "0.85rem"
+              }}
+            >
+              No categories found matching "{searchTerm}".
+            </div>
+          ) : (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+                gap: "8px"
+              }}
+            >
+              {modalCategories.map((cat) => {
+                const isSelected = selectedCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={(e) => handleCategorySelect(cat, e)}
+                    style={{
+                      textAlign: "left",
+                      padding: "10px 14px",
+                      borderRadius: "var(--radius-md)",
+                      fontSize: "0.84rem",
+                      fontWeight: isSelected ? 700 : 500,
+                      color: isSelected ? "#fff" : "var(--text-main)",
+                      background: isSelected ? "var(--brand-gradient)" : "var(--bg-surface)",
+                      border: isSelected ? "1px solid var(--color-primary)" : "1px solid var(--border-light)",
+                      cursor: "pointer",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      transition: "all 0.15s ease"
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isSelected) {
+                        e.currentTarget.style.background = "var(--bg-surface-elevated)";
+                        e.currentTarget.style.borderColor = "var(--color-primary)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isSelected) {
+                        e.currentTarget.style.background = "var(--bg-surface)";
+                        e.currentTarget.style.borderColor = "var(--border-light)";
+                      }
+                    }}
+                  >
+                    <span>{cat}</span>
+                    {isSelected && <Check size={14} />}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
+
 
