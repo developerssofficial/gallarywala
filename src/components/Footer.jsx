@@ -16,6 +16,7 @@ export const Footer = () => {
   return (
     <footer style={{ borderTop: "1px solid var(--border-light)", marginTop: "auto", background: "var(--bg-card)" }}>
       <div
+        className="footer-inner"
         style={{
           maxWidth: "1720px",
           margin: "0 auto",
