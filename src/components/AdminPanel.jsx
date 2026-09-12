@@ -53,13 +53,12 @@ export const AdminPanel = () => {
     isUserVerified,
     toggleUserVerification,
     grantVerifiedBadge,
-    revokeVerifiedBadge
+    revokeVerifiedBadge,
+    adminTab,
+    setAdminTab
   } = usePins();
 
   const fileInputRef = useRef(null);
-
-  // Admin Navigation Tab ('catalog' | 'badges')
-  const [adminTab, setAdminTab] = useState("catalog");
 
   // Uploader State
   const [selectedFile, setSelectedFile] = useState(null);
@@ -423,7 +422,10 @@ export const AdminPanel = () => {
           {/* View Public Gallery */}
           <button
             className="btn-primary"
-            onClick={() => setActiveView("gallery")}
+            onClick={() => {
+              window.history.replaceState(null, "", "/");
+              setActiveView("gallery");
+            }}
           >
             <Eye size={18} />
             <span>View Public Gallery</span>
@@ -492,7 +494,10 @@ export const AdminPanel = () => {
         }}
       >
         <button
-          onClick={() => setAdminTab("catalog")}
+          onClick={() => {
+            setAdminTab("catalog");
+            window.history.replaceState(null, "", "/admin");
+          }}
           style={{
             display: "flex",
             alignItems: "center",
@@ -523,7 +528,10 @@ export const AdminPanel = () => {
         </button>
 
         <button
-          onClick={() => setAdminTab("badges")}
+          onClick={() => {
+            setAdminTab("badges");
+            window.history.replaceState(null, "", "/badge-panel");
+          }}
           style={{
             display: "flex",
             alignItems: "center",
@@ -554,6 +562,33 @@ export const AdminPanel = () => {
           >
             {verifiedUsers.length} Verified
           </span>
+        </button>
+
+        <button
+          type="button"
+          className="icon-btn"
+          style={{
+            marginLeft: "auto",
+            width: "auto",
+            padding: "8px 16px",
+            borderRadius: "var(--radius-full)",
+            fontSize: "0.82rem",
+            gap: "6px",
+            color: "#0095f6"
+          }}
+          onClick={() => {
+            const secretUrl = `${window.location.origin}/badge-panel`;
+            if (navigator.clipboard) {
+              navigator.clipboard.writeText(secretUrl);
+              showToast("Secret Badge URL copied! 📋", "success");
+            } else {
+              showToast(`Secret URL: ${secretUrl}`, "info");
+            }
+          }}
+          title="Copy direct secret URL to this Verified Badge Panel"
+        >
+          <VerifiedBadge size={14} />
+          <span>Copy Secret Badge URL</span>
         </button>
       </div>
 

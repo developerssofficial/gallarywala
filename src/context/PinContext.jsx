@@ -124,6 +124,64 @@ export const PinProvider = ({ children }) => {
   const [activeView, setActiveView] = useState("gallery"); // 'gallery' | 'admin' | 'board'
   const [selectedBoardId, setSelectedBoardId] = useState(null);
   const [toasts, setToasts] = useState([]);
+  const [adminTab, setAdminTab] = useState("catalog"); // 'catalog' | 'badges'
+
+  // Secret URL Routing Listener for /badges, /badge-panel, /admin, etc.
+  useEffect(() => {
+    const handleUrlRoute = () => {
+      try {
+        const path = (window.location.pathname || "").toLowerCase();
+        const search = (window.location.search || "").toLowerCase();
+        const hash = (window.location.hash || "").toLowerCase();
+
+        const isBadgeUrl =
+          path.includes("/badges") ||
+          path.includes("/badge-panel") ||
+          path.includes("/verify-badges") ||
+          path.includes("/secret-badge") ||
+          search.includes("portal=badges") ||
+          search.includes("view=badges") ||
+          hash.includes("badges") ||
+          hash.includes("badge-panel");
+
+        const isAdminUrl =
+          path.includes("/admin") ||
+          path.includes("/studio") ||
+          search.includes("portal=admin") ||
+          hash.includes("admin");
+
+        if (isBadgeUrl) {
+          setAdminTab("badges");
+          const isAuth = sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === "true";
+          if (isAuth) {
+            setIsAdminAuthenticated(true);
+            setActiveView("admin");
+          } else {
+            setIsAdminAuthModalOpen(true);
+          }
+        } else if (isAdminUrl) {
+          setAdminTab("catalog");
+          const isAuth = sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === "true";
+          if (isAuth) {
+            setIsAdminAuthenticated(true);
+            setActiveView("admin");
+          } else {
+            setIsAdminAuthModalOpen(true);
+          }
+        }
+      } catch (e) {
+        console.error("URL Route parse error", e);
+      }
+    };
+
+    handleUrlRoute();
+    window.addEventListener("popstate", handleUrlRoute);
+    window.addEventListener("hashchange", handleUrlRoute);
+    return () => {
+      window.removeEventListener("popstate", handleUrlRoute);
+      window.removeEventListener("hashchange", handleUrlRoute);
+    };
+  }, []);
 
   // 9. Commercial Marketplace & Purchases State
   const [checkoutPin, setCheckoutPin] = useState(null);
@@ -461,7 +519,11 @@ export const PinProvider = ({ children }) => {
       } catch (e) {}
       setIsAdminAuthModalOpen(false);
       setActiveView("admin");
-      showToast("Admin Studio Unlocked 🔓", "success");
+      if (adminTab === "badges") {
+        showToast("Verified Badge Panel Unlocked 🏅", "success");
+      } else {
+        showToast("Admin Studio Unlocked 🔓", "success");
+      }
       return true;
     } else {
       showToast("Incorrect Admin PIN! Access Denied ❌", "error");
@@ -473,6 +535,7 @@ export const PinProvider = ({ children }) => {
     setIsAdminAuthenticated(false);
     try {
       sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+      window.history.replaceState(null, "", "/");
     } catch (e) {}
     setActiveView("gallery");
     showToast("Admin session locked 🔒", "info");
@@ -797,6 +860,8 @@ export const PinProvider = ({ children }) => {
         toggleUserVerification,
         grantVerifiedBadge,
         revokeVerifiedBadge,
+        adminTab,
+        setAdminTab,
         filteredPins
       }}
     >
