@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { usePins } from "../context/PinContext";
 import { VerifiedBadge } from "./VerifiedBadge";
+import { CATEGORIES } from "../data/mockPins";
 import {
   X,
   Heart,
@@ -17,7 +18,11 @@ import {
   DollarSign,
   ShieldCheck,
   ShieldAlert,
-  Flag
+  Flag,
+  Edit3,
+  Trash2,
+  Check,
+  RotateCcw
 } from "lucide-react";
 
 export const PinDetailModal = () => {
@@ -34,27 +39,85 @@ export const PinDetailModal = () => {
     isPinUnlocked,
     setCheckoutPin,
     isUserVerified,
-    setReportingPin
+    setReportingPin,
+    isPinOwner,
+    updatePin,
+    deletePin
   } = usePins();
 
   const [commentText, setCommentText] = useState("");
   const [isBoardMenuOpen, setIsBoardMenuOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Edit State Fields
+  const [editCategory, setEditCategory] = useState("");
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editTags, setEditTags] = useState("");
+  const [editIsPaid, setEditIsPaid] = useState(false);
+  const [editPrice, setEditPrice] = useState("4.99");
+
+  const isOwner = isPinOwner(activePin);
+
+  useEffect(() => {
+    setIsEditing(false);
+  }, [activePin?.id]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        setActivePin(null);
+        if (isEditing) {
+          setIsEditing(false);
+        } else {
+          setActivePin(null);
+        }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [setActivePin]);
+  }, [setActivePin, isEditing]);
 
   if (!activePin) return null;
 
   const isLiked = likedPinIds.includes(activePin.id);
   const isPaid = Boolean(activePin.isPaid || activePin.price);
   const isUnlocked = isPinUnlocked(activePin);
+
+  const handleStartEdit = () => {
+    setEditCategory(activePin.category || "Anime");
+    setEditTitle(activePin.title || "");
+    setEditDescription(activePin.description || "");
+    setEditTags(Array.isArray(activePin.tags) ? activePin.tags.join(", ") : activePin.tags || "");
+    setEditIsPaid(Boolean(activePin.isPaid || activePin.price));
+    setEditPrice(activePin.price ? String(activePin.price) : "4.99");
+    setIsEditing(true);
+  };
+
+  const handleSaveEdit = (e) => {
+    e?.preventDefault?.();
+    const tagsArr = editTags
+      .split(",")
+      .map((t) => t.trim().replace(/^#/, ""))
+      .filter(Boolean);
+
+    updatePin(activePin.id, {
+      category: editCategory,
+      title: editTitle.trim() || `${editCategory} Visual`,
+      description: editDescription.trim(),
+      tags: tagsArr.length > 0 ? tagsArr : [editCategory.toLowerCase()],
+      isPaid: Boolean(editIsPaid),
+      price: editIsPaid ? Number(editPrice) : 0
+    });
+
+    setIsEditing(false);
+  };
+
+  const handleDelete = () => {
+    if (window.confirm(`Are you sure you want to permanently delete "${activePin.title}"?`)) {
+      deletePin(activePin.id);
+      setActivePin(null);
+    }
+  };
 
   const handleDownload = () => {
     if (isPaid && !isUnlocked) {
@@ -207,7 +270,7 @@ export const PinDetailModal = () => {
           )}
         </div>
 
-        {/* Right Side: Details & Comments */}
+        {/* Right Side: Details & Comments or Owner Edit Form */}
         <div className="detail-content-side">
           {/* Header Action Row */}
           <div className="detail-header-actions">
@@ -236,10 +299,27 @@ export const PinDetailModal = () => {
               <button
                 className="icon-btn"
                 onClick={handleShare}
-                title="Share link"
+                title="Share direct link"
               >
                 <Share2 size={20} />
               </button>
+
+              {/* Creator Edit Button - Only shown to the person who uploaded this image */}
+              {isOwner && (
+                <button
+                  className={`icon-btn ${isEditing ? "active" : ""}`}
+                  onClick={() => (isEditing ? setIsEditing(false) : handleStartEdit())}
+                  title="Edit Details & Category (Uploader Only)"
+                  style={{
+                    background: isEditing ? "var(--brand-gradient)" : "var(--bg-surface)",
+                    color: isEditing ? "#fff" : "var(--color-primary)",
+                    border: "1px solid var(--color-primary)"
+                  }}
+                >
+                  <Edit3 size={18} />
+                </button>
+              )}
+
               <button
                 className="icon-btn"
                 onClick={() => setReportingPin(activePin)}
@@ -338,201 +418,359 @@ export const PinDetailModal = () => {
             </div>
           </div>
 
-          {/* Author Row */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              marginBottom: "16px"
-            }}
-          >
-            {activePin.author?.avatar && (
-              <img
-                src={activePin.author.avatar}
-                alt={activePin.author.name}
-                style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "50%",
-                  objectFit: "cover"
-                }}
-              />
-            )}
-            <div>
-              <div style={{ fontWeight: 700, fontSize: "0.95rem", display: "flex", alignItems: "center" }}>
-                <span>{activePin.author?.name || "Creator"}</span>
-                {isUserVerified(activePin.author?.name) && (
-                  <VerifiedBadge size={16} title={`Verified Creator: ${activePin.author?.name}`} />
-                )}
-              </div>
-              <div style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
-                {activePin.author?.username || "@creator"} • {activePin.likes || 0} likes
-              </div>
-            </div>
-          </div>
-
-          {/* Title & Description */}
-          <h2 className="detail-title">{activePin.title}</h2>
-          {activePin.description && (
-            <p className="detail-desc">{activePin.description}</p>
-          )}
-
-          {/* Tags */}
-          {Array.isArray(activePin.tags) && activePin.tags.length > 0 && (
-            <div className="detail-tags">
-              {activePin.tags.map((tag, idx) => (
-                <span key={idx} className="tag-badge">
-                  #{String(tag)}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Commercial Monetization & License Box */}
-          {isPaid ? (
-            <div
-              style={{
-                margin: "18px 0",
-                background: isUnlocked
-                  ? "linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.05) 100%)"
-                  : "linear-gradient(135deg, rgba(121, 40, 202, 0.18) 0%, rgba(0, 223, 216, 0.12) 100%)",
-                border: isUnlocked
-                  ? "1px solid rgba(16, 185, 129, 0.4)"
-                  : "1px solid rgba(121, 40, 202, 0.4)",
-                borderRadius: "var(--radius-lg)",
-                padding: "18px",
-                position: "relative",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.2)"
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                    <ShieldCheck size={18} color={isUnlocked ? "#10b981" : "#00dfd8"} />
-                    <span style={{ fontWeight: 800, fontSize: "0.95rem" }}>
-                      {isUnlocked ? "Commercial License Unlocked" : (activePin.license || "Commercial License Available")}
-                    </span>
-                  </div>
-                  <p style={{ color: "var(--text-muted)", fontSize: "0.8rem", margin: 0 }}>
-                    {isUnlocked
-                      ? "You own full rights to use this unwatermarked 4K asset for client and commercial projects."
-                      : "Direct creator purchase with instant unwatermarked 4K high-resolution download."}
-                  </p>
-                </div>
-
-                {!isUnlocked && (
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: "1.3rem", fontWeight: 900, color: "var(--color-primary)" }}>
-                      ${activePin.price ? Number(activePin.price).toFixed(2) : "4.99"}
-                    </div>
-                    <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>One-time payment</div>
-                  </div>
-                )}
-              </div>
-
-              {/* Action Button */}
-              {isUnlocked ? (
-                <button
-                  className="btn-primary"
-                  style={{
-                    width: "100%",
-                    justifyContent: "center",
-                    padding: "12px",
-                    background: "#10b981",
-                    color: "#fff",
-                    fontWeight: 700
-                  }}
-                  onClick={handleDownload}
-                >
-                  <Download size={18} />
-                  <span>Download Original 4K (Unwatermarked)</span>
-                </button>
-              ) : (
-                <button
-                  className="btn-primary"
-                  style={{
-                    width: "100%",
-                    justifyContent: "center",
-                    padding: "12px",
-                    fontWeight: 700,
-                    boxShadow: "var(--brand-glow)"
-                  }}
-                  onClick={() => setCheckoutPin(activePin)}
-                >
-                  <Lock size={18} />
-                  <span>Unlock Original 4K (${activePin.price ? Number(activePin.price).toFixed(2) : "4.99"}) via Paddle</span>
-                </button>
-              )}
-
-              {/* Features List */}
+          {/* ================= INLINE OWNER EDITING FORM ================= */}
+          {isEditing ? (
+            <form onSubmit={handleSaveEdit} style={{ display: "flex", flexDirection: "column", gap: "14px", marginTop: "14px" }}>
               <div
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "6px",
-                  marginTop: "12px",
-                  paddingTop: "10px",
-                  borderTop: "1px solid var(--border-light)",
-                  fontSize: "0.75rem",
-                  color: "var(--text-muted)"
+                  background: "rgba(121, 40, 202, 0.12)",
+                  border: "1px solid rgba(121, 40, 202, 0.3)",
+                  borderRadius: "var(--radius-md)",
+                  padding: "10px 14px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontSize: "0.85rem"
                 }}
               >
-                <div>✓ No Watermark in 4K/8K</div>
-                <div>✓ Lifetime Download Access</div>
-                <div>✓ Commercial & Social Rights</div>
-                <div>✓ 80% Creator Revenue Split</div>
+                <Edit3 size={16} color="var(--color-primary)" />
+                <span>
+                  <strong>Edit Mode:</strong> You can change the category, title, tags or pricing.
+                </span>
               </div>
-            </div>
-          ) : null}
 
-          {/* Comments Section */}
-          <div className="comments-section">
-            <h4 className="comments-title">
-              Comments ({(Array.isArray(activePin.comments) ? activePin.comments : []).length})
-            </h4>
+              {/* Category Dropdown */}
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" style={{ fontSize: "0.82rem", fontWeight: 700 }}>
+                  Category *
+                </label>
+                <select
+                  className="form-select"
+                  value={editCategory}
+                  onChange={(e) => setEditCategory(e.target.value)}
+                  style={{ fontWeight: 600 }}
+                  required
+                >
+                  {CATEGORIES.filter((c) => c !== "All").map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="comments-list">
-              {(activePin.comments || []).length === 0 ? (
-                <div style={{ color: "var(--text-muted)", fontSize: "0.85rem", fontStyle: "italic" }}>
-                  No comments yet. Be the first to comment!
-                </div>
-              ) : (
-                activePin.comments.map((comment) => (
-                  <div key={comment.id} className="comment-item">
-                    <img
-                      src={comment.avatar}
-                      alt={comment.user}
-                      className="comment-avatar"
-                    />
-                    <div className="comment-body">
-                      <div className="comment-user">{comment.user}</div>
-                      <div className="comment-text">{comment.text}</div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
+              {/* Title Field */}
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" style={{ fontSize: "0.82rem", fontWeight: 700 }}>
+                  Title
+                </label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  placeholder="e.g. Neon Tokyo 4K"
+                />
+              </div>
 
-            {/* Add Comment Input */}
-            <form onSubmit={handleSubmitComment} className="comment-input-row">
-              <input
-                type="text"
-                placeholder="Add a thought or comment..."
-                className="comment-input"
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-              />
-              <button
-                type="submit"
-                className="btn-primary"
-                style={{ padding: "10px 16px" }}
-                disabled={!commentText.trim()}
+              {/* Description Field */}
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" style={{ fontSize: "0.82rem", fontWeight: 700 }}>
+                  Description
+                </label>
+                <textarea
+                  className="form-textarea"
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  placeholder="Write a brief backstory or description..."
+                  style={{ minHeight: "65px" }}
+                />
+              </div>
+
+              {/* Keywords / Tags */}
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" style={{ fontSize: "0.82rem", fontWeight: 700 }}>
+                  Keywords / Tags (comma-separated)
+                </label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={editTags}
+                  onChange={(e) => setEditTags(e.target.value)}
+                  placeholder="e.g. 4k, neon, anime, wallpaper"
+                />
+              </div>
+
+              {/* Price / Commercial License */}
+              <div
+                style={{
+                  background: "var(--bg-surface)",
+                  padding: "12px 14px",
+                  borderRadius: "var(--radius-md)",
+                  border: "1px solid var(--border-light)"
+                }}
               >
-                <Send size={16} />
-              </button>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <label
+                    style={{
+                      fontSize: "0.85rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px"
+                    }}
+                  >
+                    <DollarSign size={16} color="var(--color-primary)" />
+                    <span>Commercial Asset ($)</span>
+                  </label>
+                  <input
+                    type="checkbox"
+                    checked={editIsPaid}
+                    onChange={(e) => setEditIsPaid(e.target.checked)}
+                    style={{ width: "18px", height: "18px", cursor: "pointer", accentColor: "var(--color-primary)" }}
+                  />
+                </div>
+                {editIsPaid && (
+                  <div style={{ marginTop: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span style={{ fontSize: "0.85rem", fontWeight: 700 }}>Price ($ USD):</span>
+                    <input
+                      type="number"
+                      min="0.99"
+                      step="0.50"
+                      className="form-input"
+                      value={editPrice}
+                      onChange={(e) => setEditPrice(e.target.value)}
+                      style={{ width: "110px", padding: "6px 10px" }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ display: "flex", gap: "10px", marginTop: "6px" }}>
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  style={{ flex: 1, justifyContent: "center", padding: "10px" }}
+                >
+                  <Check size={16} />
+                  <span>Save Changes</span>
+                </button>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => setIsEditing(false)}
+                  style={{ padding: "10px 16px", width: "auto", fontSize: "0.85rem", fontWeight: 600 }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  className="icon-btn"
+                  title="Delete this image"
+                  style={{ color: "#ef4444", borderColor: "rgba(239, 68, 68, 0.4)", padding: "10px 14px", width: "auto" }}
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
             </form>
-          </div>
+          ) : (
+            /* ================= NORMAL VIEW MODE ================= */
+            <>
+              {/* Author Row */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  marginBottom: "16px",
+                  marginTop: "10px"
+                }}
+              >
+                {activePin.author?.avatar && (
+                  <img
+                    src={activePin.author.avatar}
+                    alt={activePin.author.name}
+                    style={{
+                      width: "44px",
+                      height: "44px",
+                      borderRadius: "50%",
+                      objectFit: "cover"
+                    }}
+                  />
+                )}
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: "0.95rem", display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span>{activePin.author?.name || "Creator"}</span>
+                    {isUserVerified(activePin.author?.name) && (
+                      <VerifiedBadge size={16} title={`Verified Creator: ${activePin.author?.name}`} />
+                    )}
+                    {isOwner && (
+                      <span
+                        style={{
+                          fontSize: "0.68rem",
+                          fontWeight: 800,
+                          background: "var(--brand-gradient)",
+                          color: "#fff",
+                          padding: "2px 8px",
+                          borderRadius: "var(--radius-full)"
+                        }}
+                      >
+                        YOU
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
+                    {activePin.author?.username || "@creator"} • Category: <strong style={{ color: "var(--color-primary)" }}>{activePin.category || "General"}</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Title & Description */}
+              <h2 className="detail-title">{activePin.title}</h2>
+              {activePin.description && (
+                <p className="detail-desc">{activePin.description}</p>
+              )}
+
+              {/* Tags */}
+              {Array.isArray(activePin.tags) && activePin.tags.length > 0 && (
+                <div className="detail-tags">
+                  {activePin.tags.map((tag, idx) => (
+                    <span key={idx} className="tag-badge">
+                      #{String(tag)}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Commercial Monetization & License Box */}
+              {isPaid ? (
+                <div
+                  style={{
+                    margin: "18px 0",
+                    background: isUnlocked
+                      ? "linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.05) 100%)"
+                      : "linear-gradient(135deg, rgba(121, 40, 202, 0.18) 0%, rgba(0, 223, 216, 0.12) 100%)",
+                    border: isUnlocked
+                      ? "1px solid rgba(16, 185, 129, 0.4)"
+                      : "1px solid rgba(121, 40, 202, 0.4)",
+                    borderRadius: "var(--radius-lg)",
+                    padding: "18px",
+                    position: "relative",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.2)"
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                        <ShieldCheck size={18} color={isUnlocked ? "#10b981" : "#00dfd8"} />
+                        <span style={{ fontWeight: 800, fontSize: "0.95rem" }}>
+                          {isUnlocked ? "Commercial License Unlocked" : (activePin.license || "Commercial License Available")}
+                        </span>
+                      </div>
+                      <p style={{ color: "var(--text-muted)", fontSize: "0.8rem", margin: 0 }}>
+                        {isUnlocked
+                          ? "You own full rights to use this unwatermarked 4K asset for client and commercial projects."
+                          : "Direct creator purchase with instant unwatermarked 4K high-resolution download."}
+                      </p>
+                    </div>
+
+                    {!isUnlocked && (
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontSize: "1.3rem", fontWeight: 900, color: "var(--color-primary)" }}>
+                          ${activePin.price ? Number(activePin.price).toFixed(2) : "4.99"}
+                        </div>
+                        <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>One-time payment</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Action Button */}
+                  {isUnlocked ? (
+                    <button
+                      className="btn-primary"
+                      style={{
+                        width: "100%",
+                        justifyContent: "center",
+                        padding: "12px",
+                        background: "#10b981",
+                        color: "#fff",
+                        fontWeight: 700
+                      }}
+                      onClick={handleDownload}
+                    >
+                      <Download size={18} />
+                      <span>Download Original 4K (Unwatermarked)</span>
+                    </button>
+                  ) : (
+                    <button
+                      className="btn-primary"
+                      style={{
+                        width: "100%",
+                        justifyContent: "center",
+                        padding: "12px",
+                        fontWeight: 700
+                      }}
+                      onClick={() => setCheckoutPin(activePin)}
+                    >
+                      <DollarSign size={18} />
+                      <span>Unlock Commercial License — ${activePin.price ? Number(activePin.price).toFixed(2) : "4.99"}</span>
+                    </button>
+                  )}
+                </div>
+              ) : null}
+
+              {/* Comments Section */}
+              <div className="comments-section">
+                <div className="comments-title">
+                  Comments ({activePin.comments ? activePin.comments.length : 0})
+                </div>
+
+                <div className="comments-list">
+                  {activePin.comments && activePin.comments.length > 0 ? (
+                    activePin.comments.map((comment, index) => (
+                      <div key={index} className="comment-item">
+                        <img
+                          src={comment.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80"}
+                          alt={comment.user}
+                          className="comment-avatar"
+                        />
+                        <div className="comment-body">
+                          <div className="comment-user">{comment.user}</div>
+                          <div className="comment-text">{comment.text}</div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ color: "var(--text-muted)", fontSize: "0.85rem", fontStyle: "italic" }}>
+                      No comments yet. Be the first to share your thoughts!
+                    </div>
+                  )}
+                </div>
+
+                {/* Comment Input */}
+                <form onSubmit={handleSubmitComment} className="comment-input-row">
+                  <input
+                    type="text"
+                    className="comment-input"
+                    placeholder="Add a comment..."
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                  />
+                  <button
+                    type="submit"
+                    className="icon-btn"
+                    disabled={!commentText.trim()}
+                    style={{ opacity: commentText.trim() ? 1 : 0.5 }}
+                  >
+                    <Send size={18} />
+                  </button>
+                </form>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -244,6 +244,42 @@ export const PinProvider = ({ children }) => {
     }
   });
 
+  // Track user-owned / uploaded pins on this device or account
+  const [myUploadedPinIds, setMyUploadedPinIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gallarywala_my_uploads_v1");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("gallarywala_my_uploads_v1", JSON.stringify(myUploadedPinIds));
+    } catch (e) {
+      console.error("Storage error", e);
+    }
+  }, [myUploadedPinIds]);
+
+  // Check if current visitor / user is the owner/uploader of a pin
+  const isPinOwner = (pin) => {
+    if (!pin) return false;
+    if (isAdminAuthenticated) return true; // Platform admin has full owner privileges
+    if (currentUser) {
+      const userHandle = (currentUser.user_metadata?.username || currentUser.email?.split("@")[0] || "").toLowerCase();
+      const userEmail = (currentUser.email || "").toLowerCase();
+      const authorName = (pin.author?.name || "").toLowerCase();
+      const authorUsername = (pin.author?.username || "").replace(/^@/, "").toLowerCase();
+      const uploaderId = (pin.uploaderId || "").toLowerCase();
+
+      if (uploaderId && (uploaderId === currentUser.id?.toLowerCase() || uploaderId === userEmail)) return true;
+      if (authorUsername && (authorUsername === userHandle || authorUsername === userEmail.split("@")[0])) return true;
+      if (authorName && authorName === (currentUser.user_metadata?.full_name || "").toLowerCase()) return true;
+    }
+    return myUploadedPinIds.includes(pin.id);
+  };
+
   // 10. Verified Creators & Blue Tick Badges
   const [verifiedUsers, setVerifiedUsers] = useState(() => {
     try {
@@ -675,8 +711,12 @@ export const PinProvider = ({ children }) => {
       likes: 0,
       comments: [],
       author: authorInfo,
+      uploaderId: currentUser?.id || currentUser?.email || "device_" + Date.now(),
       ...pinData
     };
+
+    // Record as locally owned pin on this device
+    setMyUploadedPinIds((prev) => [...prev, newPinBase.id]);
 
     // If Supabase is connected, insert record into Supabase
     const savedPin = await insertImageToSupabase(newPinBase);
@@ -693,12 +733,15 @@ export const PinProvider = ({ children }) => {
     setIsUploadOpen(false);
   };
 
-  // Edit Existing Image
+  // Edit Existing Image & Category
   const updatePin = (pinId, updatedData) => {
     setPins((prev) =>
       prev.map((pin) => (pin.id === pinId ? { ...pin, ...updatedData } : pin))
     );
-    showToast("Image details updated! ✏️", "success");
+    if (activePin && activePin.id === pinId) {
+      setActivePin((prev) => (prev ? { ...prev, ...updatedData } : null));
+    }
+    showToast("Image details & category updated! ✏️", "success");
   };
 
   // Delete Image
@@ -949,6 +992,8 @@ export const PinProvider = ({ children }) => {
         revokeVerifiedBadge,
         adminTab,
         setAdminTab,
+        isPinOwner,
+        myUploadedPinIds,
         filteredPins
       }}
     >
