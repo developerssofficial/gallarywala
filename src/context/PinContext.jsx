@@ -506,7 +506,7 @@ export const PinProvider = ({ children }) => {
           if (spImages && Array.isArray(spImages) && spImages.length > 0) {
             const formatted = spImages.map((row) => ({
               id: "sp-" + (row.id || Math.random()),
-              title: row.title || "Untitled",
+              title: row.title || row.category || "General",
               description: row.description || "",
               imageUrl: row.image_url,
               category: row.category || "General",

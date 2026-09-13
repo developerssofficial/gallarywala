@@ -157,11 +157,6 @@ export const UploadModal = () => {
       setSelectedFile(file);
       const localUrl = await readFileAsDataURL(file);
       setPreviewUrl(localUrl);
-
-      if (!title) {
-        const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-        setTitle(cleanName.charAt(0).toUpperCase() + cleanName.slice(1));
-      }
     } catch (err) {
       console.warn("Scan check error:", err);
     } finally {
@@ -189,11 +184,6 @@ export const UploadModal = () => {
       setSelectedFile(file);
       const localUrl = await readFileAsDataURL(file);
       setPreviewUrl(localUrl);
-
-      if (!title) {
-        const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-        setTitle(cleanName.charAt(0).toUpperCase() + cleanName.slice(1));
-      }
     } finally {
       setScanning(false);
     }
@@ -206,15 +196,8 @@ export const UploadModal = () => {
       return;
     }
 
-    // 1. Resolve final title (Auto-fallback to filename or Category name if blank)
-    let fallbackTitle = "";
-    if (selectedFile?.name) {
-      const cleanName = selectedFile.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-      if (cleanName && cleanName.length > 2) {
-        fallbackTitle = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
-      }
-    }
-    const resolvedTitle = title.trim() || fallbackTitle || `${category} Visual`;
+    // 1. Resolve final title: Strictly use Category name if title is empty
+    const resolvedTitle = title.trim() || category || "General";
 
     // 2. Profanity / Bad words validation on Title, Description, and Keywords/Tags
     const titleCheck = validateSafeText(resolvedTitle);
