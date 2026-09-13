@@ -4,8 +4,40 @@ import { PinCard } from "./PinCard";
 import { ImageOff, Sparkles, Plus, RotateCcw } from "lucide-react";
 
 export const MasonryGrid = () => {
-  const { filteredPins, searchQuery, selectedCategory, setIsUploadOpen, setSelectedCategory, setSearchQuery } = usePins();
+  const {
+    filteredPins,
+    searchQuery,
+    selectedCategory,
+    setIsUploadOpen,
+    setSelectedCategory,
+    setSearchQuery,
+    isLoading
+  } = usePins();
 
+  // 1. Shimmer Skeleton Loader on Initial Page Load (prevents empty screen flickering)
+  if (isLoading && filteredPins.length === 0) {
+    return (
+      <div className="masonry-grid" style={{ minHeight: "60vh" }}>
+        {[320, 260, 380, 290, 340, 270, 360, 300].map((height, idx) => (
+          <div
+            key={idx}
+            className="pin-card-wrapper"
+            style={{
+              height: `${height}px`,
+              background: "linear-gradient(110deg, var(--bg-surface) 8%, var(--bg-surface-elevated) 18%, var(--bg-surface) 33%)",
+              backgroundSize: "200% 100%",
+              borderRadius: "var(--radius-lg)",
+              animation: "shimmer 1.5s infinite linear",
+              marginBottom: "16px",
+              border: "1px solid var(--border-light)"
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  // 2. Empty State when confirmed 0 images
   if (filteredPins.length === 0) {
     return (
       <div

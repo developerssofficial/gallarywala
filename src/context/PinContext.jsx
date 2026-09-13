@@ -20,9 +20,9 @@ import { calculateRevenueSplit } from "../services/paddle";
 const PinContext = createContext();
 
 const STORAGE_KEYS = {
-  PINS: "gallarywala_pins_v8",
-  BOARDS: "gallarywala_boards_v8",
-  LIKED: "gallarywala_liked_v8",
+  PINS: "gallarywala_pins_v9",
+  BOARDS: "gallarywala_boards_v9",
+  LIKED: "gallarywala_liked_v9",
   CLOUDINARY: "gallarywala_cloudinary_config_v4",
   THEME: "gallarywala_theme_v4",
   ADMIN_PIN: "gallarywala_admin_pin_v4",
@@ -55,7 +55,8 @@ const normalizePin = (pin) => {
 };
 
 export const PinProvider = ({ children }) => {
-  // 1. Supabase Config & User State
+  // 1. Loading & Supabase Config & User State
+  const [isLoading, setIsLoading] = useState(true);
   const [supabaseConfig, setSupabaseConfig] = useState(() => getSupabaseConfig());
   const [currentUser, setCurrentUser] = useState(() => {
     try {
@@ -78,45 +79,21 @@ export const PinProvider = ({ children }) => {
     } catch (e) {}
   }, [currentUser]);
 
-  // 2. Pins State - Completely fresh empty state (zero preloaded pins)
+  // 2. Pins State - Read persistent cache immediately on page load
   const [pins, setPins] = useState(() => {
     try {
-      // Clean up all legacy storage keys
-      [
-        "gallarywala_pins_v1",
-        "gallarywala_pins_v2",
-        "gallarywala_pins_v3",
-        "gallarywala_pins_v4",
-        "gallarywala_pins_v5",
-        "gallarywala_pins_v6",
-        "gallarywala_pins_v7",
-        "gallarywala_pins_v8"
-      ].forEach((k) => {
-        try { localStorage.removeItem(k); } catch (e) {}
-      });
-
-      return [];
+      const saved = localStorage.getItem(STORAGE_KEYS.PINS);
+      return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
     }
   });
 
-  // 3. Boards State - Clean empty boards
+  // 3. Boards State
   const [boards, setBoards] = useState(() => {
     try {
-      [
-        "gallarywala_boards_v1",
-        "gallarywala_boards_v2",
-        "gallarywala_boards_v3",
-        "gallarywala_boards_v4",
-        "gallarywala_boards_v5",
-        "gallarywala_boards_v6",
-        "gallarywala_boards_v7",
-        "gallarywala_boards_v8"
-      ].forEach((k) => {
-        try { localStorage.removeItem(k); } catch (e) {}
-      });
-      return [];
+      const saved = localStorage.getItem(STORAGE_KEYS.BOARDS);
+      return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
     }
@@ -560,6 +537,8 @@ export const PinProvider = ({ children }) => {
           }
         }).catch((err) => {
           console.warn("Images fetch error:", err);
+        }).finally(() => {
+          setIsLoading(false);
         });
 
         return () => {
@@ -1086,6 +1065,7 @@ export const PinProvider = ({ children }) => {
         setAdminTab,
         isPinOwner,
         myUploadedPinIds,
+        isLoading,
         filteredPins
       }}
     >
