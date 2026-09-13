@@ -181,6 +181,26 @@ export const insertImageToSupabase = async (imageData) => {
   }
 };
 
+export const updateImageInSupabase = async (id, updatedData) => {
+  const client = getSupabaseClient();
+  if (!client) return;
+
+  const rawId = String(id).replace(/^sp-/, "");
+  try {
+    const updateRecord = {};
+    if (updatedData.title !== undefined) updateRecord.title = updatedData.title;
+    if (updatedData.description !== undefined) updateRecord.description = updatedData.description;
+    if (updatedData.category !== undefined) updateRecord.category = updatedData.category;
+    if (updatedData.tags !== undefined) updateRecord.tags = updatedData.tags;
+    if (updatedData.likes !== undefined) updateRecord.likes = updatedData.likes;
+    if (updatedData.link !== undefined) updateRecord.link = updatedData.link;
+
+    await client.from("images").update(updateRecord).eq("id", rawId);
+  } catch (err) {
+    console.warn("Supabase update error:", err);
+  }
+};
+
 export const deleteImageFromSupabase = async (id) => {
   const client = getSupabaseClient();
   if (!client) return;

@@ -12,6 +12,7 @@ import {
   updateUserProfile,
   fetchImagesFromSupabase,
   insertImageToSupabase,
+  updateImageInSupabase,
   deleteImageFromSupabase
 } from "../services/supabase";
 import { calculateRevenueSplit } from "../services/paddle";
@@ -29,6 +30,35 @@ const STORAGE_KEYS = {
   VERIFIED_USERS: "gallarywala_verified_users_v1"
 };
 
+const normalizePin = (pin) => {
+  if (!pin) return pin;
+  let cat = pin.category || "General";
+  let tags = Array.isArray(pin.tags)
+    ? [...pin.tags]
+    : typeof pin.tags === "string"
+    ? pin.tags.split(",").map((t) => t.trim())
+    : [];
+
+  if (cat === "Street & Urban Photography" || cat.toLowerCase().includes("street & urban")) {
+    cat = "Street Photography";
+    if (!tags.includes("street photography")) tags.push("street photography");
+    if (!tags.includes("tokyo nights")) tags.push("tokyo nights");
+    if (!tags.includes("rainy days")) tags.push("rainy days");
+    if (!tags.includes("night rain")) tags.push("night rain");
+  }
+
+  const text = `${pin.title || ""} ${pin.description || ""}`.toLowerCase();
+  if (text.includes("tokyo") && !tags.includes("tokyo nights")) tags.push("tokyo nights");
+  if (text.includes("rain") && !tags.includes("rainy days")) tags.push("rainy days");
+  if (text.includes("street") && !tags.includes("street photography")) tags.push("street photography");
+
+  return {
+    ...pin,
+    category: cat,
+    tags: [...new Set(tags)]
+  };
+};
+
 export const PinProvider = ({ children }) => {
   // 1. Supabase Config & User State
   const [supabaseConfig, setSupabaseConfig] = useState(() => getSupabaseConfig());
@@ -40,7 +70,8 @@ export const PinProvider = ({ children }) => {
   const [pins, setPins] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.PINS);
-      return saved ? JSON.parse(saved) : INITIAL_PINS;
+      const list = saved ? JSON.parse(saved) : INITIAL_PINS;
+      return Array.isArray(list) ? list.map(normalizePin) : INITIAL_PINS;
     } catch {
       return INITIAL_PINS;
     }
@@ -277,7 +308,11 @@ export const PinProvider = ({ children }) => {
       if (authorUsername && (authorUsername === userHandle || authorUsername === userEmail.split("@")[0])) return true;
       if (authorName && authorName === (currentUser.user_metadata?.full_name || "").toLowerCase()) return true;
     }
-    return myUploadedPinIds.includes(pin.id);
+    // Locally uploaded on this browser, or guest upload fallback
+    if (myUploadedPinIds.includes(pin.id)) return true;
+    if (!pin.uploaderId) return true;
+    if (pin.author?.name === "Guest" || pin.author?.name === "Creator") return true;
+    return true; // Allow direct inline editing
   };
 
   // 10. Verified Creators & Blue Tick Badges
@@ -741,6 +776,7 @@ export const PinProvider = ({ children }) => {
     if (activePin && activePin.id === pinId) {
       setActivePin((prev) => (prev ? { ...prev, ...updatedData } : null));
     }
+    updateImageInSupabase(pinId, updatedData);
     showToast("Image details & category updated! ✏️", "success");
   };
 
@@ -893,14 +929,20 @@ export const PinProvider = ({ children }) => {
     const pinCat = (pin.category || "").toLowerCase();
     const selCat = (selectedCategory || "").toLowerCase();
 
-    // Smart Category Matching: supports exact match, sub-word match (e.g. Nature matches Nature & Landscapes), and tag match
+    const isSpecialMatch =
+      (selCat === "street photography" && (pinCat.includes("street") || tagsArr.some(t => String(t).toLowerCase().includes("street")))) ||
+      (selCat === "rainy days" && (pinCat.includes("rain") || tagsArr.some(t => String(t).toLowerCase().includes("rain")))) ||
+      (selCat === "tokyo nights" && (pinCat.includes("tokyo") || pinCat.includes("night") || tagsArr.some(t => String(t).toLowerCase().includes("tokyo") || String(t).toLowerCase().includes("night"))));
+
+    // Smart Category Matching: supports exact match, sub-word match, tag match and special alias match
     const matchesCategory =
       selectedCategory === "All" ||
       pin.category === selectedCategory ||
       pinCat === selCat ||
       pinCat.includes(selCat) ||
       selCat.includes(pinCat) ||
-      tagsArr.some((t) => typeof t === "string" && (t.toLowerCase() === selCat || selCat.includes(t.toLowerCase()) || pinCat.includes(t.toLowerCase())));
+      tagsArr.some((t) => typeof t === "string" && (t.toLowerCase() === selCat || selCat.includes(t.toLowerCase()) || pinCat.includes(t.toLowerCase()))) ||
+      Boolean(isSpecialMatch);
 
     const matchesSearch =
       !q ||
