@@ -20,9 +20,9 @@ import { calculateRevenueSplit } from "../services/paddle";
 const PinContext = createContext();
 
 const STORAGE_KEYS = {
-  PINS: "gallarywala_pins_v6",
-  BOARDS: "gallarywala_boards_v6",
-  LIKED: "gallarywala_liked_v6",
+  PINS: "gallarywala_pins_v7",
+  BOARDS: "gallarywala_boards_v7",
+  LIKED: "gallarywala_liked_v7",
   CLOUDINARY: "gallarywala_cloudinary_config_v4",
   THEME: "gallarywala_theme_v4",
   ADMIN_PIN: "gallarywala_admin_pin_v4",
@@ -78,6 +78,8 @@ const isOldMockPin = (pin) => {
   if (url.includes("1554118811-1e0d58224f24")) return true; // Cafe sign
   if (url.includes("1614162692292")) return true; // Highway Porsche
   if (url.includes("1507525428034")) return true; // Boat lake
+  if (url.includes("1506744038136")) return true; // old landscape
+  if (url.includes("1600585154340")) return true; // old modern architecture
 
   return false;
 };
@@ -92,29 +94,28 @@ export const PinProvider = ({ children }) => {
   // 2. Pins State - Strictly purge legacy mock data and sync exactly 6 authentic visuals + user uploads
   const [pins, setPins] = useState(() => {
     try {
-      const savedV6 = localStorage.getItem("gallarywala_pins_v6");
-      const savedV5 = localStorage.getItem("gallarywala_pins_v5");
-      const savedV4 = localStorage.getItem("gallarywala_pins_v4");
+      // Clean up all legacy storage keys
+      ["gallarywala_pins_v1", "gallarywala_pins_v2", "gallarywala_pins_v3", "gallarywala_pins_v4", "gallarywala_pins_v5", "gallarywala_pins_v6"].forEach(k => {
+        try { localStorage.removeItem(k); } catch(e) {}
+      });
 
+      const savedV7 = localStorage.getItem("gallarywala_pins_v7");
       let candidate = null;
-      for (const raw of [savedV6, savedV5, savedV4]) {
-        if (raw) {
-          try {
-            const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-              const filtered = parsed.filter((p) => !isOldMockPin(p));
-              if (filtered.length > 0) {
-                candidate = filtered;
-                break;
-              }
+      if (savedV7) {
+        try {
+          const parsed = JSON.parse(savedV7);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const filtered = parsed.filter((p) => !isOldMockPin(p));
+            if (filtered.length > 0) {
+              candidate = filtered;
             }
-          } catch (e) {}
-        }
+          }
+        } catch (e) {}
       }
 
       const map = new Map();
       INITIAL_PINS.forEach((p) => {
-        if (p && p.imageUrl) map.set(p.imageUrl, normalizePin(p));
+        if (p && p.imageUrl && !isOldMockPin(p)) map.set(p.imageUrl, normalizePin(p));
       });
       if (Array.isArray(candidate)) {
         candidate.forEach((p) => {
