@@ -37,7 +37,9 @@ export const Navbar = () => {
     setIsSettingsOpen,
     setSettingsTab,
     handleSignOut,
-    isUserVerified
+    isUserVerified,
+    setIsAuthModalOpen,
+    showToast
   } = usePins();
 
   const searchInputRef = useRef(null);
@@ -185,10 +187,17 @@ export const Navbar = () => {
 
         {/* Nav Actions */}
         <div className="nav-actions">
-          {/* Create Button (Desktop) */}
+          {/* Create Button (Desktop) - Requires Google/Email Account */}
           <button
             className="btn-primary desktop-create-btn hide-on-mobile"
-            onClick={() => setIsUploadOpen(true)}
+            onClick={() => {
+              if (!currentUser) {
+                showToast("Please sign in with Google to upload images! 🚀", "info");
+                setIsAuthModalOpen(true);
+              } else {
+                setIsUploadOpen(true);
+              }
+            }}
             style={{ padding: "8px 18px", fontSize: "0.88rem" }}
           >
             <Plus size={16} />

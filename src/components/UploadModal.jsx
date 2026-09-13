@@ -56,6 +56,72 @@ export const UploadModal = () => {
 
   if (!isUploadOpen) return null;
 
+  // 🔒 Require Google / Email authentication to upload images
+  if (!currentUser) {
+    return (
+      <div className="modal-backdrop" onClick={() => setIsUploadOpen(false)}>
+        <div
+          className="modal-container"
+          style={{ maxWidth: "460px", textAlign: "center", padding: "36px 28px" }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            className="modal-close-btn"
+            onClick={() => setIsUploadOpen(false)}
+            title="Close"
+          >
+            <X size={20} />
+          </button>
+
+          <div
+            style={{
+              width: "68px",
+              height: "68px",
+              borderRadius: "50%",
+              background: "rgba(121, 40, 202, 0.15)",
+              border: "1px solid rgba(121, 40, 202, 0.4)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 20px auto"
+            }}
+          >
+            <UploadCloud size={34} color="var(--color-primary)" />
+          </div>
+
+          <h3 style={{ fontSize: "1.4rem", fontWeight: 800, marginBottom: "10px" }}>
+            Creator Sign-In Required
+          </h3>
+
+          <p style={{ color: "var(--text-muted)", fontSize: "0.92rem", lineHeight: "1.5", marginBottom: "26px" }}>
+            Guests can download and explore unlimited 4K visuals for free! To upload your own artwork, track your portfolio, and earn revenue, please sign in with Google.
+          </p>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <button
+              className="btn-primary"
+              style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: "0.95rem" }}
+              onClick={() => {
+                setIsUploadOpen(false);
+                setIsAuthModalOpen(true);
+              }}
+            >
+              <Sparkles size={18} />
+              <span>Continue with Google / Email</span>
+            </button>
+            <button
+              className="btn-secondary"
+              style={{ width: "100%", justifyContent: "center", padding: "10px" }}
+              onClick={() => setIsUploadOpen(false)}
+            >
+              Maybe Later
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const isCloudinaryConfigured = Boolean(
     cloudinaryConfig.cloudName && cloudinaryConfig.uploadPreset
   );

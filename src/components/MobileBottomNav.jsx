@@ -17,7 +17,10 @@ export const MobileBottomNav = () => {
     setIsSettingsOpen,
     setSettingsTab,
     boards,
-    setSelectedCategory
+    setSelectedCategory,
+    currentUser,
+    setIsAuthModalOpen,
+    showToast
   } = usePins();
 
   const totalSavedPins = boards.reduce((acc, b) => acc + (b.pinIds?.length || 0), 0);
@@ -58,7 +61,14 @@ export const MobileBottomNav = () => {
         <button
           type="button"
           className="mobile-create-btn"
-          onClick={() => setIsUploadOpen(true)}
+          onClick={() => {
+            if (!currentUser) {
+              showToast("Please sign in with Google to upload images! 🚀", "info");
+              setIsAuthModalOpen(true);
+            } else {
+              setIsUploadOpen(true);
+            }
+          }}
           title="Upload & Sell 4K Artwork"
         >
           <Plus size={26} strokeWidth={2.8} />
