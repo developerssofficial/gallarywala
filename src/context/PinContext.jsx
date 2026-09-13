@@ -64,6 +64,17 @@ const normalizePin = (pin) => {
   };
 };
 
+const isOldMockPin = (pin) => {
+  if (!pin) return true;
+  const url = pin.imageUrl || "";
+  if (url.includes("1550745165-9bc0b252726f")) return true; // Floating game controller
+  if (url.includes("1515886657613-9f3515b0c78f")) return true; // Yellow hoodie
+  if (url.includes("1578632767115-351597cf2477")) return true; // Red anime figure
+  if (url.includes("1558655146-d09347e92766")) return true; // Swiss poster
+  if (pin.id && String(pin.id).startsWith("pin-")) return true;
+  return false;
+};
+
 export const PinProvider = ({ children }) => {
   // 1. Supabase Config & User State
   const [supabaseConfig, setSupabaseConfig] = useState(() => getSupabaseConfig());
@@ -71,30 +82,48 @@ export const PinProvider = ({ children }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isSupabaseSettingsOpen, setIsSupabaseSettingsOpen] = useState(false);
 
-  // 2. Pins State - Restore user uploads from localStorage (v4 or v5) and merge seamlessly
+  // 2. Pins State - Clean up legacy placeholder mock data and ensure identical feed across all browser profiles
   const [pins, setPins] = useState(() => {
     try {
-      const savedV4 = localStorage.getItem("gallarywala_pins_v4");
       const savedV5 = localStorage.getItem("gallarywala_pins_v5");
+      const savedV4 = localStorage.getItem("gallarywala_pins_v4");
 
       let candidate = null;
-      if (savedV4) {
-        try {
-          const parsed = JSON.parse(savedV4);
-          if (Array.isArray(parsed) && parsed.length > 0) candidate = parsed;
-        } catch (e) {}
-      }
-      if (!candidate && savedV5) {
+      if (savedV5) {
         try {
           const parsed = JSON.parse(savedV5);
-          if (Array.isArray(parsed) && parsed.length > 0) candidate = parsed;
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const filtered = parsed.filter((p) => !isOldMockPin(p));
+            if (filtered.length > 0) candidate = filtered;
+          }
+        } catch (e) {}
+      }
+      if (!candidate && savedV4) {
+        try {
+          const parsed = JSON.parse(savedV4);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const filtered = parsed.filter((p) => !isOldMockPin(p));
+            if (filtered.length > 0) candidate = filtered;
+          }
         } catch (e) {}
       }
 
-      if (Array.isArray(candidate) && candidate.length > 0) {
-        return candidate.map(normalizePin);
+      const map = new Map();
+      // First insert candidate pins from user
+      if (Array.isArray(candidate)) {
+        candidate.forEach((p) => {
+          if (p && p.imageUrl) map.set(p.imageUrl, normalizePin(p));
+        });
       }
-      return INITIAL_PINS.map(normalizePin);
+      // Insert initial 6 pins
+      INITIAL_PINS.forEach((p) => {
+        if (p && p.imageUrl && !map.has(p.imageUrl)) {
+          map.set(p.imageUrl, normalizePin(p));
+        }
+      });
+
+      const finalPins = Array.from(map.values());
+      return finalPins.length > 0 ? finalPins : INITIAL_PINS.map(normalizePin);
     } catch {
       return INITIAL_PINS.map(normalizePin);
     }
