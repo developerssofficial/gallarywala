@@ -20,9 +20,9 @@ import { calculateRevenueSplit } from "../services/paddle";
 const PinContext = createContext();
 
 const STORAGE_KEYS = {
-  PINS: "gallarywala_pins_v4",
-  BOARDS: "gallarywala_boards_v4",
-  LIKED: "gallarywala_liked_v4",
+  PINS: "gallarywala_pins_v6",
+  BOARDS: "gallarywala_boards_v6",
+  LIKED: "gallarywala_liked_v6",
   CLOUDINARY: "gallarywala_cloudinary_config_v4",
   THEME: "gallarywala_theme_v4",
   ADMIN_PIN: "gallarywala_admin_pin_v4",
@@ -66,12 +66,19 @@ const normalizePin = (pin) => {
 
 const isOldMockPin = (pin) => {
   if (!pin) return true;
-  const url = pin.imageUrl || "";
-  if (url.includes("1550745165-9bc0b252726f")) return true; // Floating game controller
+  const id = String(pin.id || "");
+  const url = String(pin.imageUrl || "");
+
+  if (id.startsWith("pin-")) return true;
+  if (url.includes("1550745165-9bc0b252726f")) return true; // Game controller
   if (url.includes("1515886657613-9f3515b0c78f")) return true; // Yellow hoodie
-  if (url.includes("1578632767115-351597cf2477")) return true; // Red anime figure
+  if (url.includes("1578632767115-351597cf2477")) return true; // Red anime
   if (url.includes("1558655146-d09347e92766")) return true; // Swiss poster
-  if (pin.id && String(pin.id).startsWith("pin-")) return true;
+  if (url.includes("1513694203232")) return true; // Red roof house
+  if (url.includes("1554118811-1e0d58224f24")) return true; // Cafe sign
+  if (url.includes("1614162692292")) return true; // Highway Porsche
+  if (url.includes("1507525428034")) return true; // Boat lake
+
   return false;
 };
 
@@ -82,45 +89,40 @@ export const PinProvider = ({ children }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isSupabaseSettingsOpen, setIsSupabaseSettingsOpen] = useState(false);
 
-  // 2. Pins State - Clean up legacy placeholder mock data and ensure identical feed across all browser profiles
+  // 2. Pins State - Strictly purge legacy mock data and sync exactly 6 authentic visuals + user uploads
   const [pins, setPins] = useState(() => {
     try {
+      const savedV6 = localStorage.getItem("gallarywala_pins_v6");
       const savedV5 = localStorage.getItem("gallarywala_pins_v5");
       const savedV4 = localStorage.getItem("gallarywala_pins_v4");
 
       let candidate = null;
-      if (savedV5) {
-        try {
-          const parsed = JSON.parse(savedV5);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            const filtered = parsed.filter((p) => !isOldMockPin(p));
-            if (filtered.length > 0) candidate = filtered;
-          }
-        } catch (e) {}
-      }
-      if (!candidate && savedV4) {
-        try {
-          const parsed = JSON.parse(savedV4);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            const filtered = parsed.filter((p) => !isOldMockPin(p));
-            if (filtered.length > 0) candidate = filtered;
-          }
-        } catch (e) {}
+      for (const raw of [savedV6, savedV5, savedV4]) {
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              const filtered = parsed.filter((p) => !isOldMockPin(p));
+              if (filtered.length > 0) {
+                candidate = filtered;
+                break;
+              }
+            }
+          } catch (e) {}
+        }
       }
 
       const map = new Map();
-      // First insert candidate pins from user
+      INITIAL_PINS.forEach((p) => {
+        if (p && p.imageUrl) map.set(p.imageUrl, normalizePin(p));
+      });
       if (Array.isArray(candidate)) {
         candidate.forEach((p) => {
-          if (p && p.imageUrl) map.set(p.imageUrl, normalizePin(p));
+          if (p && p.imageUrl && !isOldMockPin(p)) {
+            map.set(p.imageUrl, normalizePin(p));
+          }
         });
       }
-      // Insert initial 6 pins
-      INITIAL_PINS.forEach((p) => {
-        if (p && p.imageUrl && !map.has(p.imageUrl)) {
-          map.set(p.imageUrl, normalizePin(p));
-        }
-      });
 
       const finalPins = Array.from(map.values());
       return finalPins.length > 0 ? finalPins : INITIAL_PINS.map(normalizePin);
@@ -590,8 +592,10 @@ export const PinProvider = ({ children }) => {
   // Persistence Effects
   useEffect(() => {
     try {
-      localStorage.setItem("gallarywala_pins_v4", JSON.stringify(pins));
-      localStorage.setItem("gallarywala_pins_v5", JSON.stringify(pins));
+      const cleanPins = (pins || []).filter((p) => !isOldMockPin(p));
+      localStorage.setItem("gallarywala_pins_v6", JSON.stringify(cleanPins));
+      localStorage.setItem("gallarywala_pins_v5", JSON.stringify(cleanPins));
+      localStorage.setItem("gallarywala_pins_v4", JSON.stringify(cleanPins));
     } catch (e) {
       console.warn("Storage error", e);
     }
