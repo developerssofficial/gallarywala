@@ -836,17 +836,28 @@ export const PinProvider = ({ children }) => {
     }
   };
 
-  // Live Instant Search
+  // Live Instant Search & Smart Filter
   const filteredPins = (Array.isArray(pins) ? pins : []).filter((pin) => {
     if (!pin) return false;
-    const matchesCategory =
-      selectedCategory === "All" || pin.category === selectedCategory;
+
     const q = (searchQuery || "").toLowerCase().trim();
     const tagsArr = Array.isArray(pin.tags)
       ? pin.tags
       : typeof pin.tags === "string"
       ? pin.tags.split(",")
       : [];
+
+    const pinCat = (pin.category || "").toLowerCase();
+    const selCat = (selectedCategory || "").toLowerCase();
+
+    // Smart Category Matching: supports exact match, sub-word match (e.g. Nature matches Nature & Landscapes), and tag match
+    const matchesCategory =
+      selectedCategory === "All" ||
+      pin.category === selectedCategory ||
+      pinCat === selCat ||
+      pinCat.includes(selCat) ||
+      selCat.includes(pinCat) ||
+      tagsArr.some((t) => typeof t === "string" && (t.toLowerCase() === selCat || selCat.includes(t.toLowerCase()) || pinCat.includes(t.toLowerCase())));
 
     const matchesSearch =
       !q ||
