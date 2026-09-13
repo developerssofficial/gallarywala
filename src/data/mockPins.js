@@ -6,7 +6,7 @@ export const INITIAL_PINS = [
     imageUrl: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=85",
     aspectRatio: "9/16",
     category: "Street Photography",
-    tags: ["street photography", "tokyo nights", "rainy days", "night rain", "neon", "tokyo", "cityscape", "cyberpunk"],
+    tags: ["street photography", "tokyo nights", "rainy days", "night rain", "neon", "tokyo", "cityscape"],
     author: {
       name: "xparrowdev",
       avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
@@ -21,146 +21,97 @@ export const INITIAL_PINS = [
     ]
   },
   {
-    id: "pin-1",
-    title: "Cyberpunk Shinjuku Neon Alley",
-    description: "Vibrant neon-lit back alley in Kabukicho, Tokyo after a sudden summer rainstorm.",
-    imageUrl: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1000&q=80",
+    id: "img-girl-night-1",
+    title: "Rainy Street Solitude & Warm Lanterns",
+    description: "Cinematic portrait in evening rain with glowing red lanterns casting a soft ambient glow.",
+    imageUrl: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1000&q=85",
     aspectRatio: "2/3",
-    category: "Cyberpunk",
-    tags: ["cyberpunk", "tokyo nights", "neon", "rainy days", "4k wallpapers", "dark mode"],
+    category: "Street Photography",
+    tags: ["street photography", "tokyo nights", "rainy days", "aesthetic", "daily life", "dark mode"],
     author: {
-      name: "Kenji Sato",
-      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
-      username: "@kenjishots"
+      name: "xparrowdev",
+      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
+      username: "@xparrowdev"
     },
-    likes: 1420,
-    createdAt: "2026-09-10",
+    uploaderId: "xparrowdev@gmail.com",
+    likes: 1240,
+    createdAt: "2026-09-12",
     link: "https://gallarywala.vercel.app",
     comments: []
   },
   {
-    id: "pin-2",
-    title: "Minimalist Concrete Glass Villa",
-    description: "Brutalist architectural villa harmoniously nestled into lush subtropical greenery.",
-    imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
+    id: "img-porsche-1",
+    title: "Classic Porsche 911 Alpine Mountain Pass",
+    description: "Vintage black Porsche 911 resting on wet asphalt surrounded by autumn mountain peaks and mist.",
+    imageUrl: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=85",
+    aspectRatio: "16/10",
+    category: "Supercars",
+    tags: ["supercars", "sports cars", "classic cars", "automotive", "4k wallpapers", "autumn vibes"],
+    author: {
+      name: "xparrowdev",
+      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
+      username: "@xparrowdev"
+    },
+    uploaderId: "xparrowdev@gmail.com",
+    likes: 2150,
+    createdAt: "2026-09-12",
+    link: "https://gallarywala.vercel.app",
+    comments: []
+  },
+  {
+    id: "img-cabin-1",
+    title: "Luminous Forest A-Frame Glass Retreat",
+    description: "Warm architectural glass cabin glowing warmly amidst the tranquil misty pine trees.",
+    imageUrl: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1000&q=85",
     aspectRatio: "4/5",
     category: "Architecture",
-    tags: ["architecture", "minimalist", "interior design", "modern", "4k wallpapers"],
+    tags: ["architecture", "interior design", "cozy vibes", "forest", "nature", "4k wallpapers"],
     author: {
-      name: "Astrid Lindgren",
-      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80",
-      username: "@nordiclines"
+      name: "xparrowdev",
+      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
+      username: "@xparrowdev"
     },
-    likes: 512,
-    createdAt: "2026-09-08",
+    uploaderId: "xparrowdev@gmail.com",
+    likes: 1490,
+    createdAt: "2026-09-12",
     link: "https://gallarywala.vercel.app",
     comments: []
   },
   {
-    id: "pin-3",
-    title: "Dreamy Alpine Lake Sunrise",
-    description: "Crystal clear emerald waters reflecting the majestic peaks of the Dolomites at dawn.",
-    imageUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80",
+    id: "img-galaxy-1",
+    title: "Cosmic Milky Way Celestial Mirror Lake",
+    description: "Crystal clear mirror reflection of the starry night sky and Milky Way galaxy over calm waters.",
+    imageUrl: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1000&q=85",
     aspectRatio: "16/9",
-    category: "Nature",
-    tags: ["nature", "mountains", "landscapes", "travel", "8k uhd", "sunsets"],
+    category: "Galaxy",
+    tags: ["galaxy", "space", "astronomy", "amoled wallpapers", "dark mode", "8k uhd", "night life"],
     author: {
-      name: "Luca Moretti",
-      avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=150&q=80",
-      username: "@lucatravels"
+      name: "xparrowdev",
+      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
+      username: "@xparrowdev"
     },
-    likes: 890,
-    createdAt: "2026-09-05",
+    uploaderId: "xparrowdev@gmail.com",
+    likes: 3120,
+    createdAt: "2026-09-12",
     link: "https://gallarywala.vercel.app",
     comments: []
   },
   {
-    id: "pin-4",
-    title: "3D Holographic Fluid Shapes",
-    description: "Iridescent abstract spheres floating in glass container with caustic refraction.",
-    imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80",
-    aspectRatio: "1/1",
-    category: "3D Renders",
-    tags: ["3d renders", "abstract art", "fluid art", "amoled wallpapers", "synthwave"],
-    author: {
-      name: "Sora Takahashi",
-      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
-      username: "@sorarender"
-    },
-    likes: 1204,
-    createdAt: "2026-09-07",
-    link: "https://gallarywala.vercel.app",
-    comments: []
-  },
-  {
-    id: "pin-5",
-    title: "Retro Anime Lo-Fi Room Study",
-    description: "Cozy twilight bedroom illustration filled with vintage synths, manga shelves, and warm lamplight.",
-    imageUrl: "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1000&q=80",
-    aspectRatio: "9/16",
-    category: "Anime",
-    tags: ["anime", "lo-fi", "manga", "studio ghibli", "cozy vibes", "daily life"],
-    author: {
-      name: "Yuki Tanaka",
-      avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80",
-      username: "@yukidraws"
-    },
-    likes: 2450,
-    createdAt: "2026-09-06",
-    link: "https://gallarywala.vercel.app",
-    comments: []
-  },
-  {
-    id: "pin-6",
-    title: "Artisan Caramel Latte & Coffee Bean Roast",
-    description: "Handcrafted speckled ceramic cup with creamy matcha latte against natural linen fabric.",
-    imageUrl: "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=1000&q=80",
+    id: "img-coffee-1",
+    title: "Rainy Afternoon Artisan Latte Coffee",
+    description: "Steaming handcrafted latte with delicate heart foam art sitting by a rain-splattered cafe window.",
+    imageUrl: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1000&q=85",
     aspectRatio: "4/5",
     category: "Coffee",
-    tags: ["coffee", "food", "daily life", "cozy vibes", "culinary art"],
+    tags: ["coffee", "food", "daily life", "cozy vibes", "rainy days", "aesthetic"],
     author: {
-      name: "Chloe Dubois",
-      avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=150&q=80",
-      username: "@chloelife"
+      name: "xparrowdev",
+      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
+      username: "@xparrowdev"
     },
-    likes: 673,
-    createdAt: "2026-09-04",
-    link: "https://gallarywala.vercel.app",
-    comments: []
-  },
-  {
-    id: "pin-7",
-    title: "Editorial High-Fashion Noir Silhouette",
-    description: "Contemporary fashion photography featuring avant-garde silhouette and structured tailoring.",
-    imageUrl: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=80",
-    aspectRatio: "2/3",
-    category: "Fashion",
-    tags: ["fashion", "streetwear", "luxury living", "monochrome", "aesthetic"],
-    author: {
-      name: "Valentin Morel",
-      avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80",
-      username: "@morelvogue"
-    },
-    likes: 1540,
-    createdAt: "2026-09-09",
-    link: "https://gallarywala.vercel.app",
-    comments: []
-  },
-  {
-    id: "pin-8",
-    title: "Modern Cyber Battlestation Setup",
-    description: "Minimalist RGB desk setup with ultrawide OLED curved monitor and custom mechanical keyboard.",
-    imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1000&q=80",
-    aspectRatio: "16/10",
-    category: "Game Setup",
-    tags: ["gaming", "game setup", "desk setup", "workstation", "4k wallpapers"],
-    author: {
-      name: "Devon Clark",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
-      username: "@devongaming"
-    },
-    likes: 1120,
-    createdAt: "2026-09-11",
+    uploaderId: "xparrowdev@gmail.com",
+    likes: 1890,
+    createdAt: "2026-09-12",
     link: "https://gallarywala.vercel.app",
     comments: []
   }

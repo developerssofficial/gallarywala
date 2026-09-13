@@ -20,9 +20,9 @@ import { calculateRevenueSplit } from "../services/paddle";
 const PinContext = createContext();
 
 const STORAGE_KEYS = {
-  PINS: "gallarywala_pins_v4",
-  BOARDS: "gallarywala_boards_v4",
-  LIKED: "gallarywala_liked_v4",
+  PINS: "gallarywala_pins_v5",
+  BOARDS: "gallarywala_boards_v5",
+  LIKED: "gallarywala_liked_v5",
   CLOUDINARY: "gallarywala_cloudinary_config_v4",
   THEME: "gallarywala_theme_v4",
   ADMIN_PIN: "gallarywala_admin_pin_v4",
