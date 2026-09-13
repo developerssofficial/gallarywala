@@ -230,18 +230,18 @@ CREATE TABLE IF NOT EXISTS public.images (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable Row Level Security (RLS) & Public Read Access
+-- Enable Row Level Security (RLS) & Public Read/Write Access
 ALTER TABLE public.images ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow public read access" 
 ON public.images FOR SELECT USING (true);
 
-CREATE POLICY "Allow authenticated insert access" 
+CREATE POLICY "Allow public insert access" 
 ON public.images FOR INSERT WITH CHECK (true);
 
-CREATE POLICY "Allow update access" 
+CREATE POLICY "Allow public update access" 
 ON public.images FOR UPDATE USING (true);
 
-CREATE POLICY "Allow delete access" 
+CREATE POLICY "Allow public delete access" 
 ON public.images FOR DELETE USING (true);
 `;
