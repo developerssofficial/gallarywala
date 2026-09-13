@@ -75,14 +75,17 @@ export const PinProvider = ({ children }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isSupabaseSettingsOpen, setIsSupabaseSettingsOpen] = useState(false);
 
-  // 2. Pins / Images State (Starts empty until uploaded or loaded from Supabase)
+  // 2. Pins / Images State (Populates INITIAL_PINS when empty or in incognito)
   const [pins, setPins] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.PINS);
       const list = saved ? JSON.parse(saved) : INITIAL_PINS;
-      return Array.isArray(list) ? list.map(normalizePin) : INITIAL_PINS;
+      if (Array.isArray(list) && list.length > 0) {
+        return list.map(normalizePin);
+      }
+      return INITIAL_PINS.map(normalizePin);
     } catch {
-      return INITIAL_PINS;
+      return INITIAL_PINS.map(normalizePin);
     }
   });
 
@@ -90,7 +93,11 @@ export const PinProvider = ({ children }) => {
   const [boards, setBoards] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.BOARDS);
-      return saved ? JSON.parse(saved) : INITIAL_BOARDS;
+      const list = saved ? JSON.parse(saved) : INITIAL_BOARDS;
+      if (Array.isArray(list) && list.length > 0) {
+        return list;
+      }
+      return INITIAL_BOARDS;
     } catch {
       return INITIAL_BOARDS;
     }
