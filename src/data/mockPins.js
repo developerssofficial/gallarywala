@@ -59,7 +59,17 @@ export const CATEGORIES = [
   "Streetwear",
   "Typography",
   "Food",
+  "Coffee",
+  "Desserts",
+  "Bakery",
+  "Pizza",
+  "Burgers",
+  "Sushi",
+  "Street Food",
   "Drinks",
+  "Cocktails",
+  "Fruits",
+  "Culinary Art",
   "Travel"
 ];
 
