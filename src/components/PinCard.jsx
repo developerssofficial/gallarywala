@@ -339,33 +339,6 @@ export const PinCard = ({ pin }) => {
             </div>
           </div>
         </div>
-
-        {/* Pin Metadata - Minimal Pinterest Style (Creator shown only on detail modal) */}
-        {pin.title && (
-          <div className="pin-meta" style={{ padding: "8px 10px 6px 10px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
-              <div className="pin-meta-title" style={{ flex: 1, margin: 0, fontSize: "0.84rem", fontWeight: 600 }}>
-                {pin.title}
-              </div>
-              {isPaid && (
-                <span
-                  style={{
-                    fontSize: "0.68rem",
-                    fontWeight: 800,
-                    color: unlocked ? "#10b981" : "var(--color-primary)",
-                    background: "var(--bg-surface)",
-                    padding: "2px 6px",
-                    borderRadius: "4px",
-                    border: "1px solid var(--border-light)",
-                    whiteSpace: "nowrap"
-                  }}
-                >
-                  {unlocked ? "UNLOCKED" : `$${pin.price ? Number(pin.price).toFixed(2) : "4.99"}`}
-                </span>
-              )}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
