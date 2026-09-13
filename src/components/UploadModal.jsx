@@ -134,13 +134,19 @@ export const UploadModal = () => {
       showToast("Please select an image to upload.", "error");
       return;
     }
-    if (!title.trim()) {
-      showToast("Please enter a title for your image.", "error");
-      return;
+
+    // 1. Resolve final title (Auto-fallback to filename or Category name if blank)
+    let fallbackTitle = "";
+    if (selectedFile?.name) {
+      const cleanName = selectedFile.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+      if (cleanName && cleanName.length > 2) {
+        fallbackTitle = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+      }
     }
+    const resolvedTitle = title.trim() || fallbackTitle || `${category} Visual`;
 
     // 2. Profanity / Bad words validation on Title, Description, and Keywords/Tags
-    const titleCheck = validateSafeText(title);
+    const titleCheck = validateSafeText(resolvedTitle);
     const descCheck = validateSafeText(description);
     const tagsCheck = validateSafeText(tagsInput);
 
@@ -186,7 +192,7 @@ export const UploadModal = () => {
       const authorUserClean = authorNameClean ? authorNameClean.toLowerCase().replace(/\s+/g, "_") : undefined;
 
       addPin({
-        title: title.trim(),
+        title: resolvedTitle,
         description: description.trim(),
         imageUrl: finalImageUrl,
         category,
@@ -387,14 +393,13 @@ export const UploadModal = () => {
           {/* Form Fields */}
           <div>
             <div className="form-group">
-              <label className="form-label">Title *</label>
+              <label className="form-label">Title (Optional)</label>
               <input
                 type="text"
                 className="form-input"
-                placeholder="e.g. Neon Tokyo Rain, Vintage Car"
+                placeholder="e.g. Neon Tokyo (Leave blank to use Category name)"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                required
               />
             </div>
 
