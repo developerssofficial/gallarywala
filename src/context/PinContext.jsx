@@ -43,24 +43,18 @@ const normalizePin = (pin) => {
     cat = "Street Photography";
   }
 
-  let author = pin.author || {};
-  let uploaderId = pin.uploaderId;
-
-  if (pin.id === "img-1789259161062" || !uploaderId || uploaderId.startsWith("device_") || author.name === "Guest" || author.name === "Creator") {
-    author = {
-      name: author.name || "xparrowdev",
-      username: author.username || "@xparrowdev",
-      avatar: author.avatar || "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev"
-    };
-    uploaderId = uploaderId || "xparrowdev@gmail.com";
-  }
+  let author = pin.author || {
+    name: "Creator",
+    username: "@creator",
+    avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=creator"
+  };
 
   return {
     ...pin,
     category: cat,
     tags: [...new Set(tags)],
     author,
-    uploaderId
+    uploaderId: pin.uploaderId || null
   };
 };
 
@@ -366,12 +360,11 @@ export const PinProvider = ({ children }) => {
       if (uploaderId && (uploaderId === currentUser.id?.toLowerCase() || uploaderId === userEmail)) return true;
       if (authorUsername && (authorUsername === userHandle || authorUsername === userEmail.split("@")[0])) return true;
       if (authorName && authorName === (currentUser.user_metadata?.full_name || "").toLowerCase()) return true;
+      return false;
     }
-    // Locally uploaded on this browser, or guest upload fallback
-    if (myUploadedPinIds.includes(pin.id)) return true;
-    if (!pin.uploaderId) return true;
-    if (pin.author?.name === "Guest" || pin.author?.name === "Creator") return true;
-    return true; // Allow direct inline editing
+    // Locally uploaded on this browser
+    if (myUploadedPinIds && myUploadedPinIds.includes(pin.id)) return true;
+    return false;
   };
 
   // 10. Verified Creators & Blue Tick Badges
