@@ -1,9 +1,85 @@
 export const INITIAL_PINS = [
   {
+    id: "img-girl-night-1",
+    title: "A night",
+    description: "Cinematic portrait in evening rain with glowing lanterns and city lights reflecting on the wet street.",
+    imageUrl: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=85",
+    aspectRatio: "2/3",
+    category: "Street Photography",
+    tags: ["street photography", "tokyo nights", "rainy days", "aesthetic", "daily life", "dark mode"],
+    author: {
+      name: "xparrowdev",
+      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
+      username: "@xparrowdev"
+    },
+    uploaderId: "xparrowdev@gmail.com",
+    likes: 1240,
+    createdAt: "2026-09-12",
+    link: "https://gallarywala.vercel.app",
+    comments: []
+  },
+  {
+    id: "img-porsche-1",
+    title: "Let's have some tour",
+    description: "Vintage black Porsche 911 resting on wet asphalt surrounded by autumn mountain peaks and mist.",
+    imageUrl: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=85",
+    aspectRatio: "16/10",
+    category: "Supercars",
+    tags: ["supercars", "sports cars", "classic cars", "automotive", "4k wallpapers", "autumn vibes"],
+    author: {
+      name: "xparrowdev",
+      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
+      username: "@xparrowdev"
+    },
+    uploaderId: "xparrowdev@gmail.com",
+    likes: 2150,
+    createdAt: "2026-09-12",
+    link: "https://gallarywala.vercel.app",
+    comments: []
+  },
+  {
+    id: "img-cabin-1",
+    title: "Nature & Landscapes",
+    description: "Warm architectural glass cabin glowing warmly amidst tranquil misty pine trees at dusk.",
+    imageUrl: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1200&q=85",
+    aspectRatio: "4/5",
+    category: "Nature",
+    tags: ["nature", "architecture", "interior design", "cozy vibes", "forest", "4k wallpapers"],
+    author: {
+      name: "xparrowdev",
+      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
+      username: "@xparrowdev"
+    },
+    uploaderId: "xparrowdev@gmail.com",
+    likes: 1490,
+    createdAt: "2026-09-12",
+    link: "https://gallarywala.vercel.app",
+    comments: []
+  },
+  {
+    id: "img-galaxy-1",
+    title: "Where the night meets nature",
+    description: "Crystal clear mirror reflection of the starry night sky and Milky Way galaxy over calm waters.",
+    imageUrl: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=85",
+    aspectRatio: "16/9",
+    category: "Galaxy",
+    tags: ["galaxy", "space", "astronomy", "amoled wallpapers", "dark mode", "8k uhd", "night life"],
+    author: {
+      name: "xparrowdev",
+      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
+      username: "@xparrowdev"
+    },
+    uploaderId: "xparrowdev@gmail.com",
+    likes: 3120,
+    createdAt: "2026-09-12",
+    link: "https://gallarywala.vercel.app",
+    comments: []
+  },
+  {
     id: "img-1789259161062",
-    title: "Tokyo Rain Neon Cyber Street",
-    description: "Atmospheric rainy night in Shinjuku, Tokyo with glowing neon signboards reflecting on wet asphalt.",
-    imageUrl: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=85",
+    title: "Street Photography",
+    description: "Atmospheric rainy night in Tokyo with glowing neon signboards reflecting on wet asphalt as a lone person walks by.",
+    imageUrl: "https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=85",
     aspectRatio: "9/16",
     category: "Street Photography",
     tags: ["street photography", "tokyo nights", "rainy days", "night rain", "neon", "tokyo", "cityscape"],
@@ -21,86 +97,10 @@ export const INITIAL_PINS = [
     ]
   },
   {
-    id: "img-girl-night-1",
-    title: "Rainy Street Solitude & Warm Lanterns",
-    description: "Cinematic portrait in evening rain with glowing red lanterns casting a soft ambient glow.",
-    imageUrl: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1000&q=85",
-    aspectRatio: "2/3",
-    category: "Street Photography",
-    tags: ["street photography", "tokyo nights", "rainy days", "aesthetic", "daily life", "dark mode"],
-    author: {
-      name: "xparrowdev",
-      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
-      username: "@xparrowdev"
-    },
-    uploaderId: "xparrowdev@gmail.com",
-    likes: 1240,
-    createdAt: "2026-09-12",
-    link: "https://gallarywala.vercel.app",
-    comments: []
-  },
-  {
-    id: "img-porsche-1",
-    title: "Classic Porsche 911 Alpine Mountain Pass",
-    description: "Vintage black Porsche 911 resting on wet asphalt surrounded by autumn mountain peaks and mist.",
-    imageUrl: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=85",
-    aspectRatio: "16/10",
-    category: "Supercars",
-    tags: ["supercars", "sports cars", "classic cars", "automotive", "4k wallpapers", "autumn vibes"],
-    author: {
-      name: "xparrowdev",
-      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
-      username: "@xparrowdev"
-    },
-    uploaderId: "xparrowdev@gmail.com",
-    likes: 2150,
-    createdAt: "2026-09-12",
-    link: "https://gallarywala.vercel.app",
-    comments: []
-  },
-  {
-    id: "img-cabin-1",
-    title: "Luminous Forest A-Frame Glass Retreat",
-    description: "Warm architectural glass cabin glowing warmly amidst the tranquil misty pine trees.",
-    imageUrl: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1000&q=85",
-    aspectRatio: "4/5",
-    category: "Architecture",
-    tags: ["architecture", "interior design", "cozy vibes", "forest", "nature", "4k wallpapers"],
-    author: {
-      name: "xparrowdev",
-      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
-      username: "@xparrowdev"
-    },
-    uploaderId: "xparrowdev@gmail.com",
-    likes: 1490,
-    createdAt: "2026-09-12",
-    link: "https://gallarywala.vercel.app",
-    comments: []
-  },
-  {
-    id: "img-galaxy-1",
-    title: "Cosmic Milky Way Celestial Mirror Lake",
-    description: "Crystal clear mirror reflection of the starry night sky and Milky Way galaxy over calm waters.",
-    imageUrl: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1000&q=85",
-    aspectRatio: "16/9",
-    category: "Galaxy",
-    tags: ["galaxy", "space", "astronomy", "amoled wallpapers", "dark mode", "8k uhd", "night life"],
-    author: {
-      name: "xparrowdev",
-      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev",
-      username: "@xparrowdev"
-    },
-    uploaderId: "xparrowdev@gmail.com",
-    likes: 3120,
-    createdAt: "2026-09-12",
-    link: "https://gallarywala.vercel.app",
-    comments: []
-  },
-  {
     id: "img-coffee-1",
-    title: "Rainy Afternoon Artisan Latte Coffee",
-    description: "Steaming handcrafted latte with delicate heart foam art sitting by a rain-splattered cafe window.",
-    imageUrl: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1000&q=85",
+    title: "Rainy Day Comfort",
+    description: "Steaming handcrafted latte with delicate latte art sitting by a rain-splattered cafe window.",
+    imageUrl: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1200&q=85",
     aspectRatio: "4/5",
     category: "Coffee",
     tags: ["coffee", "food", "daily life", "cozy vibes", "rainy days", "aesthetic"],
