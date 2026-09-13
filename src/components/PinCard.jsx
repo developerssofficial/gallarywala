@@ -340,53 +340,32 @@ export const PinCard = ({ pin }) => {
           </div>
         </div>
 
-        {/* Pin Metadata */}
-        <div className="pin-meta">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "8px" }}>
-            <div className="pin-meta-title" style={{ flex: 1 }}>{pin.title}</div>
-            {isPaid && (
-              <span
-                style={{
-                  fontSize: "0.7rem",
-                  fontWeight: 800,
-                  color: unlocked ? "#10b981" : "var(--color-primary)",
-                  background: "var(--bg-surface)",
-                  padding: "2px 6px",
-                  borderRadius: "4px",
-                  border: "1px solid var(--border-light)",
-                  whiteSpace: "nowrap"
-                }}
-              >
-                {unlocked ? "UNLOCKED" : `$${pin.price ? Number(pin.price).toFixed(2) : "4.99"}`}
-              </span>
-            )}
-          </div>
-          <div className="pin-author-row">
-            <div className="pin-author-info">
-              {pin.author?.avatar && (
-                <img
-                  src={pin.author.avatar}
-                  alt={pin.author.name}
-                  className="pin-author-avatar"
-                />
+        {/* Pin Metadata - Minimal Pinterest Style (Creator shown only on detail modal) */}
+        {pin.title && (
+          <div className="pin-meta" style={{ padding: "8px 10px 6px 10px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
+              <div className="pin-meta-title" style={{ flex: 1, margin: 0, fontSize: "0.84rem", fontWeight: 600 }}>
+                {pin.title}
+              </div>
+              {isPaid && (
+                <span
+                  style={{
+                    fontSize: "0.68rem",
+                    fontWeight: 800,
+                    color: unlocked ? "#10b981" : "var(--color-primary)",
+                    background: "var(--bg-surface)",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                    border: "1px solid var(--border-light)",
+                    whiteSpace: "nowrap"
+                  }}
+                >
+                  {unlocked ? "UNLOCKED" : `$${pin.price ? Number(pin.price).toFixed(2) : "4.99"}`}
+                </span>
               )}
-              <span style={{ display: "inline-flex", alignItems: "center" }}>
-                {pin.author?.name || "Anonymous"}
-                {isUserVerified(pin.author?.name) && (
-                  <VerifiedBadge size={13} title={`Verified Creator: ${pin.author?.name}`} />
-                )}
-              </span>
-            </div>
-            <div className="pin-likes-count">
-              <Heart
-                size={12}
-                fill={isLiked ? "var(--color-primary)" : "currentColor"}
-                color={isLiked ? "var(--color-primary)" : "currentColor"}
-              />
-              <span>{pin.likes || 0}</span>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
