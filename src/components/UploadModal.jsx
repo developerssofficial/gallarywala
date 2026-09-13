@@ -490,7 +490,7 @@ export const UploadModal = () => {
                   <input
                     type="text"
                     className="form-input"
-                    placeholder="e.g. Your Name (defaults to Creator)"
+                    placeholder="e.g. Your Name (defaults to Guest)"
                     value={guestAuthorName}
                     onChange={(e) => setGuestAuthorName(e.target.value)}
                     style={{ padding: "8px 12px", fontSize: "0.85rem" }}

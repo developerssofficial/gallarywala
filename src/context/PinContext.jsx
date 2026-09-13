@@ -664,9 +664,9 @@ export const PinProvider = ({ children }) => {
           username: `@${currentUser.user_metadata?.username || cleanEmailName || "creator"}`
         }
       : {
-          name: pinData.authorName || "Creator",
-          avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(pinData.authorName || "creator")}`,
-          username: `@${pinData.authorUsername ? pinData.authorUsername.replace(/^@/, '') : "creator"}`
+          name: pinData.authorName ? pinData.authorName : "Guest",
+          avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(pinData.authorName || "guest_" + (pinData.title || Date.now()))}`,
+          username: `@${pinData.authorUsername ? pinData.authorUsername.replace(/^@/, '') : "guest"}`
         };
 
     const newPinBase = {
