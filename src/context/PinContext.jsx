@@ -36,26 +36,35 @@ const normalizePin = (pin) => {
   let tags = Array.isArray(pin.tags)
     ? [...pin.tags]
     : typeof pin.tags === "string"
-    ? pin.tags.split(",").map((t) => t.trim())
+    ? pin.tags.split(",").map((t) => t.trim().toLowerCase())
     : [];
 
   if (cat === "Street & Urban Photography" || cat.toLowerCase().includes("street & urban")) {
     cat = "Street Photography";
-    if (!tags.includes("street photography")) tags.push("street photography");
-    if (!tags.includes("tokyo nights")) tags.push("tokyo nights");
-    if (!tags.includes("rainy days")) tags.push("rainy days");
-    if (!tags.includes("night rain")) tags.push("night rain");
   }
 
-  const text = `${pin.title || ""} ${pin.description || ""}`.toLowerCase();
-  if (text.includes("tokyo") && !tags.includes("tokyo nights")) tags.push("tokyo nights");
-  if (text.includes("rain") && !tags.includes("rainy days")) tags.push("rainy days");
-  if (text.includes("street") && !tags.includes("street photography")) tags.push("street photography");
+  // Remove "aesthetic" tag if not explicitly chosen
+  tags = tags.filter((t) => t !== "aesthetic");
+
+  let author = pin.author || {};
+  let uploaderId = pin.uploaderId;
+
+  // Set owner of the Tokyo rain street photo and guest uploads to xparrowdev@gmail.com
+  if (pin.id === "img-1789259161062" || !uploaderId || uploaderId.startsWith("device_") || author.name === "Guest" || author.name === "Creator") {
+    author = {
+      name: "xparrowdev",
+      username: "@xparrowdev",
+      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev"
+    };
+    uploaderId = "xparrowdev@gmail.com";
+  }
 
   return {
     ...pin,
     category: cat,
-    tags: [...new Set(tags)]
+    tags: [...new Set(tags)],
+    author,
+    uploaderId
   };
 };
 
@@ -322,6 +331,8 @@ export const PinProvider = ({ children }) => {
       return saved
         ? JSON.parse(saved)
         : [
+            "xparrowdev",
+            "xparrowdev@gmail.com",
             "GallaryWala Official",
             "Admin",
             "NeonArtist",
@@ -329,7 +340,7 @@ export const PinProvider = ({ children }) => {
             "TokyoVisuals"
           ];
     } catch {
-      return ["GallaryWala Official", "Admin", "NeonArtist"];
+      return ["xparrowdev", "GallaryWala Official", "Admin", "NeonArtist"];
     }
   });
 
@@ -920,35 +931,34 @@ export const PinProvider = ({ children }) => {
     if (!pin) return false;
 
     const q = (searchQuery || "").toLowerCase().trim();
-    const tagsArr = Array.isArray(pin.tags)
+    const tagsArr = (Array.isArray(pin.tags)
       ? pin.tags
       : typeof pin.tags === "string"
       ? pin.tags.split(",")
-      : [];
+      : []
+    ).map((t) => String(t).trim().toLowerCase());
 
     const pinCat = (pin.category || "").toLowerCase();
     const selCat = (selectedCategory || "").toLowerCase();
 
     const isSpecialMatch =
-      (selCat === "street photography" && (pinCat.includes("street") || tagsArr.some(t => String(t).toLowerCase().includes("street")))) ||
-      (selCat === "rainy days" && (pinCat.includes("rain") || tagsArr.some(t => String(t).toLowerCase().includes("rain")))) ||
-      (selCat === "tokyo nights" && (pinCat.includes("tokyo") || pinCat.includes("night") || tagsArr.some(t => String(t).toLowerCase().includes("tokyo") || String(t).toLowerCase().includes("night"))));
+      (selCat === "street photography" && (pinCat === "street photography" || pinCat === "street & urban photography" || tagsArr.includes("street photography") || tagsArr.includes("street"))) ||
+      (selCat === "rainy days" && (pinCat === "rainy days" || tagsArr.includes("rainy days") || tagsArr.includes("rain") || tagsArr.includes("night rain"))) ||
+      (selCat === "tokyo nights" && (pinCat === "tokyo nights" || tagsArr.includes("tokyo nights") || tagsArr.includes("tokyo")));
 
-    // Smart Category Matching: supports exact match, sub-word match, tag match and special alias match
+    // Accurate Category Matching:
     const matchesCategory =
       selectedCategory === "All" ||
       pin.category === selectedCategory ||
       pinCat === selCat ||
-      pinCat.includes(selCat) ||
-      selCat.includes(pinCat) ||
-      tagsArr.some((t) => typeof t === "string" && (t.toLowerCase() === selCat || selCat.includes(t.toLowerCase()) || pinCat.includes(t.toLowerCase()))) ||
+      tagsArr.includes(selCat) ||
       Boolean(isSpecialMatch);
 
     const matchesSearch =
       !q ||
       Boolean(pin.title && typeof pin.title === "string" && pin.title.toLowerCase().includes(q)) ||
       Boolean(pin.description && typeof pin.description === "string" && pin.description.toLowerCase().includes(q)) ||
-      tagsArr.some((t) => Boolean(t && typeof t === "string" && t.toLowerCase().includes(q))) ||
+      tagsArr.some((t) => t.includes(q)) ||
       Boolean(pin.category && typeof pin.category === "string" && pin.category.toLowerCase().includes(q));
 
     return Boolean(matchesCategory && matchesSearch);
