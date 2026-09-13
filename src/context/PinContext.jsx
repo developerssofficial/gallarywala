@@ -57,9 +57,26 @@ const normalizePin = (pin) => {
 export const PinProvider = ({ children }) => {
   // 1. Supabase Config & User State
   const [supabaseConfig, setSupabaseConfig] = useState(() => getSupabaseConfig());
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gallarywala_session_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isSupabaseSettingsOpen, setIsSupabaseSettingsOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (currentUser) {
+        localStorage.setItem("gallarywala_session_user", JSON.stringify(currentUser));
+      } else {
+        localStorage.removeItem("gallarywala_session_user");
+      }
+    } catch (e) {}
+  }, [currentUser]);
 
   // 2. Pins State - Completely fresh empty state (zero preloaded pins)
   const [pins, setPins] = useState(() => {
@@ -488,16 +505,22 @@ export const PinProvider = ({ children }) => {
     try {
       const client = getSupabaseClient();
       if (client) {
-        // Check current session
+        // Check current session without wiping local user prematurely
         client.auth.getSession().then(({ data: { session } }) => {
-          setCurrentUser(session?.user ?? null);
+          if (session?.user) {
+            setCurrentUser(session.user);
+          }
         }).catch((err) => {
           console.warn("Session error:", err);
         });
 
         const { data: authListener } = client.auth.onAuthStateChange(
           (_event, session) => {
-            setCurrentUser(session?.user ?? null);
+            if (session?.user) {
+              setCurrentUser(session.user);
+            } else if (_event === "SIGNED_OUT") {
+              setCurrentUser(null);
+            }
           }
         );
 

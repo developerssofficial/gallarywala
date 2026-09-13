@@ -16,7 +16,10 @@ import {
   Loader2,
   DollarSign,
   BadgePercent,
-  Check
+  Check,
+  Search,
+  ChevronDown,
+  Layers
 } from "lucide-react";
 import { CATEGORIES } from "../data/mockPins";
 import { calculateRevenueSplit } from "../services/paddle";
@@ -42,7 +45,9 @@ export const UploadModal = () => {
   const [description, setDescription] = useState("");
   const [guestAuthorName, setGuestAuthorName] = useState("");
   const [link, setLink] = useState("");
-  const [category, setCategory] = useState(CATEGORIES[1] || "Cyberpunk & Sci-Fi");
+  const [category, setCategory] = useState("4K Wallpapers");
+  const [categorySearch, setCategorySearch] = useState("");
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [tagsInput, setTagsInput] = useState("");
   const [targetBoardId, setTargetBoardId] = useState(boards[0]?.id || "");
   const [uploading, setUploading] = useState(false);
@@ -479,19 +484,263 @@ export const UploadModal = () => {
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Category</label>
-              <select
-                className="form-select"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
+            {/* Searchable Category Selector */}
+            <div className="form-group" style={{ position: "relative" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
+                <label className="form-label" style={{ marginBottom: 0, display: "flex", alignItems: "center", gap: "6px" }}>
+                  <Layers size={14} color="var(--color-primary)" />
+                  <span>Category *</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                  style={{
+                    background: "rgba(121, 40, 202, 0.12)",
+                    color: "var(--color-primary)",
+                    border: "1px solid rgba(121, 40, 202, 0.3)",
+                    borderRadius: "var(--radius-full)",
+                    padding: "3px 10px",
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    cursor: "pointer",
+                    transition: "all var(--transition-fast)"
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(121, 40, 202, 0.22)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(121, 40, 202, 0.12)")}
+                >
+                  <Search size={12} />
+                  <span>{isCategoryDropdownOpen ? "Close Search" : "Search Category"}</span>
+                </button>
+              </div>
+
+              {/* Selected Category Trigger Button */}
+              <div
+                onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                style={{
+                  width: "100%",
+                  padding: "10px 14px",
+                  borderRadius: "var(--radius-md)",
+                  background: "var(--bg-input)",
+                  border: isCategoryDropdownOpen ? "1px solid var(--color-primary)" : "1px solid var(--border-light)",
+                  color: "var(--text-main)",
+                  fontSize: "0.92rem",
+                  fontWeight: 600,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  cursor: "pointer",
+                  transition: "all var(--transition-fast)"
+                }}
               >
-                {CATEGORIES.filter((c) => c !== "All").map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span
+                    style={{
+                      width: "8px",
+                      height: "8px",
+                      borderRadius: "50%",
+                      background: "var(--brand-gradient)",
+                      display: "inline-block"
+                    }}
+                  />
+                  <span>{category || "Select a category"}</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-muted)" }}>
+                  <ChevronDown
+                    size={16}
+                    style={{
+                      transform: isCategoryDropdownOpen ? "rotate(180deg)" : "rotate(0deg)",
+                      transition: "transform var(--transition-fast)"
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Dropdown Menu with Instant Search Filter */}
+              {isCategoryDropdownOpen && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    right: 0,
+                    marginTop: "6px",
+                    zIndex: 50,
+                    background: "var(--bg-surface-elevated)",
+                    border: "1px solid var(--border-light)",
+                    borderRadius: "var(--radius-lg)",
+                    boxShadow: "0 12px 30px rgba(0, 0, 0, 0.5)",
+                    padding: "10px",
+                    backdropFilter: "blur(12px)"
+                  }}
+                >
+                  {/* Category Search Input */}
+                  <div
+                    style={{
+                      position: "relative",
+                      marginBottom: "10px"
+                    }}
+                  >
+                    <Search
+                      size={15}
+                      style={{
+                        position: "absolute",
+                        left: "12px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        color: "var(--text-muted)"
+                      }}
+                    />
+                    <input
+                      type="text"
+                      autoFocus
+                      className="form-input"
+                      placeholder="Type to search 70+ categories (e.g. anime, car, tokyo, 4k)..."
+                      value={categorySearch}
+                      onChange={(e) => setCategorySearch(e.target.value)}
+                      style={{
+                        paddingLeft: "34px",
+                        paddingRight: categorySearch ? "32px" : "12px",
+                        height: "38px",
+                        fontSize: "0.86rem"
+                      }}
+                    />
+                    {categorySearch && (
+                      <button
+                        type="button"
+                        onClick={() => setCategorySearch("")}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          background: "none",
+                          border: "none",
+                          color: "var(--text-muted)",
+                          cursor: "pointer",
+                          padding: "2px"
+                        }}
+                      >
+                        <X size={14} />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Filtered Category Items Scroll List */}
+                  <div
+                    style={{
+                      maxHeight: "210px",
+                      overflowY: "auto",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "3px"
+                    }}
+                  >
+                    {CATEGORIES.filter((c) => c !== "All")
+                      .filter((c) =>
+                        c.toLowerCase().includes(categorySearch.toLowerCase().trim())
+                      )
+                      .map((c) => {
+                        const isSelected = c === category;
+                        return (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => {
+                              setCategory(c);
+                              setIsCategoryDropdownOpen(false);
+                              setCategorySearch("");
+                            }}
+                            style={{
+                              textAlign: "left",
+                              padding: "8px 12px",
+                              borderRadius: "var(--radius-md)",
+                              fontSize: "0.86rem",
+                              fontWeight: isSelected ? 700 : 500,
+                              background: isSelected ? "rgba(121, 40, 202, 0.15)" : "transparent",
+                              color: isSelected ? "var(--color-primary)" : "var(--text-main)",
+                              border: isSelected ? "1px solid rgba(121, 40, 202, 0.3)" : "1px solid transparent",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              cursor: "pointer",
+                              transition: "all var(--transition-fast)"
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!isSelected) e.currentTarget.style.background = "var(--bg-surface-hover)";
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!isSelected) e.currentTarget.style.background = "transparent";
+                            }}
+                          >
+                            <span>{c}</span>
+                            {isSelected && <Check size={14} color="var(--color-primary)" />}
+                          </button>
+                        );
+                      })}
+                    {CATEGORIES.filter((c) => c !== "All").filter((c) =>
+                      c.toLowerCase().includes(categorySearch.toLowerCase().trim())
+                    ).length === 0 && (
+                      <div
+                        style={{
+                          textAlign: "center",
+                          padding: "16px 10px",
+                          color: "var(--text-muted)",
+                          fontSize: "0.85rem"
+                        }}
+                      >
+                        No category matching "{categorySearch}"
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Quick Popular Category Chips */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "6px",
+                  flexWrap: "wrap",
+                  marginTop: "8px"
+                }}
+              >
+                {[
+                  "4K Wallpapers",
+                  "Anime",
+                  "Street Photography",
+                  "Supercars",
+                  "Aesthetic",
+                  "Cyberpunk",
+                  "Coffee",
+                  "Nature",
+                  "Galaxy"
+                ].map((quickCat) => {
+                  const isCur = category === quickCat;
+                  return (
+                    <button
+                      key={quickCat}
+                      type="button"
+                      onClick={() => setCategory(quickCat)}
+                      style={{
+                        background: isCur ? "var(--brand-gradient)" : "var(--bg-surface)",
+                        color: isCur ? "#fff" : "var(--text-secondary)",
+                        border: isCur ? "none" : "1px solid var(--border-light)",
+                        borderRadius: "var(--radius-full)",
+                        padding: "4px 10px",
+                        fontSize: "0.74rem",
+                        fontWeight: isCur ? 700 : 500,
+                        cursor: "pointer",
+                        transition: "all var(--transition-fast)"
+                      }}
+                    >
+                      {quickCat}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="form-group">
