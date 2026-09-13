@@ -20,9 +20,9 @@ import { calculateRevenueSplit } from "../services/paddle";
 const PinContext = createContext();
 
 const STORAGE_KEYS = {
-  PINS: "gallarywala_pins_v5",
-  BOARDS: "gallarywala_boards_v5",
-  LIKED: "gallarywala_liked_v5",
+  PINS: "gallarywala_pins_v4",
+  BOARDS: "gallarywala_boards_v4",
+  LIKED: "gallarywala_liked_v4",
   CLOUDINARY: "gallarywala_cloudinary_config_v4",
   THEME: "gallarywala_theme_v4",
   ADMIN_PIN: "gallarywala_admin_pin_v4",
@@ -43,20 +43,16 @@ const normalizePin = (pin) => {
     cat = "Street Photography";
   }
 
-  // Remove "aesthetic" tag if not explicitly chosen
-  tags = tags.filter((t) => t !== "aesthetic");
-
   let author = pin.author || {};
   let uploaderId = pin.uploaderId;
 
-  // Set owner of the Tokyo rain street photo and guest uploads to xparrowdev@gmail.com
   if (pin.id === "img-1789259161062" || !uploaderId || uploaderId.startsWith("device_") || author.name === "Guest" || author.name === "Creator") {
     author = {
-      name: "xparrowdev",
-      username: "@xparrowdev",
-      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev"
+      name: author.name || "xparrowdev",
+      username: author.username || "@xparrowdev",
+      avatar: author.avatar || "https://api.dicebear.com/7.x/bottts/svg?seed=xparrowdev"
     };
-    uploaderId = "xparrowdev@gmail.com";
+    uploaderId = uploaderId || "xparrowdev@gmail.com";
   }
 
   return {
@@ -75,13 +71,28 @@ export const PinProvider = ({ children }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isSupabaseSettingsOpen, setIsSupabaseSettingsOpen] = useState(false);
 
-  // 2. Pins / Images State (Populates INITIAL_PINS when empty or in incognito)
+  // 2. Pins State - Restore user uploads from localStorage (v4 or v5) and merge seamlessly
   const [pins, setPins] = useState(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEYS.PINS);
-      const list = saved ? JSON.parse(saved) : INITIAL_PINS;
-      if (Array.isArray(list) && list.length > 0) {
-        return list.map(normalizePin);
+      const savedV4 = localStorage.getItem("gallarywala_pins_v4");
+      const savedV5 = localStorage.getItem("gallarywala_pins_v5");
+
+      let candidate = null;
+      if (savedV4) {
+        try {
+          const parsed = JSON.parse(savedV4);
+          if (Array.isArray(parsed) && parsed.length > 0) candidate = parsed;
+        } catch (e) {}
+      }
+      if (!candidate && savedV5) {
+        try {
+          const parsed = JSON.parse(savedV5);
+          if (Array.isArray(parsed) && parsed.length > 0) candidate = parsed;
+        } catch (e) {}
+      }
+
+      if (Array.isArray(candidate) && candidate.length > 0) {
+        return candidate.map(normalizePin);
       }
       return INITIAL_PINS.map(normalizePin);
     } catch {
@@ -92,7 +103,7 @@ export const PinProvider = ({ children }) => {
   // 3. Boards State
   const [boards, setBoards] = useState(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEYS.BOARDS);
+      const saved = localStorage.getItem(STORAGE_KEYS.BOARDS) || localStorage.getItem("gallarywala_boards_v5");
       const list = saved ? JSON.parse(saved) : INITIAL_BOARDS;
       if (Array.isArray(list) && list.length > 0) {
         return list;
@@ -550,7 +561,8 @@ export const PinProvider = ({ children }) => {
   // Persistence Effects
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEYS.PINS, JSON.stringify(pins));
+      localStorage.setItem("gallarywala_pins_v4", JSON.stringify(pins));
+      localStorage.setItem("gallarywala_pins_v5", JSON.stringify(pins));
     } catch (e) {
       console.warn("Storage error", e);
     }
