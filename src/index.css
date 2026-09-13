@@ -642,16 +642,26 @@ a {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.95);
   color: #0c0e14;
+  border: none;
+  outline: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   transition: all var(--transition-fast);
+}
+
+.overlay-action-btn svg {
+  color: inherit;
+  stroke: currentColor;
 }
 
 .overlay-action-btn:hover {
   background: #ffffff;
+  color: #000000;
   transform: scale(1.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
 }
 
 .overlay-action-btn.liked {

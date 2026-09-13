@@ -307,9 +307,7 @@ export const PinCard = ({ pin }) => {
                   className="overlay-action-btn"
                   onClick={handleDownload}
                   title={isPaid && !unlocked ? "Unlock Commercial License" : "Download Image"}
-                  style={{
-                    color: isPaid && !unlocked ? "#00dfd8" : "inherit"
-                  }}
+                  style={isPaid && !unlocked ? { color: "#00dfd8" } : undefined}
                 >
                   {isPaid && !unlocked ? <Lock size={16} /> : <Download size={16} />}
                 </button>
