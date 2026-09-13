@@ -6,7 +6,8 @@ export const CATEGORIES = [
   "Manga",
   "Cyberpunk",
   "Sci-Fi",
-  "Neon Aesthetic",
+  "Neon",
+  "Aesthetic",
   "4K Wallpapers",
   "AMOLED Wallpapers",
   "8K UHD",
@@ -57,7 +58,8 @@ export const CATEGORIES = [
   "Fashion",
   "Streetwear",
   "Typography",
-  "Food & Drinks",
+  "Food",
+  "Drinks",
   "Travel"
 ];
 
