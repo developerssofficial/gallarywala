@@ -36,18 +36,20 @@ export const MasonryGrid = () => {
         </div>
         <h3
           style={{
-            fontSize: "1.25rem",
-            fontWeight: 700,
+            fontSize: "1.35rem",
+            fontWeight: 800,
             color: "var(--text-main)",
             marginBottom: "8px"
           }}
         >
-          No pins found
+          {searchQuery ? "No matching visuals found" : "No images uploaded yet"}
         </h3>
-        <p style={{ maxWidth: "400px", marginBottom: "20px", fontSize: "0.9rem" }}>
+        <p style={{ maxWidth: "440px", marginBottom: "24px", fontSize: "0.92rem", color: "var(--text-muted)", lineHeight: 1.6 }}>
           {searchQuery
             ? `We couldn't find any pins matching "${searchQuery}". Try searching for another topic or create a new pin!`
-            : `No pins in "${selectedCategory}" category yet. Be the first to upload one!`}
+            : selectedCategory !== "All"
+            ? `No visuals found in "${selectedCategory}". Be the first creator to upload one!`
+            : "The gallery is currently clean and fresh. Click the button below to upload your first 4K visual or wallpaper!"}
         </p>
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}>
           {(searchQuery || selectedCategory !== "All") && (
