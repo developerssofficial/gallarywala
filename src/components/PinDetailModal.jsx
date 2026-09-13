@@ -102,7 +102,7 @@ export const PinDetailModal = () => {
 
     updatePin(activePin.id, {
       category: editCategory,
-      title: editTitle.trim() || `${editCategory} Visual`,
+      title: editTitle.trim() || editCategory || "General",
       description: editDescription.trim(),
       tags: tagsArr.length > 0 ? tagsArr : [editCategory.toLowerCase()],
       isPaid: Boolean(editIsPaid),
