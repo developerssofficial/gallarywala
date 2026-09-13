@@ -1,7 +1,7 @@
 import React from "react";
 import { usePins } from "../context/PinContext";
 import { PinCard } from "./PinCard";
-import { ImageOff, Sparkles, Plus } from "lucide-react";
+import { ImageOff, Sparkles, Plus, RotateCcw } from "lucide-react";
 
 export const MasonryGrid = () => {
   const { filteredPins, searchQuery, selectedCategory, setIsUploadOpen, setSelectedCategory, setSearchQuery } = usePins();
@@ -49,25 +49,58 @@ export const MasonryGrid = () => {
             ? `We couldn't find any pins matching "${searchQuery}". Try searching for another topic or create a new pin!`
             : `No pins in "${selectedCategory}" category yet. Be the first to upload one!`}
         </p>
-        <div style={{ display: "flex", gap: "10px" }}>
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}>
           {(searchQuery || selectedCategory !== "All") && (
             <button
-              className="nav-tab"
+              type="button"
               onClick={() => {
                 setSearchQuery("");
                 setSelectedCategory("All");
               }}
-              style={{ border: "1px solid var(--border-light)" }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                background: "var(--bg-surface-elevated)",
+                color: "var(--text-main)",
+                border: "1px solid var(--border-light)",
+                padding: "10px 20px",
+                borderRadius: "var(--radius-full)",
+                fontSize: "0.88rem",
+                fontWeight: 700,
+                cursor: "pointer",
+                transition: "all var(--transition-fast)",
+                boxShadow: "0 4px 14px rgba(0, 0, 0, 0.3)"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "var(--bg-surface-hover)";
+                e.currentTarget.style.borderColor = "var(--color-primary)";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "var(--bg-surface-elevated)";
+                e.currentTarget.style.borderColor = "var(--border-light)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
             >
-              Reset Filters
+              <RotateCcw size={15} color="var(--color-primary)" />
+              <span>Reset & View All</span>
             </button>
           )}
           <button
             className="btn-primary"
             onClick={() => setIsUploadOpen(true)}
+            style={{
+              padding: "10px 22px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              fontWeight: 700,
+              fontSize: "0.88rem"
+            }}
           >
             <Plus size={16} />
-            <span>Create First Pin</span>
+            <span>Upload to this Category</span>
           </button>
         </div>
       </div>
