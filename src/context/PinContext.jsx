@@ -522,7 +522,16 @@ export const PinProvider = ({ children }) => {
             })).filter(p => Boolean(p.imageUrl));
             
             if (formatted.length > 0) {
-              setPins(formatted);
+              setPins((prevLocal) => {
+                const map = new Map();
+                formatted.forEach((p) => map.set(p.imageUrl || p.id, normalizePin(p)));
+                (prevLocal || []).forEach((p) => {
+                  if (!map.has(p.imageUrl || p.id)) {
+                    map.set(p.imageUrl || p.id, normalizePin(p));
+                  }
+                });
+                return Array.from(map.values());
+              });
             }
           }
         }).catch((err) => {
