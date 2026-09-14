@@ -330,7 +330,7 @@ export const Navbar = () => {
                         }}
                       >
                         <span>{userDisplayName}</span>
-                        {isUserVerified(userDisplayName) && (
+                        {isUserVerified({ name: userDisplayName, username: userHandle, email: currentUser?.email }) && (
                           <VerifiedBadge size={14} title={`Verified Creator: ${userDisplayName}`} />
                         )}
                       </div>

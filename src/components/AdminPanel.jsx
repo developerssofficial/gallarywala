@@ -177,7 +177,7 @@ export const AdminPanel = () => {
   // Filtered creators for Badge Panel
   const filteredCreators = useMemo(() => {
     return allCreatorsList.filter((creator) => {
-      const isVer = isUserVerified(creator.name);
+      const isVer = isUserVerified(creator);
       const matchesFilter =
         badgeFilter === "all" ? true : badgeFilter === "verified" ? isVer : !isVer;
       const matchesSearch =
@@ -1014,7 +1014,7 @@ export const AdminPanel = () => {
                           <td style={{ padding: "10px 8px" }}>
                             <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "0.85rem" }}>
                               {pin.author?.name || "Anonymous"}
-                              {isUserVerified(pin.author?.name) && <VerifiedBadge size={13} />}
+                              {isUserVerified(pin.author) && <VerifiedBadge size={13} />}
                             </span>
                           </td>
 
@@ -1380,7 +1380,7 @@ export const AdminPanel = () => {
                 </div>
               ) : (
                 filteredCreators.map((creator) => {
-                  const verified = isUserVerified(creator.name);
+                  const verified = isUserVerified(creator);
                   return (
                     <div
                       key={creator.name}

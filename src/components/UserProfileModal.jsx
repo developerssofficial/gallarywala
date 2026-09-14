@@ -122,7 +122,7 @@ export const UserProfileModal = () => {
           </div>
           <h2 style={{ fontSize: "1.6rem", fontWeight: 800, marginBottom: "4px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
             <span>{userFullName}</span>
-            {isUserVerified(userFullName) && (
+            {isUserVerified({ name: userFullName, username: userHandle, email: currentUser?.email }) && (
               <VerifiedBadge size={20} title={`Verified Creator: ${userFullName}`} />
             )}
           </h2>

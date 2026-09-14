@@ -366,8 +366,55 @@ export const PinProvider = ({ children }) => {
 
   const isUserVerified = (userOrAuthor) => {
     if (!userOrAuthor) return false;
-    const target = String(userOrAuthor).trim().toLowerCase();
-    return verifiedUsers.some((u) => String(u).trim().toLowerCase() === target);
+
+    // Collect all candidate strings to check
+    const candidates = [];
+    if (typeof userOrAuthor === "object") {
+      if (userOrAuthor.name) candidates.push(userOrAuthor.name);
+      if (userOrAuthor.email) candidates.push(userOrAuthor.email);
+      if (userOrAuthor.username) candidates.push(userOrAuthor.username);
+      if (userOrAuthor.handle) candidates.push(userOrAuthor.handle);
+      if (userOrAuthor.user_metadata?.full_name) candidates.push(userOrAuthor.user_metadata.full_name);
+      if (userOrAuthor.user_metadata?.username) candidates.push(userOrAuthor.user_metadata.username);
+      if (userOrAuthor.author?.name) candidates.push(userOrAuthor.author.name);
+      if (userOrAuthor.author?.email) candidates.push(userOrAuthor.author.email);
+      if (userOrAuthor.author?.username) candidates.push(userOrAuthor.author.username);
+    } else {
+      candidates.push(String(userOrAuthor));
+    }
+
+    if (candidates.length === 0) return false;
+
+    // Build list of target variations
+    const targetVariants = new Set();
+    candidates.forEach((cand) => {
+      const raw = String(cand || "").trim().toLowerCase();
+      if (!raw) return;
+      targetVariants.add(raw);
+      targetVariants.add(raw.replace(/^@/, ""));
+      if (raw.includes("@")) {
+        const prefix = raw.split("@")[0].trim();
+        if (prefix) {
+          targetVariants.add(prefix);
+          targetVariants.add(`@${prefix}`);
+        }
+      }
+    });
+
+    // Check against verifiedUsers entries (and their variations)
+    return verifiedUsers.some((u) => {
+      const verifiedRaw = String(u || "").trim().toLowerCase();
+      if (!verifiedRaw) return false;
+      const verifiedClean = verifiedRaw.replace(/^@/, "");
+      const verifiedPrefix = verifiedRaw.includes("@") ? verifiedRaw.split("@")[0].trim() : verifiedClean;
+
+      return (
+        targetVariants.has(verifiedRaw) ||
+        targetVariants.has(verifiedClean) ||
+        targetVariants.has(verifiedPrefix) ||
+        targetVariants.has(`@${verifiedClean}`)
+      );
+    });
   };
 
   const toggleUserVerification = (userOrAuthor) => {

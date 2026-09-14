@@ -719,8 +719,8 @@ export const PinDetailModal = () => {
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, fontSize: "0.95rem", display: "flex", alignItems: "center", gap: "6px" }}>
                     <span>{activePin.author?.name || "Creator"}</span>
-                    {isUserVerified(activePin.author?.name) && (
-                      <VerifiedBadge size={16} title={`Verified Creator: ${activePin.author?.name}`} />
+                    {isUserVerified(activePin.author) && (
+                      <VerifiedBadge size={16} title={`Verified Creator: ${activePin.author?.name || "Creator"}`} />
                     )}
                     {isOwner && (
                       <span
