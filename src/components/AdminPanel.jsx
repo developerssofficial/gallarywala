@@ -1335,7 +1335,7 @@ export const AdminPanel = () => {
                       color: badgeFilter === "verified" ? "#fff" : "var(--text-muted)"
                     }}
                   >
-                    Verified ({allCreatorsList.filter((c) => isUserVerified(c.name)).length})
+                    Verified ({allCreatorsList.filter((c) => isUserVerified(c)).length})
                   </button>
                   <button
                     onClick={() => setBadgeFilter("unverified")}

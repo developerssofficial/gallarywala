@@ -13,7 +13,9 @@ import {
   fetchImagesFromSupabase,
   insertImageToSupabase,
   updateImageInSupabase,
-  deleteImageFromSupabase
+  deleteImageFromSupabase,
+  fetchVerifiedUsersFromSupabase,
+  syncVerifiedUserToSupabase
 } from "../services/supabase";
 import { calculateRevenueSplit } from "../services/paddle";
 import { updatePageSEO } from "../utils/seo";
@@ -343,18 +345,34 @@ export const PinProvider = ({ children }) => {
       return saved
         ? JSON.parse(saved)
         : [
-            "xparrowdev",
-            "xparrowdev@gmail.com",
             "GallaryWala Official",
-            "Admin",
             "NeonArtist",
             "CyberCreator",
             "TokyoVisuals"
           ];
     } catch {
-      return ["xparrowdev", "GallaryWala Official", "Admin", "NeonArtist"];
+      return ["GallaryWala Official", "NeonArtist", "CyberCreator", "TokyoVisuals"];
     }
   });
+
+  // Sync verified creators from Supabase cloud on initialization
+  useEffect(() => {
+    let active = true;
+    const fetchRemote = async () => {
+      try {
+        const remote = await fetchVerifiedUsersFromSupabase();
+        if (remote && remote.length > 0 && active) {
+          setVerifiedUsers((prev) => Array.from(new Set([...prev, ...remote])));
+        }
+      } catch (err) {
+        console.warn("Supabase verified users sync notice:", err);
+      }
+    };
+    fetchRemote();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -364,90 +382,122 @@ export const PinProvider = ({ children }) => {
     }
   }, [verifiedUsers]);
 
+  // Strict & precise verification matching
   const isUserVerified = (userOrAuthor) => {
-    if (!userOrAuthor) return false;
+    if (!userOrAuthor || !verifiedUsers || verifiedUsers.length === 0) return false;
 
-    // Collect all candidate strings to check
-    const candidates = [];
-    if (typeof userOrAuthor === "object") {
-      if (userOrAuthor.name) candidates.push(userOrAuthor.name);
-      if (userOrAuthor.email) candidates.push(userOrAuthor.email);
-      if (userOrAuthor.username) candidates.push(userOrAuthor.username);
-      if (userOrAuthor.handle) candidates.push(userOrAuthor.handle);
-      if (userOrAuthor.user_metadata?.full_name) candidates.push(userOrAuthor.user_metadata.full_name);
-      if (userOrAuthor.user_metadata?.username) candidates.push(userOrAuthor.user_metadata.username);
-      if (userOrAuthor.author?.name) candidates.push(userOrAuthor.author.name);
-      if (userOrAuthor.author?.email) candidates.push(userOrAuthor.author.email);
-      if (userOrAuthor.author?.username) candidates.push(userOrAuthor.author.username);
-    } else {
-      candidates.push(String(userOrAuthor));
+    // Normalizing verified list into a fast lookup Set
+    const verifiedSet = new Set(
+      verifiedUsers.map((u) => String(u || "").trim().toLowerCase()).filter(Boolean)
+    );
+
+    // 1. If string is passed (email, handle, or exact name)
+    if (typeof userOrAuthor === "string") {
+      const s = userOrAuthor.trim().toLowerCase();
+      if (!s) return false;
+      const cleanHandle = s.replace(/^@/, "");
+      return (
+        verifiedSet.has(s) ||
+        verifiedSet.has(cleanHandle) ||
+        verifiedSet.has(`@${cleanHandle}`)
+      );
     }
 
-    if (candidates.length === 0) return false;
+    // 2. If object is passed (currentUser, user profile, or pin.author)
+    if (typeof userOrAuthor === "object") {
+      // Check exact email
+      const email = String(
+        userOrAuthor.email ||
+        userOrAuthor.author?.email ||
+        userOrAuthor.user?.email ||
+        ""
+      ).trim().toLowerCase();
+      if (email && verifiedSet.has(email)) return true;
 
-    // Build list of target variations
-    const targetVariants = new Set();
-    candidates.forEach((cand) => {
-      const raw = String(cand || "").trim().toLowerCase();
-      if (!raw) return;
-      targetVariants.add(raw);
-      targetVariants.add(raw.replace(/^@/, ""));
-      if (raw.includes("@")) {
-        const prefix = raw.split("@")[0].trim();
-        if (prefix) {
-          targetVariants.add(prefix);
-          targetVariants.add(`@${prefix}`);
-        }
-      }
-    });
+      // Check exact username / handle
+      const username = String(
+        userOrAuthor.username ||
+        userOrAuthor.handle ||
+        userOrAuthor.author?.username ||
+        userOrAuthor.user_metadata?.username ||
+        ""
+      ).trim().toLowerCase().replace(/^@/, "");
+      if (username && (verifiedSet.has(username) || verifiedSet.has(`@${username}`))) return true;
 
-    // Check against verifiedUsers entries (and their variations)
-    return verifiedUsers.some((u) => {
-      const verifiedRaw = String(u || "").trim().toLowerCase();
-      if (!verifiedRaw) return false;
-      const verifiedClean = verifiedRaw.replace(/^@/, "");
-      const verifiedPrefix = verifiedRaw.includes("@") ? verifiedRaw.split("@")[0].trim() : verifiedClean;
+      // Check exact full display name
+      const name = String(
+        userOrAuthor.name ||
+        userOrAuthor.author?.name ||
+        userOrAuthor.user_metadata?.full_name ||
+        ""
+      ).trim().toLowerCase();
+      if (name && verifiedSet.has(name)) return true;
+    }
 
-      return (
-        targetVariants.has(verifiedRaw) ||
-        targetVariants.has(verifiedClean) ||
-        targetVariants.has(verifiedPrefix) ||
-        targetVariants.has(`@${verifiedClean}`)
-      );
-    });
+    return false;
   };
 
   const toggleUserVerification = (userOrAuthor) => {
     if (!userOrAuthor) return;
-    const clean = String(userOrAuthor).trim();
+    const clean = String(
+      typeof userOrAuthor === "object"
+        ? userOrAuthor.email || userOrAuthor.username || userOrAuthor.name
+        : userOrAuthor
+    ).trim();
+    if (!clean) return;
+
     const isCurrently = isUserVerified(clean);
 
     if (isCurrently) {
       setVerifiedUsers((prev) =>
-        prev.filter((u) => String(u).trim().toLowerCase() !== clean.toLowerCase())
+        prev.filter((u) => {
+          const raw = String(u).trim().toLowerCase();
+          const target = clean.toLowerCase();
+          return raw !== target && raw.replace(/^@/, "") !== target.replace(/^@/, "");
+        })
       );
+      syncVerifiedUserToSupabase(clean, false);
       showToast(`Removed Blue Tick from "${clean}"`, "info");
     } else {
-      setVerifiedUsers((prev) => [...prev, clean]);
+      setVerifiedUsers((prev) => Array.from(new Set([...prev, clean])));
+      syncVerifiedUserToSupabase(clean, true);
       showToast(`Granted Blue Tick Verified Badge to "${clean}"! 🏅`, "success");
     }
   };
 
   const grantVerifiedBadge = (userOrAuthor) => {
     if (!userOrAuthor) return;
-    const clean = String(userOrAuthor).trim();
+    const clean = String(
+      typeof userOrAuthor === "object"
+        ? userOrAuthor.email || userOrAuthor.username || userOrAuthor.name
+        : userOrAuthor
+    ).trim();
+    if (!clean) return;
+
     if (!isUserVerified(clean)) {
-      setVerifiedUsers((prev) => [...prev, clean]);
+      setVerifiedUsers((prev) => Array.from(new Set([...prev, clean])));
+      syncVerifiedUserToSupabase(clean, true);
       showToast(`Granted Blue Tick to "${clean}"! 🏅`, "success");
     }
   };
 
   const revokeVerifiedBadge = (userOrAuthor) => {
     if (!userOrAuthor) return;
-    const clean = String(userOrAuthor).trim();
+    const clean = String(
+      typeof userOrAuthor === "object"
+        ? userOrAuthor.email || userOrAuthor.username || userOrAuthor.name
+        : userOrAuthor
+    ).trim();
+    if (!clean) return;
+
     setVerifiedUsers((prev) =>
-      prev.filter((u) => String(u).trim().toLowerCase() !== clean.toLowerCase())
+      prev.filter((u) => {
+        const raw = String(u).trim().toLowerCase();
+        const target = clean.toLowerCase();
+        return raw !== target && raw.replace(/^@/, "") !== target.replace(/^@/, "");
+      })
     );
+    syncVerifiedUserToSupabase(clean, false);
     showToast(`Revoked Blue Tick from "${clean}"`, "info");
   };
 
@@ -829,12 +879,14 @@ export const PinProvider = ({ children }) => {
       ? {
           name: currentUser.user_metadata?.full_name || cleanEmailName || "Creator",
           avatar: currentUser.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(currentUser.email || "user")}`,
-          username: `@${currentUser.user_metadata?.username || cleanEmailName || "creator"}`
+          username: `@${currentUser.user_metadata?.username || cleanEmailName || "creator"}`,
+          email: currentUser.email || ""
         }
       : {
           name: pinData.authorName ? pinData.authorName : "Guest",
           avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(pinData.authorName || "guest_" + (pinData.title || Date.now()))}`,
-          username: `@${pinData.authorUsername ? pinData.authorUsername.replace(/^@/, '') : "guest"}`
+          username: `@${pinData.authorUsername ? pinData.authorUsername.replace(/^@/, '') : "guest"}`,
+          email: ""
         };
 
     const newPinBase = {

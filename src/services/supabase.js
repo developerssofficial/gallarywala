@@ -213,6 +213,38 @@ export const deleteImageFromSupabase = async (id) => {
   }
 };
 
+/**
+ * Supabase Verified Users API
+ */
+export const fetchVerifiedUsersFromSupabase = async () => {
+  const client = getSupabaseClient();
+  if (!client) return null;
+  try {
+    const { data, error } = await client
+      .from("verified_users")
+      .select("identifier");
+    if (error) return null;
+    return (data || []).map((row) => row.identifier).filter(Boolean);
+  } catch {
+    return null;
+  }
+};
+
+export const syncVerifiedUserToSupabase = async (identifier, isAdd) => {
+  const client = getSupabaseClient();
+  if (!client || !identifier) return;
+  try {
+    const clean = String(identifier).trim();
+    if (isAdd) {
+      await client.from("verified_users").upsert({ identifier: clean });
+    } else {
+      await client.from("verified_users").delete().eq("identifier", clean);
+    }
+  } catch (e) {
+    console.warn("Supabase verified_users sync notice:", e);
+  }
+};
+
 export const SUPABASE_SQL_SCHEMA = `-- Run this in Supabase Dashboard > SQL Editor:
 
 CREATE TABLE IF NOT EXISTS public.images (
@@ -244,4 +276,14 @@ ON public.images FOR UPDATE USING (true);
 
 CREATE POLICY "Allow public delete access" 
 ON public.images FOR DELETE USING (true);
+
+-- Verified Creators Table
+CREATE TABLE IF NOT EXISTS public.verified_users (
+  identifier TEXT PRIMARY KEY,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.verified_users ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read verified_users" ON public.verified_users FOR SELECT USING (true);
+CREATE POLICY "Allow public write verified_users" ON public.verified_users FOR ALL USING (true);
 `;
