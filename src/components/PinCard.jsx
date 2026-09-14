@@ -108,7 +108,7 @@ export const PinCard = ({ pin }) => {
       <meta itemProp="name" content={pin.title || pin.category} />
       <meta itemProp="caption" content={altText} />
       <div className="pin-card" onClick={() => setActivePin(pin)}>
-        <div className="pin-image-container">
+        <div className="pin-image-container" style={{ background: "var(--bg-surface-elevated)" }}>
           <img
             src={pin.imageUrl}
             alt={altText}
@@ -116,10 +116,9 @@ export const PinCard = ({ pin }) => {
             className="pin-image"
             loading="lazy"
             decoding="async"
-            onLoad={() => setImageLoaded(true)}
             style={{
-              opacity: imageLoaded ? 1 : 0.4,
-              transition: "opacity 0.3s ease-in-out"
+              opacity: 1,
+              transition: "transform var(--transition-smooth)"
             }}
           />
 

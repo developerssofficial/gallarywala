@@ -511,7 +511,7 @@ export const PinProvider = ({ children }) => {
           }
         );
 
-        // Fetch images from Supabase
+        // Fetch images from Supabase with smooth zero-glitch cache sync
         fetchImagesFromSupabase().then((spImages) => {
           if (spImages && Array.isArray(spImages) && spImages.length > 0) {
             const formatted = spImages.map((row) => ({
@@ -534,6 +534,16 @@ export const PinProvider = ({ children }) => {
             
             if (formatted.length > 0) {
               setPins((prevLocal) => {
+                const currentUrls = new Set((prevLocal || []).map((p) => p.imageUrl));
+                const isIdentical =
+                  prevLocal &&
+                  prevLocal.length === formatted.length &&
+                  formatted.every((p) => currentUrls.has(p.imageUrl));
+
+                if (isIdentical) {
+                  return prevLocal; // Keep identical reference to prevent DOM re-render glitch!
+                }
+
                 const map = new Map();
                 formatted.forEach((p) => map.set(p.imageUrl || p.id, normalizePin(p)));
                 (prevLocal || []).forEach((p) => {
