@@ -55,6 +55,9 @@ export const PinDetailModal = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isFullViewOpen, setIsFullViewOpen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   // Edit State Fields
   const [editCategory, setEditCategory] = useState("");
@@ -66,10 +69,15 @@ export const PinDetailModal = () => {
 
   const isOwner = isPinOwner(activePin);
 
+  const handleResetZoom = () => {
+    setZoomLevel(1);
+    setPanPosition({ x: 0, y: 0 });
+  };
+
   useEffect(() => {
     setIsEditing(false);
     setIsFullViewOpen(false);
-    setZoomLevel(1);
+    handleResetZoom();
   }, [activePin?.id]);
 
   useEffect(() => {
@@ -77,17 +85,84 @@ export const PinDetailModal = () => {
       if (e.key === "Escape") {
         if (isFullViewOpen) {
           setIsFullViewOpen(false);
-          setZoomLevel(1);
+          handleResetZoom();
         } else if (isEditing) {
           setIsEditing(false);
         } else {
           setActivePin(null);
         }
+      } else if (isFullViewOpen && zoomLevel > 1) {
+        // Arrow keys to pan
+        if (e.key === "ArrowLeft") {
+          setPanPosition((p) => ({ ...p, x: p.x + 40 }));
+        } else if (e.key === "ArrowRight") {
+          setPanPosition((p) => ({ ...p, x: p.x - 40 }));
+        } else if (e.key === "ArrowUp") {
+          setPanPosition((p) => ({ ...p, y: p.y + 40 }));
+        } else if (e.key === "ArrowDown") {
+          setPanPosition((p) => ({ ...p, y: p.y - 40 }));
+        }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [setActivePin, isEditing, isFullViewOpen]);
+  }, [setActivePin, isEditing, isFullViewOpen, zoomLevel]);
+
+  // Mouse Drag Handlers
+  const handleMouseDown = (e) => {
+    if (zoomLevel <= 1) return;
+    e.preventDefault();
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - panPosition.x, y: e.clientY - panPosition.y });
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging || zoomLevel <= 1) return;
+    e.preventDefault();
+    setPanPosition({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Touch Drag Handlers (Mobile)
+  const handleTouchStart = (e) => {
+    if (zoomLevel <= 1 || e.touches.length !== 1) return;
+    setIsDragging(true);
+    setDragStart({
+      x: e.touches[0].clientX - panPosition.x,
+      y: e.touches[0].clientY - panPosition.y
+    });
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging || zoomLevel <= 1 || e.touches.length !== 1) return;
+    setPanPosition({
+      x: e.touches[0].clientX - dragStart.x,
+      y: e.touches[0].clientY - dragStart.y
+    });
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
+  // Mouse Wheel Zoom
+  const handleWheel = (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.25 : 0.25;
+    setZoomLevel((prev) => {
+      const next = Math.min(4.0, Math.max(0.5, Number((prev + delta).toFixed(2))));
+      if (next <= 1) {
+        setPanPosition({ x: 0, y: 0 });
+      }
+      return next;
+    });
+  };
 
   if (!activePin) return null;
 
@@ -854,21 +929,27 @@ export const PinDetailModal = () => {
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button
                 className="fullview-icon-btn"
-                onClick={() => setZoomLevel((z) => Math.max(0.5, Number((z - 0.25).toFixed(2))))}
+                onClick={() => {
+                  setZoomLevel((z) => {
+                    const next = Math.max(0.5, Number((z - 0.25).toFixed(2)));
+                    if (next <= 1) setPanPosition({ x: 0, y: 0 });
+                    return next;
+                  });
+                }}
                 title="Zoom Out (-)"
               >
                 <ZoomOut size={18} />
               </button>
               <button
                 className="fullview-zoom-pill"
-                onClick={() => setZoomLevel(1)}
+                onClick={handleResetZoom}
                 title="Reset Zoom (100%)"
               >
                 {Math.round(zoomLevel * 100)}%
               </button>
               <button
                 className="fullview-icon-btn"
-                onClick={() => setZoomLevel((z) => Math.min(3.0, Number((z + 0.25).toFixed(2))))}
+                onClick={() => setZoomLevel((z) => Math.min(4.0, Number((z + 0.25).toFixed(2))))}
                 title="Zoom In (+)"
               >
                 <ZoomIn size={18} />
@@ -886,7 +967,7 @@ export const PinDetailModal = () => {
                 className="fullview-icon-btn fullview-close-btn"
                 onClick={() => {
                   setIsFullViewOpen(false);
-                  setZoomLevel(1);
+                  handleResetZoom();
                 }}
                 title="Close Full View (Esc)"
               >
@@ -895,21 +976,54 @@ export const PinDetailModal = () => {
             </div>
           </div>
 
-          {/* Centered Image Stage */}
+          {/* Centered Image Stage with 2D Pan & Drag */}
           <div
-            className="fullview-stage"
+            className={`fullview-stage ${isDragging ? "is-dragging" : ""}`}
             onClick={(e) => e.stopPropagation()}
-            onDoubleClick={() => setZoomLevel((z) => (z > 1 ? 1 : 1.75))}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onWheel={handleWheel}
+            onDoubleClick={() => {
+              if (zoomLevel > 1) {
+                handleResetZoom();
+              } else {
+                setZoomLevel(1.75);
+              }
+            }}
           >
             <img
               src={activePin.imageUrl}
               alt={activePin.title}
               className="fullview-image-el"
+              draggable={false}
               style={{
-                transform: `scale(${zoomLevel})`,
-                cursor: zoomLevel > 1 ? "grab" : "zoom-in"
+                transform: `translate(${panPosition.x}px, ${panPosition.y}px) scale(${zoomLevel})`,
+                cursor: zoomLevel > 1 ? (isDragging ? "grabbing" : "grab") : "zoom-in",
+                transition: isDragging ? "none" : "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)"
               }}
             />
+
+            {/* Floating Navigation Hint when Zoomed In */}
+            {zoomLevel > 1 && (
+              <div className="fullview-pan-indicator">
+                <span>🖱️ Drag image freely in any direction</span>
+                <button
+                  className="fullview-reset-pan-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleResetZoom();
+                  }}
+                  title="Reset Position & Zoom"
+                >
+                  Reset
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
