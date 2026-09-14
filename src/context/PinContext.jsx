@@ -339,19 +339,24 @@ export const PinProvider = ({ children }) => {
   };
 
   // 10. Verified Creators & Blue Tick Badges
+  const DEFAULT_VERIFIED = [
+    "GallaryWala Official",
+    "Oneshot Play",
+    "oneshotplay554",
+    "@oneshotplay554",
+    "oneshotplay554@gmail.com",
+    "NeonArtist",
+    "CyberCreator",
+    "TokyoVisuals"
+  ];
+
   const [verifiedUsers, setVerifiedUsers] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.VERIFIED_USERS);
-      return saved
-        ? JSON.parse(saved)
-        : [
-            "GallaryWala Official",
-            "NeonArtist",
-            "CyberCreator",
-            "TokyoVisuals"
-          ];
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.from(new Set([...DEFAULT_VERIFIED, ...parsed]));
     } catch {
-      return ["GallaryWala Official", "NeonArtist", "CyberCreator", "TokyoVisuals"];
+      return DEFAULT_VERIFIED;
     }
   });
 
@@ -362,7 +367,7 @@ export const PinProvider = ({ children }) => {
       try {
         const remote = await fetchVerifiedUsersFromSupabase();
         if (remote && remote.length > 0 && active) {
-          setVerifiedUsers((prev) => Array.from(new Set([...prev, ...remote])));
+          setVerifiedUsers((prev) => Array.from(new Set([...DEFAULT_VERIFIED, ...prev, ...remote])));
         }
       } catch (err) {
         console.warn("Supabase verified users sync notice:", err);
