@@ -101,15 +101,21 @@ export const PinCard = ({ pin }) => {
     setIsBoardMenuOpen(false);
   };
 
+  const altText = `${pin.title || pin.category || "Wallpaper"} — ${pin.category || "4K Visual"} Ultra HD Wallpaper on GallaryWala`;
+
   return (
-    <div className="pin-card-wrapper">
+    <div className="pin-card-wrapper" itemScope itemType="https://schema.org/ImageObject">
+      <meta itemProp="name" content={pin.title || pin.category} />
+      <meta itemProp="caption" content={altText} />
       <div className="pin-card" onClick={() => setActivePin(pin)}>
         <div className="pin-image-container">
           <img
             src={pin.imageUrl}
-            alt={pin.title}
+            alt={altText}
+            itemProp="contentUrl"
             className="pin-image"
             loading="lazy"
+            decoding="async"
             onLoad={() => setImageLoaded(true)}
             style={{
               opacity: imageLoaded ? 1 : 0.4,

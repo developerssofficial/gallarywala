@@ -180,8 +180,9 @@ export const PinDetailModal = () => {
         <div className="detail-image-side" style={{ position: "relative", overflow: "hidden" }}>
           <img
             src={activePin.imageUrl}
-            alt={activePin.title}
+            alt={`${activePin.title || activePin.category || "Wallpaper"} — Free 4K Wallpaper & HD Digital Art on GallaryWala`}
             className="detail-image"
+            decoding="async"
             style={{
               userSelect: isPaid && !isUnlocked ? "none" : "auto",
               pointerEvents: isPaid && !isUnlocked ? "none" : "auto"

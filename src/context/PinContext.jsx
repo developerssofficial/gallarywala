@@ -16,6 +16,7 @@ import {
   deleteImageFromSupabase
 } from "../services/supabase";
 import { calculateRevenueSplit } from "../services/paddle";
+import { updatePageSEO } from "../utils/seo";
 
 const PinContext = createContext();
 
@@ -197,6 +198,15 @@ export const PinProvider = ({ children }) => {
       return nextPin;
     });
   };
+
+  // Dynamic Real-time SEO Manager for Pins, Categories, and Search Queries
+  useEffect(() => {
+    updatePageSEO({
+      pin: activePin,
+      category: selectedCategory,
+      searchQuery: searchQuery
+    });
+  }, [activePin, selectedCategory, searchQuery]);
 
   // URL Routing Listener for /badges, /admin, and direct ?pin=pin_id deep links
   useEffect(() => {
