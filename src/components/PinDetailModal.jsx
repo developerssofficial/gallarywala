@@ -22,7 +22,12 @@ import {
   Edit3,
   Trash2,
   Check,
-  RotateCcw
+  RotateCcw,
+  ArrowLeft,
+  Maximize2,
+  Minimize2,
+  ZoomIn,
+  ZoomOut
 } from "lucide-react";
 
 export const PinDetailModal = () => {
@@ -48,6 +53,8 @@ export const PinDetailModal = () => {
   const [commentText, setCommentText] = useState("");
   const [isBoardMenuOpen, setIsBoardMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isFullViewOpen, setIsFullViewOpen] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   // Edit State Fields
   const [editCategory, setEditCategory] = useState("");
@@ -61,12 +68,17 @@ export const PinDetailModal = () => {
 
   useEffect(() => {
     setIsEditing(false);
+    setIsFullViewOpen(false);
+    setZoomLevel(1);
   }, [activePin?.id]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        if (isEditing) {
+        if (isFullViewOpen) {
+          setIsFullViewOpen(false);
+          setZoomLevel(1);
+        } else if (isEditing) {
           setIsEditing(false);
         } else {
           setActivePin(null);
@@ -75,7 +87,7 @@ export const PinDetailModal = () => {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [setActivePin, isEditing]);
+  }, [setActivePin, isEditing, isFullViewOpen]);
 
   if (!activePin) return null;
 
@@ -167,7 +179,16 @@ export const PinDetailModal = () => {
         className="modal-container pin-detail-modal"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button */}
+        {/* Top Header Controls: Back Button & Close Button */}
+        <button
+          className="modal-back-btn"
+          onClick={() => setActivePin(null)}
+          title="Back to Gallery (Esc)"
+        >
+          <ArrowLeft size={16} />
+          <span>Back</span>
+        </button>
+
         <button
           className="modal-close-btn"
           onClick={() => setActivePin(null)}
@@ -178,12 +199,30 @@ export const PinDetailModal = () => {
 
         {/* Left Side: Image Display with Smart Watermark */}
         <div className="detail-image-side" style={{ position: "relative", overflow: "hidden" }}>
+          {/* Quick Full View Button */}
+          <button
+            className="full-view-badge-btn"
+            onClick={() => {
+              setZoomLevel(1);
+              setIsFullViewOpen(true);
+            }}
+            title="Expand to Fullscreen / Full View"
+          >
+            <Maximize2 size={14} />
+            <span>Full View</span>
+          </button>
+
           <img
             src={activePin.imageUrl}
             alt={`${activePin.title || activePin.category || "Wallpaper"} — Free 4K Wallpaper & HD Digital Art on GallaryWala`}
             className="detail-image"
             decoding="async"
+            onClick={() => {
+              setZoomLevel(1);
+              setIsFullViewOpen(true);
+            }}
             style={{
+              cursor: "zoom-in",
               userSelect: isPaid && !isUnlocked ? "none" : "auto",
               pointerEvents: isPaid && !isUnlocked ? "none" : "auto"
             }}
@@ -774,6 +813,106 @@ export const PinDetailModal = () => {
           )}
         </div>
       </div>
+
+      {/* Immersive Fullscreen Lightbox / Full View Theatre Mode */}
+      {isFullViewOpen && (
+        <div
+          className="fullview-backdrop"
+          onClick={() => {
+            setIsFullViewOpen(false);
+            setZoomLevel(1);
+          }}
+        >
+          {/* Top Control Bar */}
+          <div
+            className="fullview-header"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <button
+                className="fullview-back-btn"
+                onClick={() => {
+                  setIsFullViewOpen(false);
+                  setZoomLevel(1);
+                }}
+                title="Back to Details (Esc)"
+              >
+                <ArrowLeft size={18} />
+                <span>Back</span>
+              </button>
+              <div className="fullview-title-box">
+                <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: 800, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "260px" }}>
+                  {activePin.title || activePin.category}
+                </h4>
+                <span style={{ fontSize: "0.75rem", color: "var(--color-primary)", fontWeight: 700 }}>
+                  {activePin.category} • 4K Ultra HD
+                </span>
+              </div>
+            </div>
+
+            {/* Action & Zoom Controls */}
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <button
+                className="fullview-icon-btn"
+                onClick={() => setZoomLevel((z) => Math.max(0.5, Number((z - 0.25).toFixed(2))))}
+                title="Zoom Out (-)"
+              >
+                <ZoomOut size={18} />
+              </button>
+              <button
+                className="fullview-zoom-pill"
+                onClick={() => setZoomLevel(1)}
+                title="Reset Zoom (100%)"
+              >
+                {Math.round(zoomLevel * 100)}%
+              </button>
+              <button
+                className="fullview-icon-btn"
+                onClick={() => setZoomLevel((z) => Math.min(3.0, Number((z + 0.25).toFixed(2))))}
+                title="Zoom In (+)"
+              >
+                <ZoomIn size={18} />
+              </button>
+              <div style={{ width: "1px", height: "24px", background: "rgba(255,255,255,0.15)", margin: "0 4px" }} />
+              <button
+                className="fullview-download-btn"
+                onClick={handleDownload}
+                title={isPaid && !isUnlocked ? "Unlock Commercial License" : "Download 4K Image"}
+              >
+                <Download size={16} />
+                <span className="fullview-dl-text">Download</span>
+              </button>
+              <button
+                className="fullview-icon-btn fullview-close-btn"
+                onClick={() => {
+                  setIsFullViewOpen(false);
+                  setZoomLevel(1);
+                }}
+                title="Close Full View (Esc)"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+
+          {/* Centered Image Stage */}
+          <div
+            className="fullview-stage"
+            onClick={(e) => e.stopPropagation()}
+            onDoubleClick={() => setZoomLevel((z) => (z > 1 ? 1 : 1.75))}
+          >
+            <img
+              src={activePin.imageUrl}
+              alt={activePin.title}
+              className="fullview-image-el"
+              style={{
+                transform: `scale(${zoomLevel})`,
+                cursor: zoomLevel > 1 ? "grab" : "zoom-in"
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
