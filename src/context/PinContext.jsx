@@ -145,14 +145,12 @@ export const PinProvider = ({ children }) => {
     }
   });
 
-  // 6. Theme State
-  const [theme, setTheme] = useState(() => {
-    try {
-      return localStorage.getItem(STORAGE_KEYS.THEME) || "dark";
-    } catch {
-      return "dark";
-    }
-  });
+  // 6. Theme State (Permanent Clean White / Light Mode)
+  const [theme, setTheme] = useState("light");
+
+  const toggleTheme = () => {
+    setTheme("light");
+  };
 
   // 7. Role-Based Access Control (RBAC) & Cyber Security State
   const [adminRole, setAdminRole] = useState(() => {
@@ -716,9 +714,9 @@ export const PinProvider = ({ children }) => {
 
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.setAttribute("data-theme", "light");
     try {
-      localStorage.setItem(STORAGE_KEYS.THEME, theme);
+      localStorage.setItem(STORAGE_KEYS.THEME, "light");
     } catch (e) {
       console.warn("Storage error", e);
     }
@@ -731,10 +729,6 @@ export const PinProvider = ({ children }) => {
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 3800);
-  };
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
   // Supabase Auth Methods

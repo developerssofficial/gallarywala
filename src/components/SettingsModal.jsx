@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { usePins } from "../context/PinContext";
-import { getPaddleConfig, savePaddleConfig } from "../services/paddle";
+import { calculateRevenueSplit } from "../services/paddle";
 import {
   X,
   User,
@@ -31,7 +31,6 @@ import {
   FileText,
   Printer
 } from "lucide-react";
-import { calculateRevenueSplit } from "../services/paddle";
 
 const PRESET_AVATARS = [
   { name: "Cyber Bot", url: "https://api.dicebear.com/7.x/bottts/svg?seed=CyberBot" },
@@ -90,7 +89,6 @@ export const SettingsModal = () => {
   const [saveLoading, setSaveLoading] = useState(false);
 
   // Commercial Monetization States
-  const [paddleTokenInput, setPaddleTokenInput] = useState(() => getPaddleConfig().clientToken);
   const [payoutMethod, setPayoutMethod] = useState("paypal");
   const [payoutAccount, setPayoutAccount] = useState("");
   const [isRequestingPayout, setIsRequestingPayout] = useState(false);
@@ -148,12 +146,6 @@ export const SettingsModal = () => {
   }, [isSettingsOpen]);
 
   if (!isSettingsOpen) return null;
-
-  const handleSavePaddle = (e) => {
-    e.preventDefault();
-    savePaddleConfig(paddleTokenInput);
-    showToast("Paddle configuration updated successfully! 💳", "success");
-  };
 
   const handleSavePayoutAccount = (e) => {
     e.preventDefault();
@@ -593,53 +585,39 @@ export const SettingsModal = () => {
                   </div>
                 </div>
 
-                {/* Theme Selector */}
+                {/* Theme Indicator */}
                 <div className="form-group" style={{ marginBottom: "28px" }}>
-                  <label className="form-label">App Appearance / Theme</label>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <label className="form-label">App Appearance</label>
+                  <div
+                    style={{
+                      padding: "16px",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid var(--border-light)",
+                      background: "var(--bg-surface)",
+                      color: "var(--text-main)",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px"
+                    }}
+                  >
                     <div
-                      onClick={() => theme !== "dark" && toggleTheme()}
                       style={{
-                        padding: "14px",
-                        borderRadius: "var(--radius-md)",
-                        border: theme === "dark" ? "2px solid var(--color-primary)" : "1px solid var(--border-light)",
-                        background: "#0d0f14",
-                        color: "#fff",
-                        cursor: "pointer",
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        background: "rgba(245, 158, 11, 0.15)",
                         display: "flex",
                         alignItems: "center",
-                        gap: "10px"
+                        justifyContent: "center"
                       }}
                     >
-                      <Moon size={18} style={{ color: "#7928ca" }} />
-                      <div>
-                        <div style={{ fontWeight: 700, fontSize: "0.9rem" }}>Dark Studio</div>
-                        <div style={{ fontSize: "0.75rem", color: "#888" }}>High contrast for photography</div>
-                      </div>
-                      {theme === "dark" && <Check size={16} style={{ marginLeft: "auto", color: "#7928ca" }} />}
+                      <Sun size={20} style={{ color: "#f59e0b" }} />
                     </div>
-
-                    <div
-                      onClick={() => theme !== "light" && toggleTheme()}
-                      style={{
-                        padding: "14px",
-                        borderRadius: "var(--radius-md)",
-                        border: theme === "light" ? "2px solid var(--color-primary)" : "1px solid var(--border-light)",
-                        background: "#f4f5f9",
-                        color: "#111",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px"
-                      }}
-                    >
-                      <Sun size={18} style={{ color: "#f59e0b" }} />
-                      <div>
-                        <div style={{ fontWeight: 700, fontSize: "0.9rem" }}>Light Minimal</div>
-                        <div style={{ fontSize: "0.75rem", color: "#666" }}>Clean bright aesthetic</div>
-                      </div>
-                      {theme === "light" && <Check size={16} style={{ marginLeft: "auto", color: "#7928ca" }} />}
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: "0.95rem" }}>Pure White Minimal Theme (Permanent)</div>
+                      <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>Clean, high-clarity modern discovery aesthetic</div>
                     </div>
+                    <Check size={18} style={{ marginLeft: "auto", color: "var(--color-primary)" }} />
                   </div>
                 </div>
 
@@ -1259,55 +1237,6 @@ export const SettingsModal = () => {
                       style={{ fontSize: "0.8rem", padding: "6px 14px", border: "1px solid var(--border-light)" }}
                     >
                       Save Payout Details
-                    </button>
-                  </form>
-                </div>
-
-                {/* Paddle Gateway Integration */}
-                <div
-                  style={{
-                    background: "var(--bg-surface)",
-                    border: "1px solid var(--border-light)",
-                    borderRadius: "var(--radius-md)",
-                    padding: "18px",
-                    marginBottom: "24px"
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <CreditCard size={18} color="var(--color-primary)" />
-                      <h4 style={{ fontSize: "0.95rem", fontWeight: 700, margin: 0 }}>
-                        Paddle Payment Gateway
-                      </h4>
-                    </div>
-                    <a
-                      href="https://vendors.paddle.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ fontSize: "0.75rem", color: "var(--color-primary)", display: "flex", alignItems: "center", gap: "4px" }}
-                    >
-                      <span>Paddle Dashboard</span>
-                      <ExternalLink size={12} />
-                    </a>
-                  </div>
-                  <form onSubmit={handleSavePaddle}>
-                    <div className="form-group" style={{ marginBottom: "12px" }}>
-                      <label className="form-label" style={{ fontSize: "0.75rem" }}>Paddle Client Token / Vendor Token</label>
-                      <input
-                        type="text"
-                        className="form-input"
-                        value={paddleTokenInput}
-                        onChange={(e) => setPaddleTokenInput(e.target.value)}
-                        placeholder="live_... or test_..."
-                        style={{ fontSize: "0.85rem", fontFamily: "monospace" }}
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      className="nav-tab"
-                      style={{ fontSize: "0.8rem", padding: "6px 14px", border: "1px solid var(--border-light)" }}
-                    >
-                      Save Paddle Token
                     </button>
                   </form>
                 </div>

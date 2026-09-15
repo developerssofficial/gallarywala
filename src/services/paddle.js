@@ -6,24 +6,20 @@
 const PADDLE_CLIENT_TOKEN_KEY = "gallarywala_paddle_client_token";
 const PADDLE_VENDOR_ID_KEY = "gallarywala_paddle_vendor_id";
 
-// Verified Paddle Account Details (Veylorae / Sanjib Sarker)
+// Paddle Configuration (Loaded securely from environment variables)
 export const PADDLE_ACCOUNT_INFO = {
-  sellerId: "378605",
-  company: "Veylorae",
-  owner: "Sanjib Sarker",
-  email: "sanjibsarker9250@gmail.com",
-  website: "https://www.veylorae.shop/"
+  sellerId: import.meta.env.VITE_PADDLE_SELLER_ID || "gallarywala_seller",
+  company: "GallaryWala",
+  website: window.location.origin
 };
-
-const DEFAULT_CLIENT_TOKEN = "live_6c026b96e811c759084fb59b19e";
 
 export const getPaddleConfig = () => {
   try {
-    const token = localStorage.getItem(PADDLE_CLIENT_TOKEN_KEY) || DEFAULT_CLIENT_TOKEN;
-    const vendorId = localStorage.getItem(PADDLE_VENDOR_ID_KEY) || PADDLE_ACCOUNT_INFO.sellerId;
+    const token = import.meta.env.VITE_PADDLE_CLIENT_TOKEN || localStorage.getItem(PADDLE_CLIENT_TOKEN_KEY) || "";
+    const vendorId = import.meta.env.VITE_PADDLE_SELLER_ID || localStorage.getItem(PADDLE_VENDOR_ID_KEY) || "";
     return { clientToken: token, vendorId, accountInfo: PADDLE_ACCOUNT_INFO };
   } catch {
-    return { clientToken: DEFAULT_CLIENT_TOKEN, vendorId: PADDLE_ACCOUNT_INFO.sellerId, accountInfo: PADDLE_ACCOUNT_INFO };
+    return { clientToken: "", vendorId: "", accountInfo: PADDLE_ACCOUNT_INFO };
   }
 };
 

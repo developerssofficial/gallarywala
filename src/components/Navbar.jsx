@@ -220,14 +220,7 @@ export const Navbar = () => {
             </button>
           )}
 
-          {/* Theme Toggle Button */}
-          <button
-            className="icon-btn"
-            onClick={toggleTheme}
-            title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
-          >
-            {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
+
 
           {/* User Saved Collections (Desktop) */}
           <button
