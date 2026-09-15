@@ -493,8 +493,10 @@ a {
 }
 
 .masonry-columns {
-  column-gap: 22px;
+  column-gap: 20px;
   column-count: 2;
+  column-fill: balance;
+  width: 100%;
 }
 
 @media (min-width: 640px) {
@@ -520,10 +522,13 @@ a {
 
 /* Unique GallaryWala Card Design */
 .pin-card-wrapper {
-  break-inside: avoid;
-  margin-bottom: 24px;
+  break-inside: avoid-column;
+  page-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  margin-bottom: 20px;
   display: inline-block;
   width: 100%;
+  contain: content;
   animation: fadeIn 0.4s ease-out;
 }
 

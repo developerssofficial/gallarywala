@@ -15,6 +15,17 @@ import {
   Flag
 } from "lucide-react";
 
+const getOptimizedThumbnail = (url, width = 600) => {
+  if (!url || typeof url !== "string") return url;
+  if (url.includes("res.cloudinary.com") && url.includes("/upload/")) {
+    if (url.includes("/upload/f_auto") || url.includes("/upload/w_") || url.includes("/upload/q_")) {
+      return url;
+    }
+    return url.replace("/upload/", `/upload/f_auto,q_auto,w_${width},c_limit/`);
+  }
+  return url;
+};
+
 const getSafeHostname = (urlStr) => {
   if (!urlStr || typeof urlStr !== "string") return "link";
   try {
@@ -102,23 +113,52 @@ export const PinCard = ({ pin }) => {
   };
 
   const altText = `${pin.title || pin.category || "Wallpaper"} — ${pin.category || "4K Visual"} Ultra HD Wallpaper on GallaryWala`;
+  const thumbnailUrl = getOptimizedThumbnail(pin.imageUrl, 600);
 
   return (
     <div className="pin-card-wrapper" itemScope itemType="https://schema.org/ImageObject">
       <meta itemProp="name" content={pin.title || pin.category} />
       <meta itemProp="caption" content={altText} />
       <div className="pin-card" onClick={() => setActivePin(pin)}>
-        <div className="pin-image-container" style={{ background: "var(--bg-surface-elevated)" }}>
+        <div
+          className="pin-image-container"
+          style={{
+            background: "var(--bg-surface-elevated)",
+            position: "relative",
+            minHeight: "180px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          {!imageLoaded && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(110deg, var(--bg-surface) 8%, var(--bg-surface-elevated) 18%, var(--bg-surface) 33%)",
+                backgroundSize: "200% 100%",
+                animation: "shimmer 1.5s infinite linear",
+                zIndex: 1
+              }}
+            />
+          )}
           <img
-            src={pin.imageUrl}
+            src={thumbnailUrl}
             alt={altText}
             itemProp="contentUrl"
             className="pin-image"
             loading="lazy"
             decoding="async"
+            onLoad={() => setImageLoaded(true)}
             style={{
-              opacity: 1,
-              transition: "transform var(--transition-smooth)"
+              opacity: imageLoaded ? 1 : 0,
+              transition: "opacity 0.35s ease, transform var(--transition-smooth)",
+              display: "block",
+              width: "100%",
+              height: "auto",
+              position: "relative",
+              zIndex: 2
             }}
           />
 
