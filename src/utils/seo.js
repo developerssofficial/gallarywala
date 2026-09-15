@@ -158,3 +158,140 @@ export function updatePageSEO({
     console.warn("SEO update error:", err);
   }
 }
+
+/**
+ * Intelligent tag enrichment helper for uploading new images
+ */
+export function enrichTagsWithSEO(title = "", category = "", userTags = []) {
+  const resultTags = new Set(
+    (Array.isArray(userTags) ? userTags : [userTags])
+      .map((t) => String(t || "").trim().toLowerCase().replace(/^#/, ""))
+      .filter(Boolean)
+  );
+
+  if (category) {
+    resultTags.add(category.toLowerCase());
+  }
+
+  const text = `${title} ${category}`.toLowerCase();
+
+  // Character & Franchise Mappings
+  if (text.includes("naruto") || text.includes("itachi") || text.includes("sasuke") || text.includes("kakashi") || text.includes("madara") || text.includes("obito") || text.includes("minato")) {
+    resultTags.add("naruto");
+    resultTags.add("naruto shippuden");
+    resultTags.add("anime");
+    resultTags.add("anime wallpaper");
+    resultTags.add("4k wallpaper");
+  }
+
+  if (text.includes("itachi")) {
+    resultTags.add("itachi");
+    resultTags.add("itachi uchiha");
+    resultTags.add("uchiha");
+    resultTags.add("sharingan");
+    resultTags.add("susanoo");
+    resultTags.add("akatsuki");
+  }
+
+  if (text.includes("sasuke")) {
+    resultTags.add("sasuke");
+    resultTags.add("sasuke uchiha");
+    resultTags.add("uchiha");
+    resultTags.add("sharingan");
+    resultTags.add("rinnegan");
+    resultTags.add("chidori");
+  }
+
+  if (text.includes("kakashi")) {
+    resultTags.add("kakashi");
+    resultTags.add("kakashi hatake");
+    resultTags.add("sharingan");
+    resultTags.add("chidori");
+    resultTags.add("hokage");
+    resultTags.add("copy ninja");
+  }
+
+  if (text.includes("gojo") || text.includes("satoru") || text.includes("sukuna") || text.includes("toji") || text.includes("jujutsu") || text.includes("jjk") || text.includes("megumi") || text.includes("yuji")) {
+    resultTags.add("jujutsu kaisen");
+    resultTags.add("jjk");
+    resultTags.add("anime");
+    resultTags.add("anime wallpaper");
+    resultTags.add("4k wallpaper");
+  }
+
+  if (text.includes("gojo") || text.includes("satoru")) {
+    resultTags.add("gojo");
+    resultTags.add("gojo satoru");
+    resultTags.add("satoru gojo");
+    resultTags.add("hollow purple");
+    resultTags.add("unlimited void");
+    resultTags.add("six eyes");
+    resultTags.add("limitless");
+  }
+
+  if (text.includes("toji")) {
+    resultTags.add("toji");
+    resultTags.add("toji fushiguro");
+    resultTags.add("zenin");
+    resultTags.add("sorcerer killer");
+  }
+
+  if (text.includes("sukuna")) {
+    resultTags.add("sukuna");
+    resultTags.add("ryomen sukuna");
+    resultTags.add("king of curses");
+  }
+
+  if (text.includes("levi") || text.includes("eren") || text.includes("mikasa") || text.includes("titan") || text.includes("aot") || text.includes("shingeki")) {
+    resultTags.add("attack on titan");
+    resultTags.add("aot");
+    resultTags.add("shingeki no kyojin");
+    resultTags.add("anime");
+    resultTags.add("anime wallpaper");
+    resultTags.add("4k wallpaper");
+  }
+
+  if (text.includes("levi")) {
+    resultTags.add("levi");
+    resultTags.add("levi ackerman");
+    resultTags.add("captain levi");
+    resultTags.add("survey corps");
+  }
+
+  if (text.includes("eren")) {
+    resultTags.add("eren");
+    resultTags.add("eren yeager");
+    resultTags.add("attack titan");
+    resultTags.add("founding titan");
+  }
+
+  if (text.includes("loid") || text.includes("anya") || text.includes("yor") || text.includes("forger") || text.includes("spy")) {
+    resultTags.add("spy x family");
+    resultTags.add("spyxfamily");
+    resultTags.add("anime");
+    resultTags.add("anime wallpaper");
+  }
+
+  if (text.includes("loid") || text.includes("twilight")) {
+    resultTags.add("loid");
+    resultTags.add("loid forger");
+    resultTags.add("twilight");
+    resultTags.add("agent twilight");
+  }
+
+  if (text.includes("porsche") || text.includes("car") || text.includes("bmw") || text.includes("nissan") || text.includes("gt-r")) {
+    resultTags.add("sports cars");
+    resultTags.add("classic cars");
+    resultTags.add("supercars");
+    resultTags.add("automotive");
+    resultTags.add("4k wallpaper");
+  }
+
+  // Base fallback
+  if (resultTags.size === 0) {
+    resultTags.add("4k wallpaper");
+    resultTags.add("aesthetic");
+  }
+
+  return Array.from(resultTags);
+}

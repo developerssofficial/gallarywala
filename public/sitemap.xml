@@ -3,583 +3,1209 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://gallarywala.vercel.app/</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>always</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=4K+Wallpapers</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=AMOLED+Wallpapers</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=8K+UHD</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Aesthetic</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Minimalist</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Dark+Mode</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Monochrome</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Neon</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Retro</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Synthwave</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Vaporwave</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Cinematic</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Anime</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Manga</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Studio+Ghibli</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Lo-Fi</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Cyberpunk</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Sci-Fi</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=AI+Art</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Digital+Art</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Illustrations</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=3D+Renders</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Abstract+Art</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Fluid+Art</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Pixel+Art</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Vector+Art</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Concept+Art</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Fantasy</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Mythical</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Supercars</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Sports+Cars</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Classic+Cars</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Muscle+Cars</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=JDM+Cars</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Hypercars</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Automotive</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Motorcycles</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Gaming</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Esports</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Game+Setup</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Desk+Setup</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Workstation</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Daily+Life</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Cozy+Vibes</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Rainy+Days</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Golden+Hour</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Sunsets</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Night+Life</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Tokyo+Nights</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Books+%26+Reading</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Self+Care</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Meditation+%26+Peace</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Food</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Coffee</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Desserts</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Bakery</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Pizza</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Burgers</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Sushi</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Street+Food</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Drinks</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Cocktails</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Fruits</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Culinary+Art</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Nature</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Landscapes</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Mountains</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Ocean</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Beaches</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Forest</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Waterfalls</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Deserts</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Snow+%26+Winter</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Autumn+Vibes</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Flowers</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Animals</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Wildlife</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Space</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Astronomy</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Galaxy</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Travel</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Architecture</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Interior+Design</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Street+Photography</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Urban</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Cityscape</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Macro+Photography</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Fashion</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Streetwear</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Sneakers</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Luxury+Living</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Vintage+%26+Nostalgia</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Typography</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/?category=Quotes</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://gallarywala.vercel.app/?q=naruto</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=itachi</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=itachi+uchiha</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=kakashi</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=kakashi+hatake</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=sasuke</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=sasuke+uchiha</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=gojo</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=gojo+satoru</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=hollow+purple</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=unlimited+void</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=jujutsu+kaisen</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=jjk</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=levi</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=levi+ackerman</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=eren</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=eren+yeager</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=attack+on+titan</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=aot</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=toji</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=toji+fushiguro</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=loid</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=loid+forger</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=spy+x+family</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=4k+wallpaper</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=anime+4k+wallpaper</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=dark+anime</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=cyberpunk</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=tokyo+nights</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=classic+cars</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?q=porsche</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-1</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789270988/sh3745wtqap3cild63xs.png</image:loc>
+      <image:title><![CDATA[Tokyo Nights - Cyberpunk Neon City Rain 4K Wallpaper]]></image:title>
+      <image:caption><![CDATA[Atmospheric Tokyo night street photography with vibrant neon lights, reflections in the rain, and futuristic cyberpunk aesthetic in ultra HD 4K resolution.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-2</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789271735/z79ursp2arj9puxoqkls.png</image:loc>
+      <image:title><![CDATA[Modern Architectural Marvel - Futuristic Structure 4K]]></image:title>
+      <image:caption><![CDATA[Ultra high-definition architectural wallpaper featuring clean lines, modern geometric patterns, minimalist glass facade, and golden hour reflections.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-3</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789282076/sez3wsqog3cai9sifiqv.png</image:loc>
+      <image:title><![CDATA[Dreamy Aesthetic Landscape - Soft Pastel Sunset 4K]]></image:title>
+      <image:caption><![CDATA[Ethereal pastel sky and sunset landscape wallpaper with soft golden clouds and peaceful aesthetic visual atmosphere.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-4</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789282111/vvp577wfbfve109hi4oj.png</image:loc>
+      <image:title><![CDATA[Cosmic Galaxy & Deep Nebula - Outer Space 4K Wallpaper]]></image:title>
+      <image:caption><![CDATA[Spectacular deep space nebula wallpaper featuring sparkling star clusters, interstellar dust, and vibrant purple cosmic galaxy in 4K UHD.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-5</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789282132/ntpydarmfzh0lyftowbb.png</image:loc>
+      <image:title><![CDATA[Cozy Rainy Day Coffee - Warm Cafe Aesthetic 4K]]></image:title>
+      <image:caption><![CDATA[Warm artisan latte and fresh coffee beans on a wooden table next to a rain-streaked window with cozy cafe vibes.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-6</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789282858/unrma3mki499oyfnnuku.png</image:loc>
+      <image:title><![CDATA[Vintage Porsche Classic Sports Car - Foggy Forest Road 4K]]></image:title>
+      <image:caption><![CDATA[Iconic vintage sports car parked on an asphalt mountain road surrounded by mist and autumn trees in ultra high-definition 4K.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-7</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789358750/dmug2tjqcsthzzky3t7h.png</image:loc>
+      <image:title><![CDATA[Gojo Satoru - Sunset Shrine Balcony (Jujutsu Kaisen 4K)]]></image:title>
+      <image:caption><![CDATA[Stylish 4K anime wallpaper of Gojo Satoru in dark modern suit with sunglasses sitting on a traditional Japanese pagoda shrine balcony during golden hour sunset.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-8</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789359005/bgwelrvbn6nbww8mxcut.png</image:loc>
+      <image:title><![CDATA[Hollow Purple Gojo Satoru - Limitless Curse Energy 4K]]></image:title>
+      <image:caption><![CDATA[Electrifying 4K wallpaper of Satoru Gojo channeling Hollow Purple (Kyoshiki Murasaki) with intense cursed energy aura and glowing blue limitless eyes.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-9</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789368558/pkkgmcsuyrcrazoytapt.png</image:loc>
+      <image:title><![CDATA[Gojo Satoru - Tokyo Night Rain & Blindfold 4K]]></image:title>
+      <image:caption><![CDATA[Moody dark anime wallpaper of Gojo Satoru wearing his black Jujutsu High uniform and blindfold, standing in illuminated rain on a Tokyo city street.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-10</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789368715/h3wmrtjg6ckygb8no79c.png</image:loc>
+      <image:title><![CDATA[Gojo Satoru - Six Eyes Limitless Sorcerer Portrait 4K]]></image:title>
+      <image:caption><![CDATA[Ultra realistic anime portrait of Gojo Satoru with white spiky hair, silver earrings, chain necklace, and iconic black blindfold in high fashion aesthetic.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-11</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789368787/izzqptex5pswtkr3o5zj.png</image:loc>
+      <image:title><![CDATA[Gojo Satoru - Unlimited Void Domain Expansion (4K UHD)]]></image:title>
+      <image:caption><![CDATA[Breathtaking 4K wallpaper of Gojo Satoru casting Unlimited Void (Muryokusho) domain expansion across the celestial moon and cosmos with glowing blue cursed energy.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-12</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789368814/tzp8zg8pjaspstjrw9dx.png</image:loc>
+      <image:title><![CDATA[Gojo Satoru - Cyberpunk Shibuya Neon Walk 4K]]></image:title>
+      <image:caption><![CDATA[Full body anime wallpaper of Gojo Satoru walking through vibrant purple and cyan neon-lit Shibuya streets under the rain in a futuristic techwear outfit.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-13</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789368897/yojikjewl35rcdeqect5.png</image:loc>
+      <image:title><![CDATA[Gojo Satoru - Dark Manga Ink & Sumi-e Art 4K]]></image:title>
+      <image:caption><![CDATA[Intense black and white manga illustration of Gojo Satoru with dynamic ink splatter, piercing gaze under blindfold, and traditional Japanese sumi-e aesthetic.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-14</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789370066/dizprv1o7pyhyaai34hr.png</image:loc>
+      <image:title><![CDATA[Levi Ackerman - Cyberpunk Rain Alleyway 4K (AOT)]]></image:title>
+      <image:caption><![CDATA[Dark cinematic 4K wallpaper of Captain Levi Ackerman in a long black leather trench coat walking down a neon-lit Tokyo cyberpunk alley in the rain.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-15</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789370194/fomzx7fgybn0elsveigc.png</image:loc>
+      <image:title><![CDATA[Levi Ackerman - Humanity's Strongest Soldier 4K]]></image:title>
+      <image:caption><![CDATA[High resolution 4K wallpaper of Captain Levi Ackerman from Attack on Titan with his sharp gaze, Survey Corps cravat, and dark aesthetic style.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-16</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789370295/gdfttsd3ik0dm1bltnb2.png</image:loc>
+      <image:title><![CDATA[Itachi Uchiha - Akatsuki Cloak & Crimson Night 4K]]></image:title>
+      <image:caption><![CDATA[Stunning 4K wallpaper of Itachi Uchiha wearing the Akatsuki cloud cloak under a full blood moon with glowing red Sharingan eyes and crows flying.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-17</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789370501/wb8ivgjors2vrtnw82ap.png</image:loc>
+      <image:title><![CDATA[Itachi Uchiha - Tsukuyomi Illusion & Crow Genjutsu 4K]]></image:title>
+      <image:caption><![CDATA[Epic Naruto Shippuden wallpaper featuring Itachi Uchiha casting Tsukuyomi with swirling black crows, crimson feathers, and Mangekyou Sharingan ocular power.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-18</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789370883/zuaunc0g1tloflllknpo.png</image:loc>
+      <image:title><![CDATA[Itachi Uchiha - Red Susanoo Armor Awakening 4K]]></image:title>
+      <image:caption><![CDATA[Spectacular 4K wallpaper of Itachi Uchiha standing before his colossal Red Susanoo warrior surrounded by floating apocalyptic debris and crimson fire clouds.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-19</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789371485/sjnmqurhclwdjecudqbh.png</image:loc>
+      <image:title><![CDATA[Itachi Uchiha - Colossal Susanoo Overlord 4K Wallpaper]]></image:title>
+      <image:caption><![CDATA[Ultra HD 4K anime wallpaper of Itachi Uchiha in Akatsuki robe backed by the gigantic fiery red Susanoo titan avatar looming over a ruined dark battlefield.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-20</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789371698/zuea1c87esz8m1bgvsvy.png</image:loc>
+      <image:title><![CDATA[Kakashi Hatake - Lightning Blade Chidori Awakening 4K]]></image:title>
+      <image:caption><![CDATA[Electrifying 4K wallpaper of Kakashi Hatake the Copy Ninja channeling blue Lightning Blade (Raikiri / Chidori) with flashing red Sharingan in the dark.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-21</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789371971/vokoltgwtzwmedmxtcny.png</image:loc>
+      <image:title><![CDATA[Kakashi Hatake - 6th Hokage Cloak & Anbu Black Ops 4K]]></image:title>
+      <image:caption><![CDATA[Dynamic wallpaper of Kakashi Hatake featuring Anbu mask and Hokage vest with vivid lightning sparks and deep shadow aesthetics in 4K resolution.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-22</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789372007/lhacsh6tjm07pzom9bbg.png</image:loc>
+      <image:title><![CDATA[Kakashi Hatake - Mangekyou Sharingan Kamui Dimension 4K]]></image:title>
+      <image:caption><![CDATA[Intense 4K anime wallpaper of Kakashi Hatake activating Kamui space-time ninjutsu with swirling void vortex and glowing red eye.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-23</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789372090/ji4t6gvmjrjtbyo7d6hl.png</image:loc>
+      <image:title><![CDATA[Kakashi Hatake - Dark Cyberpunk Shinobi 4K Wallpaper]]></image:title>
+      <image:caption><![CDATA[Modern cyberpunk re-imagination of Kakashi Hatake with glowing cyber-eye, neon blue lightning wires, and high-tech tactical shinobi armor.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-24</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789372118/zgz7zwsjovx08ylwdkb1.png</image:loc>
+      <image:title><![CDATA[Kakashi Hatake - White Fang Legacy & Silver Hair 4K]]></image:title>
+      <image:caption><![CDATA[Cinematic 4K portrait of Kakashi Hatake standing in heavy rain with face mask, spiky silver hair, and piercing Sharingan glow.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-25</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789372144/sqd2udwxni5wdbing9mq.png</image:loc>
+      <image:title><![CDATA[Kakashi Hatake - Team 7 Sensei & Purple Lightning 4K]]></image:title>
+      <image:caption><![CDATA[Stunning 4K artwork of Kakashi Hatake unleashing Shiden (Purple Lightning) with master ninja aura and fierce combat stance.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-26</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789372441/xpwetba2lxrdvjx4uncq.png</image:loc>
+      <image:title><![CDATA[Sasuke Uchiha - Curse Mark Stage 2 & Chidori 4K]]></image:title>
+      <image:caption><![CDATA[Dark Naruto Shippuden 4K wallpaper of Sasuke Uchiha unleashing black Chidori with demonic Curse Mark wings and glowing Sharingan.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-27</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789372488/edlfnynpqjrftzteqpsy.png</image:loc>
+      <image:title><![CDATA[Sasuke Uchiha - Eternal Mangekyou Sharingan & Rinnegan 4K]]></image:title>
+      <image:caption><![CDATA[Epic 4K wallpaper of Sasuke Uchiha wielding both the Eternal Mangekyou Sharingan and Six Tomoe Rinnegan with purple lightning blade.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-28</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789372597/o1abff2l4411qfsmlyad.png</image:loc>
+      <image:title><![CDATA[Sasuke Uchiha - Purple Susanoo Ribcage & Arrow 4K]]></image:title>
+      <image:caption><![CDATA[Colossal Purple Susanoo warrior avatar summoned by Sasuke Uchiha in 4K resolution with flaming chakra arrows and dark celestial glow.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-29</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789372747/bn1bfljochhz7rw2ajnp.png</image:loc>
+      <image:title><![CDATA[Sasuke Uchiha - Lone Avenger in the Rain 4K]]></image:title>
+      <image:caption><![CDATA[Moody dark aesthetic wallpaper of Sasuke Uchiha walking alone under a stormy sky with his Kusanagi sword drawn and red Sharingan active.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-30</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789372781/rgwp5c1l1x1eg1vgzcur.png</image:loc>
+      <image:title><![CDATA[Sasuke Uchiha - Kirin Thunder Dragon Attack 4K]]></image:title>
+      <image:caption><![CDATA[Spectacular anime wallpaper of Sasuke Uchiha summoning Kirin the legendary lightning beast from thunder clouds with supreme precision.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-31</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789372931/u9wwapqfjqvb2byp4ea9.png</image:loc>
+      <image:title><![CDATA[Sasuke Uchiha - Final Valley Indra Chakra 4K]]></image:title>
+      <image:caption><![CDATA[High-resolution 4K wallpaper of Sasuke Uchiha preparing for the ultimate battle with glowing purple chakra aura and decisive shinobi resolve.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-32</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789373256/zdlgmnpm8blsadk1ow8b.png</image:loc>
+      <image:title><![CDATA[Eren Yeager - Attack Titan Rumbling Roar 4K (AOT)]]></image:title>
+      <image:caption><![CDATA[Terrifying and magnificent 4K wallpaper of Eren Yeager with glowing emerald green eyes, Founding Titan power, and freedom fighter determination.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-33</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789373272/evgydk8myviovs6aurrv.png</image:loc>
+      <image:title><![CDATA[Eren Yeager - Paths Dimension & Coordinate Tree 4K]]></image:title>
+      <image:caption><![CDATA[Ethereal 4K wallpaper of Eren Yeager in the endless cosmic Paths dimension standing before the glowing blue Coordinate Tree.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-34</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789373933/fhuwhmsx8wpjlqsckdxv.png</image:loc>
+      <image:title><![CDATA[Toji Fushiguro - Sorcerer Killer Heavenly Restriction 4K]]></image:title>
+      <image:caption><![CDATA[Intense 4K wallpaper of Toji Fushiguro (Zenin) wielding the Inverted Spear of Heaven with raw physical prowess and deadly assassin smirk.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-35</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789373954/wr8xl0z6mjn12dgnnvzs.png</image:loc>
+      <image:title><![CDATA[Toji Fushiguro - Hidden Inventory Blood & Steel 4K]]></image:title>
+      <image:caption><![CDATA[Action-packed 4K anime wallpaper of Toji Fushiguro in his iconic black tight shirt and tactical arsenal ready to breach Jujutsu barriers.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-36</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789374182/wpge5twjatzhiipxmopq.png</image:loc>
+      <image:title><![CDATA[Toji Fushiguro - Playful Cloud Cursed Weapon 4K]]></image:title>
+      <image:caption><![CDATA[Dynamic 4K wallpaper of Toji Fushiguro unleashing pure physical kinetic force with three-section staff Playful Cloud in Tokyo ruins.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-37</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789374888/tzqbalzeaty4ub6a9tdn.png</image:loc>
+      <image:title><![CDATA[Loid Forger - Agent Twilight Secret Mission (Spy x Family 4K)]]></image:title>
+      <image:caption><![CDATA[Sleek 4K anime wallpaper of Loid Forger (Agent Twilight) in a tailored green suit holding a silenced pistol in a classic noir espionage setting.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-38</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789374928/ezc2zkdydpu2ta4txubo.png</image:loc>
+      <image:title><![CDATA[Loid Forger - Operation Strix Master Spy 4K]]></image:title>
+      <image:caption><![CDATA[Sophisticated 4K wallpaper of Loid Forger calculating his next move with sharp intelligence, sleek trench coat, and vintage city backdrop.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-39</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789374982/kabmel7dva16lzguh8is.png</image:loc>
+      <image:title><![CDATA[Loid Forger - Berlint Night Espionage 4K Wallpaper]]></image:title>
+      <image:caption><![CDATA[Atmospheric night wallpaper of Loid Forger standing on a rainy European rooftop overlooking the city lights in high-definition 4K.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gallarywala.vercel.app/?pin=sp-40</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/nho4ptej/image/upload/v1789374998/rro0pwo4bvmrk3ykiwsh.png</image:loc>
+      <image:title><![CDATA[Loid Forger - Family Protector & Elite Assassin 4K]]></image:title>
+      <image:caption><![CDATA[Charismatic 4K wallpaper of Loid Forger with confident smile, stylish fedora, and warm golden lighting balancing secret spy duty with fatherhood.]]></image:caption>
+    </image:image>
+  </url>
+  <url>
     <loc>https://gallarywala.vercel.app/privacy.html</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gallarywala.vercel.app/terms.html</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

@@ -1069,6 +1069,26 @@ export const PinProvider = ({ children }) => {
     }
   };
 
+  // Character & Anime Synonyms Mapping for High-Performance Search
+  const ANIME_SYNONYMS = {
+    naruto: ["itachi", "sasuke", "kakashi", "uchiha", "sharingan", "hokage", "leaf village", "konoha", "akatsuki", "anime", "boruto"],
+    itachi: ["uchiha", "sharingan", "mangekyou", "susanoo", "akatsuki", "tsukuyomi", "naruto", "anime"],
+    sasuke: ["uchiha", "chidori", "curse mark", "rinnegan", "susanoo", "kirin", "naruto", "anime"],
+    kakashi: ["hatake", "chidori", "raikiri", "kamui", "sharingan", "hokage", "copy ninja", "naruto", "anime", "shiden"],
+    gojo: ["satoru", "satoru gojo", "jujutsu kaisen", "jjk", "hollow purple", "unlimited void", "six eyes", "limitless", "anime", "sorcerer"],
+    satoru: ["gojo", "jujutsu kaisen", "jjk", "hollow purple", "unlimited void", "six eyes", "anime"],
+    jujutsu: ["gojo", "toji", "satoru", "jjk", "jujutsu kaisen", "anime"],
+    jjk: ["gojo", "toji", "satoru", "jujutsu kaisen", "anime"],
+    toji: ["fushiguro", "zenin", "sorcerer killer", "heavenly restriction", "jujutsu kaisen", "jjk", "anime"],
+    levi: ["ackerman", "captain levi", "attack on titan", "aot", "shingeki no kyojin", "survey corps", "anime"],
+    eren: ["yeager", "attack titan", "founding titan", "rumbling", "attack on titan", "aot", "shingeki no kyojin", "anime"],
+    aot: ["levi", "eren", "attack on titan", "shingeki no kyojin", "titan", "anime"],
+    loid: ["forger", "twilight", "spy x family", "spyxfamily", "operation strix", "anime"],
+    spy: ["loid", "forger", "twilight", "spy x family", "spyxfamily", "anime"],
+    porsche: ["classic cars", "sports cars", "supercars", "car", "automotive"],
+    car: ["classic cars", "sports cars", "supercars", "porsche", "automotive"]
+  };
+
   // Live Instant Search & Smart Filter
   const filteredPins = (Array.isArray(pins) ? pins : []).filter((pin) => {
     if (!pin) return false;
@@ -1081,13 +1101,19 @@ export const PinProvider = ({ children }) => {
       : []
     ).map((t) => String(t).trim().toLowerCase());
 
+    const pinTitle = (pin.title || "").toLowerCase();
+    const pinDesc = (pin.description || "").toLowerCase();
     const pinCat = (pin.category || "").toLowerCase();
+    const authorName = (pin.author?.name || "").toLowerCase();
+    const authorHandle = (pin.author?.username || "").toLowerCase();
     const selCat = (selectedCategory || "").toLowerCase();
 
     const isSpecialMatch =
       (selCat === "street photography" && (pinCat === "street photography" || pinCat === "street & urban photography" || tagsArr.includes("street photography") || tagsArr.includes("street"))) ||
       (selCat === "rainy days" && (pinCat === "rainy days" || tagsArr.includes("rainy days") || tagsArr.includes("rain") || tagsArr.includes("night rain"))) ||
-      (selCat === "tokyo nights" && (pinCat === "tokyo nights" || tagsArr.includes("tokyo nights") || tagsArr.includes("tokyo")));
+      (selCat === "tokyo nights" && (pinCat === "tokyo nights" || tagsArr.includes("tokyo nights") || tagsArr.includes("tokyo"))) ||
+      (selCat === "anime" && (pinCat === "anime" || tagsArr.includes("anime") || tagsArr.some(t => ["naruto", "gojo", "itachi", "sasuke", "kakashi", "levi", "eren", "toji", "loid", "jujutsu kaisen", "aot"].includes(t)))) ||
+      (selCat === "4k wallpapers" && (pinCat === "4k wallpapers" || tagsArr.includes("4k wallpaper") || tagsArr.includes("4k") || true));
 
     // Accurate Category Matching:
     const matchesCategory =
@@ -1097,12 +1123,26 @@ export const PinProvider = ({ children }) => {
       tagsArr.includes(selCat) ||
       Boolean(isSpecialMatch);
 
+    if (!q) {
+      return Boolean(matchesCategory);
+    }
+
+    // Tokenized Search & Synonym Expansion
+    const queryTokens = q.split(/\s+/).filter(Boolean);
+    const expandedKeywords = new Set(queryTokens);
+
+    queryTokens.forEach((token) => {
+      if (ANIME_SYNONYMS[token]) {
+        ANIME_SYNONYMS[token].forEach((syn) => expandedKeywords.add(syn));
+      }
+    });
+
+    const fullSearchCorpus = `${pinTitle} ${pinDesc} ${pinCat} ${tagsArr.join(" ")} ${authorName} ${authorHandle}`.toLowerCase();
+
     const matchesSearch =
-      !q ||
-      Boolean(pin.title && typeof pin.title === "string" && pin.title.toLowerCase().includes(q)) ||
-      Boolean(pin.description && typeof pin.description === "string" && pin.description.toLowerCase().includes(q)) ||
-      tagsArr.some((t) => t.includes(q)) ||
-      Boolean(pin.category && typeof pin.category === "string" && pin.category.toLowerCase().includes(q));
+      fullSearchCorpus.includes(q) ||
+      queryTokens.every((token) => fullSearchCorpus.includes(token)) ||
+      Array.from(expandedKeywords).some((kw) => fullSearchCorpus.includes(kw));
 
     return Boolean(matchesCategory && matchesSearch);
   });

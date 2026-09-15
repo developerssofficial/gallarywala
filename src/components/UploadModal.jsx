@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { CATEGORIES } from "../data/mockPins";
 import { calculateRevenueSplit } from "../services/paddle";
+import { enrichTagsWithSEO } from "../utils/seo";
 
 export const UploadModal = () => {
   const {
@@ -237,10 +238,12 @@ export const UploadModal = () => {
         setProgress(100);
       }
 
-      const tags = tagsInput
+      const userEnteredTags = tagsInput
         .split(",")
         .map((t) => t.trim().replace(/^#/, ""))
         .filter(Boolean);
+
+      const enrichedTags = enrichTagsWithSEO(resolvedTitle, category, userEnteredTags);
 
       const authorNameClean = guestAuthorName.trim() || undefined;
       const authorUserClean = authorNameClean ? authorNameClean.toLowerCase().replace(/\s+/g, "_") : undefined;
@@ -250,7 +253,7 @@ export const UploadModal = () => {
         description: description.trim(),
         imageUrl: finalImageUrl,
         category,
-        tags: tags.length > 0 ? tags : [category.toLowerCase()],
+        tags: enrichedTags,
         link: link.trim() || undefined,
         targetBoardId: targetBoardId || undefined,
         authorName: authorNameClean,
