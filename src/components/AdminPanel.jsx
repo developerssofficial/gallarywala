@@ -36,7 +36,8 @@ import {
   Key,
   Terminal,
   Clock,
-  Fingerprint
+  Fingerprint,
+  RefreshCw
 } from "lucide-react";
 import { CATEGORIES } from "../data/mockPins";
 import { ROLES, ROLE_CONFIG } from "../services/security";
