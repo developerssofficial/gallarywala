@@ -56,6 +56,7 @@ export const AdminPanel = () => {
     setActivePin,
     setActiveView,
     lockAdminPanel,
+    updateAdminPin,
     currentUser,
     verifiedUsers,
     isUserVerified,

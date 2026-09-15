@@ -714,13 +714,6 @@ export const PinProvider = ({ children }) => {
     }
   }, [cloudinaryConfig]);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.ADMIN_PIN, adminPin);
-    } catch (e) {
-      console.warn("Storage error", e);
-    }
-  }, [adminPin]);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
