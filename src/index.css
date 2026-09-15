@@ -823,9 +823,9 @@ a {
 /* Desktop Master Side-by-Side Pin Page (Pinterest Layout) */
 @media (min-width: 1024px) {
   .pin-detail-page-wrapper {
-    max-width: 1760px;
+    max-width: 1840px;
     display: grid;
-    grid-template-columns: 520px 1fr;
+    grid-template-columns: minmax(780px, 920px) 1fr;
     gap: 32px;
     align-items: start;
     width: 100%;
@@ -835,34 +835,46 @@ a {
     position: sticky;
     top: 20px;
     width: 100%;
-    max-width: 520px;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
     max-height: calc(100vh - 40px);
-    overflow-y: auto;
+    overflow: hidden;
     border-radius: var(--radius-xl);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.7);
     background: var(--bg-modal);
     border: 1px solid var(--border-light);
   }
 
   .pin-detail-modal .detail-image-side {
-    max-height: 520px;
-    min-height: 380px;
-    background: #000;
+    max-height: calc(100vh - 40px);
+    height: 100%;
+    min-height: 480px;
+    background: #040508;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
     width: 100%;
   }
 
   .pin-detail-modal .detail-image {
-    max-height: 520px;
+    max-width: 100%;
+    max-height: calc(100vh - 40px);
     width: auto;
+    height: auto;
     object-fit: contain;
+    display: block;
+    margin: 0 auto;
   }
 
   .pin-detail-modal .detail-content-side {
-    padding: 24px;
-    max-height: none;
-    overflow-y: visible;
+    padding: 26px 22px;
+    height: 100%;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
 
   .pin-detail-related-container {
@@ -876,22 +888,10 @@ a {
   }
 }
 
-@media (min-width: 1440px) {
+@media (min-width: 1560px) {
   .pin-detail-page-wrapper {
-    grid-template-columns: 560px 1fr;
+    grid-template-columns: 960px 1fr;
     gap: 36px;
-  }
-
-  .pin-detail-modal {
-    max-width: 560px;
-  }
-
-  .pin-detail-modal .detail-image-side {
-    max-height: 580px;
-  }
-
-  .pin-detail-modal .detail-image {
-    max-height: 580px;
   }
 
   .pin-detail-related-container .masonry-columns {
@@ -900,10 +900,33 @@ a {
   }
 }
 
-@media (min-width: 1800px) {
+@media (min-width: 1840px) {
   .pin-detail-related-container .masonry-columns {
     column-count: 5;
   }
+}
+
+.detail-author-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  margin-top: 8px;
+}
+
+.detail-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 1px solid var(--border-light);
+  background: var(--bg-surface);
+  flex-shrink: 0 !important;
+  display: block !important;
 }
 
 .detail-image-side {
