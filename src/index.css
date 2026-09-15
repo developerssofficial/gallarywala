@@ -1641,15 +1641,15 @@ a {
 
   /* Modals Layout & Touch Styling */
   .modal-backdrop {
-    padding: 10px;
-    align-items: flex-end;
+    padding: 0 !important;
+    align-items: flex-end !important;
   }
 
   .modal-container {
     width: 100% !important;
     max-width: 100% !important;
-    max-height: 92vh !important;
-    border-radius: var(--radius-lg) !important;
+    max-height: 95vh !important;
+    border-radius: 24px 24px 0 0 !important;
     padding: 20px 16px !important;
     margin: 0 !important;
   }
@@ -1659,22 +1659,69 @@ a {
     display: flex !important;
     flex-direction: column !important;
     padding: 0 !important;
-    max-height: 92vh !important;
+    max-height: 96vh !important;
     overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 24px 24px 0 0 !important;
+    border-bottom: none !important;
+    background: var(--bg-modal) !important;
   }
 
   .detail-image-side {
-    min-height: 200px !important;
-    max-height: 340px !important;
+    min-height: 320px !important;
+    max-height: 65vh !important;
     width: 100% !important;
+    background: #06070b !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    overflow: hidden !important;
   }
 
   .detail-image {
-    max-height: 340px !important;
+    max-width: 100% !important;
+    max-height: 65vh !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+    margin: 0 auto !important;
+  }
+
+  .modal-back-btn {
+    top: 12px !important;
+    left: 12px !important;
+    padding: 6px 14px !important;
+    font-size: 0.8rem !important;
+    background: rgba(10, 12, 18, 0.8) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #fff !important;
+  }
+
+  .modal-close-btn {
+    top: 12px !important;
+    right: 12px !important;
+    width: 36px !important;
+    height: 36px !important;
+    background: rgba(10, 12, 18, 0.8) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #fff !important;
+  }
+
+  .full-view-badge-btn {
+    bottom: 12px !important;
+    right: 12px !important;
+    padding: 6px 14px !important;
+    font-size: 0.78rem !important;
   }
 
   .detail-content-side {
-    padding: 18px 14px 28px 14px !important;
+    padding: 20px 16px 36px 16px !important;
     max-height: none !important;
     overflow-y: visible !important;
   }
