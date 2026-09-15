@@ -108,6 +108,15 @@ export const PinDetailModal = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [setActivePin, isEditing, isFullViewOpen, zoomLevel]);
 
+  // Touch Gestures State & Refs (1-Finger Pan + 2-Finger Pinch to Zoom)
+  const pinchRef = React.useRef({
+    initialDistance: 0,
+    initialZoom: 1,
+    initialPan: { x: 0, y: 0 },
+    initialCenter: { x: 0, y: 0 },
+    lastTapTime: 0
+  });
+
   // Mouse Drag Handlers
   const handleMouseDown = (e) => {
     if (zoomLevel <= 1) return;
@@ -129,26 +138,102 @@ export const PinDetailModal = () => {
     setIsDragging(false);
   };
 
-  // Touch Drag Handlers (Mobile)
+  // Touch Drag & Pinch-to-Zoom Handlers (Mobile Multi-Touch)
   const handleTouchStart = (e) => {
-    if (zoomLevel <= 1 || e.touches.length !== 1) return;
-    setIsDragging(true);
-    setDragStart({
-      x: e.touches[0].clientX - panPosition.x,
-      y: e.touches[0].clientY - panPosition.y
-    });
+    if (e.touches.length === 2) {
+      // 2 Fingers Touch -> Start Pinch to Zoom & Pan
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      const dist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+      const center = {
+        x: (t1.clientX + t2.clientX) / 2,
+        y: (t1.clientY + t2.clientY) / 2
+      };
+      pinchRef.current = {
+        initialDistance: dist,
+        initialZoom: zoomLevel,
+        initialPan: { ...panPosition },
+        initialCenter: center,
+        lastTapTime: 0
+      };
+      setIsDragging(true);
+    } else if (e.touches.length === 1) {
+      // 1 Finger Touch -> Drag when zoomed + Double Tap detection
+      const now = Date.now();
+      const lastTap = pinchRef.current.lastTapTime || 0;
+      if (now - lastTap < 300) {
+        // Double tap detected! Toggle Zoom
+        if (zoomLevel > 1) {
+          handleResetZoom();
+        } else {
+          setZoomLevel(2.2);
+        }
+        pinchRef.current.lastTapTime = 0;
+        return;
+      }
+      pinchRef.current.lastTapTime = now;
+
+      if (zoomLevel > 1) {
+        setIsDragging(true);
+        setDragStart({
+          x: e.touches[0].clientX - panPosition.x,
+          y: e.touches[0].clientY - panPosition.y
+        });
+      }
+    }
   };
 
   const handleTouchMove = (e) => {
-    if (!isDragging || zoomLevel <= 1 || e.touches.length !== 1) return;
-    setPanPosition({
-      x: e.touches[0].clientX - dragStart.x,
-      y: e.touches[0].clientY - dragStart.y
-    });
+    if (e.touches.length === 2) {
+      // 2-Finger Pinch-to-Zoom & Pan Live
+      e.preventDefault();
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      const dist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+      const center = {
+        x: (t1.clientX + t2.clientX) / 2,
+        y: (t1.clientY + t2.clientY) / 2
+      };
+
+      const { initialDistance, initialZoom, initialPan, initialCenter } = pinchRef.current;
+      if (initialDistance > 0) {
+        const scaleFactor = dist / initialDistance;
+        const newZoom = Math.min(5.0, Math.max(0.6, Number((initialZoom * scaleFactor).toFixed(2))));
+        setZoomLevel(newZoom);
+
+        // Move pan position with finger center shift
+        const deltaX = center.x - initialCenter.x;
+        const deltaY = center.y - initialCenter.y;
+        setPanPosition({
+          x: initialPan.x + deltaX,
+          y: initialPan.y + deltaY
+        });
+      }
+    } else if (e.touches.length === 1 && isDragging && zoomLevel > 1) {
+      // 1-Finger Pan
+      e.preventDefault();
+      setPanPosition({
+        x: e.touches[0].clientX - dragStart.x,
+        y: e.touches[0].clientY - dragStart.y
+      });
+    }
   };
 
-  const handleTouchEnd = () => {
-    setIsDragging(false);
+  const handleTouchEnd = (e) => {
+    if (e.touches.length === 0) {
+      setIsDragging(false);
+      pinchRef.current.initialDistance = 0;
+      // If zoomed out too small, snap back to 100%
+      if (zoomLevel < 1.0) {
+        handleResetZoom();
+      }
+    } else if (e.touches.length === 1 && zoomLevel > 1) {
+      // Seamlessly transition from 2 fingers to 1 finger dragging
+      setDragStart({
+        x: e.touches[0].clientX - panPosition.x,
+        y: e.touches[0].clientY - panPosition.y
+      });
+    }
   };
 
   // Mouse Wheel Zoom
@@ -1011,7 +1096,7 @@ export const PinDetailModal = () => {
             {/* Floating Navigation Hint when Zoomed In */}
             {zoomLevel > 1 && (
               <div className="fullview-pan-indicator">
-                <span>🖱️ Drag image freely in any direction</span>
+                <span>🤏 Pinch & drag with fingers to explore</span>
                 <button
                   className="fullview-reset-pan-btn"
                   onClick={(e) => {
