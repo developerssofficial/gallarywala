@@ -358,7 +358,7 @@ export const PinDetailModal = () => {
         </button>
 
         {/* Left Side: Image Display with Smart Watermark */}
-        <div className="detail-image-side" style={{ position: "relative", overflow: "hidden" }}>
+        <div className="detail-image-side" style={{ position: "relative" }}>
           {/* Quick Full View Button */}
           <button
             className="full-view-badge-btn"
@@ -382,6 +382,13 @@ export const PinDetailModal = () => {
               setIsFullViewOpen(true);
             }}
             style={{
+              maxWidth: "100%",
+              maxHeight: "70vh",
+              width: "auto",
+              height: "auto",
+              objectFit: "contain",
+              display: "block",
+              margin: "0 auto",
               cursor: "zoom-in",
               userSelect: isPaid && !isUnlocked ? "none" : "auto",
               pointerEvents: isPaid && !isUnlocked ? "none" : "auto"

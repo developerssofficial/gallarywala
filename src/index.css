@@ -1668,20 +1668,22 @@ a {
   }
 
   .detail-image-side {
-    min-height: 320px !important;
-    max-height: 65vh !important;
+    min-height: auto !important;
+    height: auto !important;
+    max-height: 70vh !important;
     width: 100% !important;
     background: #06070b !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     position: relative !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+    padding: 0 !important;
   }
 
   .detail-image {
     max-width: 100% !important;
-    max-height: 65vh !important;
+    max-height: 70vh !important;
     width: auto !important;
     height: auto !important;
     object-fit: contain !important;
