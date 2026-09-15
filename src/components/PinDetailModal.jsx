@@ -30,8 +30,20 @@ import {
   ZoomOut
 } from "lucide-react";
 
+const getOptimizedThumbnail = (url, width = 400) => {
+  if (!url || typeof url !== "string") return url;
+  if (url.includes("res.cloudinary.com") && url.includes("/upload/")) {
+    if (url.includes("/upload/f_auto") || url.includes("/upload/w_") || url.includes("/upload/q_")) {
+      return url;
+    }
+    return url.replace("/upload/", `/upload/f_auto,q_auto,w_${width},c_limit/`);
+  }
+  return url;
+};
+
 export const PinDetailModal = () => {
   const {
+    pins,
     activePin,
     setActivePin,
     likedPinIds,
@@ -248,6 +260,62 @@ export const PinDetailModal = () => {
       return next;
     });
   };
+
+  // Smart Recommendation / Related Pins Algorithm (Matches exact character, tags, title & category)
+  const relatedPins = React.useMemo(() => {
+    if (!activePin || !pins || pins.length === 0) return [];
+
+    const STOP_WORDS = new Set([
+      "4k", "wallpaper", "wallpapers", "the", "and", "hd", "free", "art", "of",
+      "in", "with", "a", "an", "at", "by", "for", "from", "on", "to", "digital",
+      "ultra", "illustration", "anime", "image", "photo"
+    ]);
+
+    const titleTokens = (activePin.title || "")
+      .toLowerCase()
+      .replace(/[^\w\s]/g, "")
+      .split(/\s+/)
+      .filter((t) => t.length > 2 && !STOP_WORDS.has(t));
+
+    const activeTags = Array.isArray(activePin.tags)
+      ? activePin.tags.map((t) => String(t).toLowerCase().trim())
+      : [];
+
+    const activeCategory = (activePin.category || "").toLowerCase();
+
+    const scored = pins
+      .filter((p) => p.id !== activePin.id)
+      .map((p) => {
+        let score = 0;
+        const pTitle = (p.title || "").toLowerCase();
+        const pDesc = (p.description || "").toLowerCase();
+        const pCategory = (p.category || "").toLowerCase();
+        const pTags = Array.isArray(p.tags) ? p.tags.map((t) => String(t).toLowerCase().trim()) : [];
+
+        // 1. Tag matching (+12 points per matching tag)
+        activeTags.forEach((tag) => {
+          if (pTags.includes(tag)) score += 12;
+        });
+
+        // 2. Title token matching (+8 points per matched character/topic keyword)
+        titleTokens.forEach((token) => {
+          if (pTitle.includes(token)) score += 8;
+          else if (pDesc.includes(token)) score += 4;
+        });
+
+        // 3. Same Category matching (+2 points)
+        if (activeCategory && pCategory === activeCategory) {
+          score += 2;
+        }
+
+        return { pin: p, score };
+      });
+
+    scored.sort((a, b) => b.score - a.score);
+
+    // Return top 8 most relevant related pins (with score > 0)
+    return scored.filter((item) => item.score > 0).slice(0, 8).map((item) => item.pin);
+  }, [activePin, pins]);
 
   if (!activePin) return null;
 
@@ -976,6 +1044,93 @@ export const PinDetailModal = () => {
                   </button>
                 </form>
               </div>
+
+              {/* Smart Recommendations: More Like This */}
+              {relatedPins.length > 0 && (
+                <div style={{ marginTop: "28px", paddingTop: "20px", borderTop: "1px solid var(--border-light)" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+                    <div style={{ fontSize: "1rem", fontWeight: 800, color: "var(--text-main)", display: "flex", alignItems: "center", gap: "8px" }}>
+                      <Sparkles size={16} color="var(--color-primary)" />
+                      <span>More Like This</span>
+                    </div>
+                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>
+                      {relatedPins.length} similar visuals
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))",
+                      gap: "10px"
+                    }}
+                  >
+                    {relatedPins.map((relPin) => (
+                      <div
+                        key={relPin.id}
+                        onClick={() => {
+                          setActivePin(relPin);
+                          const contentSide = document.querySelector(".detail-content-side");
+                          if (contentSide) contentSide.scrollTop = 0;
+                          const modalEl = document.querySelector(".pin-detail-modal");
+                          if (modalEl) modalEl.scrollTop = 0;
+                        }}
+                        style={{
+                          position: "relative",
+                          borderRadius: "var(--radius-md)",
+                          overflow: "hidden",
+                          cursor: "pointer",
+                          background: "var(--bg-surface)",
+                          border: "1px solid var(--border-light)",
+                          aspectRatio: "3/4",
+                          transition: "all var(--transition-fast)"
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = "translateY(-3px)";
+                          e.currentTarget.style.borderColor = "var(--color-primary)";
+                          e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.4)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = "translateY(0)";
+                          e.currentTarget.style.borderColor = "var(--border-light)";
+                          e.currentTarget.style.boxShadow = "none";
+                        }}
+                        title={relPin.title}
+                      >
+                        <img
+                          src={getOptimizedThumbnail(relPin.imageUrl, 400)}
+                          alt={relPin.title}
+                          loading="lazy"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            display: "block"
+                          }}
+                        />
+                        <div
+                          style={{
+                            position: "absolute",
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            padding: "18px 8px 6px 8px",
+                            background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, transparent 100%)",
+                            color: "#fff",
+                            fontSize: "0.72rem",
+                            fontWeight: 700,
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis"
+                          }}
+                        >
+                          {relPin.title}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
