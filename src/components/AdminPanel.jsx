@@ -29,9 +29,17 @@ import {
   PlusCircle,
   BadgePercent,
   Flame,
-  UserX
+  UserX,
+  Crown,
+  Shield,
+  History,
+  Key,
+  Terminal,
+  Clock,
+  Fingerprint
 } from "lucide-react";
 import { CATEGORIES } from "../data/mockPins";
+import { ROLES, ROLE_CONFIG } from "../services/security";
 
 export const AdminPanel = () => {
   const {
@@ -47,7 +55,6 @@ export const AdminPanel = () => {
     setActivePin,
     setActiveView,
     lockAdminPanel,
-    updateAdminPin,
     currentUser,
     verifiedUsers,
     isUserVerified,
@@ -55,7 +62,12 @@ export const AdminPanel = () => {
     grantVerifiedBadge,
     revokeVerifiedBadge,
     adminTab,
-    setAdminTab
+    setAdminTab,
+    adminRole,
+    hasAdminPermission,
+    changeRolePasscode,
+    getRolePasscodes,
+    getAuditLogs
   } = usePins();
 
   const fileInputRef = useRef(null);
@@ -76,9 +88,11 @@ export const AdminPanel = () => {
   const [editingPinId, setEditingPinId] = useState(null);
   const [editTitleValue, setEditTitleValue] = useState("");
 
-  // Change PIN State
-  const [isChangingPin, setIsChangingPin] = useState(false);
-  const [newPinInput, setNewPinInput] = useState("");
+  // Role & Passcode Manager States (Super Admin)
+  const [rolePasscodes, setRolePasscodes] = useState(() => (getRolePasscodes ? getRolePasscodes() : {}));
+  const [editingRole, setEditingRole] = useState(null);
+  const [newRolePassInput, setNewRolePassInput] = useState("");
+  const [auditLogsList, setAuditLogsList] = useState(() => (getAuditLogs ? getAuditLogs() : []));
 
   // Badge Panel States
   const [badgeSearch, setBadgeSearch] = useState("");
@@ -360,64 +374,64 @@ export const AdminPanel = () => {
               fontWeight: 800,
               display: "flex",
               alignItems: "center",
-              gap: "12px"
+              gap: "12px",
+              flexWrap: "wrap"
             }}
           >
             <span>GallaryWala Studio</span>
             <span
               style={{
-                fontSize: "0.72rem",
-                padding: "4px 10px",
+                fontSize: "0.75rem",
+                padding: "4px 12px",
                 borderRadius: "var(--radius-full)",
-                background: "var(--brand-gradient)",
+                background: ROLE_CONFIG[adminRole]?.badgeColor || "var(--brand-gradient)",
                 color: "#fff",
-                fontWeight: 800
+                fontWeight: 800,
+                letterSpacing: "0.5px"
               }}
             >
-              OWNER CONSOLE
+              {ROLE_CONFIG[adminRole]?.badgeText || "STAFF CONSOLE"}
             </span>
           </h1>
           <p style={{ color: "var(--text-secondary)", marginTop: "4px", fontSize: "0.95rem" }}>
-            Verified Badges, AI Moderation, Cloudinary Sync, Supabase & Creator Management
+            {adminRole === ROLES.SUPER_ADMIN
+              ? "Full System Authority: Roles, API Keys, Paddle Monetization, Verified Badges & Content Moderation."
+              : adminRole === ROLES.OFFICIAL
+              ? "Official Platform Master: Verified Creator Uploads, Badges & Global Artwork Moderation."
+              : "Sub-Admin Content Moderator: Image Curation, Tag/Title Optimization & Spam Removal."}
           </p>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-          {/* Cloudinary Setup */}
-          <button
-            className="icon-btn"
-            style={{ width: "auto", padding: "10px 18px", borderRadius: "var(--radius-full)", gap: "8px" }}
-            onClick={() => setIsCloudinarySettingsOpen(true)}
-          >
-            <Cloud size={18} color={isCloudinaryActive ? "#00dfd8" : "currentColor"} />
-            <span>
-              {isCloudinaryActive
-                ? `Cloudinary: ${cloudinaryConfig.cloudName}`
-                : "Cloudinary Setup"}
-            </span>
-          </button>
+          {/* Cloudinary Setup - Super Admin Only */}
+          {hasAdminPermission("MANAGE_APIS") && (
+            <button
+              className="icon-btn"
+              style={{ width: "auto", padding: "10px 18px", borderRadius: "var(--radius-full)", gap: "8px" }}
+              onClick={() => setIsCloudinarySettingsOpen(true)}
+            >
+              <Cloud size={18} color={isCloudinaryActive ? "#00dfd8" : "currentColor"} />
+              <span>
+                {isCloudinaryActive
+                  ? `Cloudinary: ${cloudinaryConfig.cloudName}`
+                  : "Cloudinary Setup"}
+              </span>
+            </button>
+          )}
 
-          {/* Supabase Setup */}
-          <button
-            className="icon-btn"
-            style={{ width: "auto", padding: "10px 18px", borderRadius: "var(--radius-full)", gap: "8px" }}
-            onClick={() => setIsSupabaseSettingsOpen(true)}
-          >
-            <Database size={18} color={isSupabaseConfigured ? "#10b981" : "currentColor"} />
-            <span>
-              {isSupabaseConfigured ? "Supabase: Connected" : "Supabase Setup"}
-            </span>
-          </button>
-
-          {/* Change PIN */}
-          <button
-            className="icon-btn"
-            style={{ width: "auto", padding: "10px 18px", borderRadius: "var(--radius-full)", gap: "8px" }}
-            onClick={() => setIsChangingPin(!isChangingPin)}
-          >
-            <KeyRound size={16} />
-            <span>Change PIN</span>
-          </button>
+          {/* Supabase Setup - Super Admin Only */}
+          {hasAdminPermission("MANAGE_APIS") && (
+            <button
+              className="icon-btn"
+              style={{ width: "auto", padding: "10px 18px", borderRadius: "var(--radius-full)", gap: "8px" }}
+              onClick={() => setIsSupabaseSettingsOpen(true)}
+            >
+              <Database size={18} color={isSupabaseConfigured ? "#10b981" : "currentColor"} />
+              <span>
+                {isSupabaseConfigured ? "Supabase: Connected" : "Supabase Setup"}
+              </span>
+            </button>
+          )}
 
           {/* View Public Gallery */}
           <button
@@ -435,51 +449,12 @@ export const AdminPanel = () => {
             className="icon-btn"
             style={{ width: "42px", height: "42px", color: "#ef4444" }}
             onClick={lockAdminPanel}
-            title="Lock Admin Session"
+            title="Lock Staff Session"
           >
             <Lock size={18} />
           </button>
         </div>
       </div>
-
-      {/* Change PIN Form */}
-      {isChangingPin && (
-        <form
-          onSubmit={handleSaveNewPin}
-          style={{
-            background: "var(--bg-surface)",
-            padding: "16px 20px",
-            borderRadius: "var(--radius-lg)",
-            border: "1px solid var(--border-light)",
-            marginBottom: "24px",
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            flexWrap: "wrap"
-          }}
-        >
-          <div style={{ fontWeight: 700, fontSize: "0.9rem" }}>Set New Admin PIN:</div>
-          <input
-            type="text"
-            placeholder="Enter new 4+ digit PIN"
-            className="form-input"
-            style={{ maxWidth: "220px" }}
-            value={newPinInput}
-            onChange={(e) => setNewPinInput(e.target.value)}
-            autoFocus
-          />
-          <button type="submit" className="btn-primary" style={{ padding: "8px 18px" }}>
-            Save PIN
-          </button>
-          <button
-            type="button"
-            className="nav-tab"
-            onClick={() => setIsChangingPin(false)}
-          >
-            Cancel
-          </button>
-        </form>
-      )}
 
       {/* Top Admin Tabs Navigation */}
       <div
@@ -493,6 +468,7 @@ export const AdminPanel = () => {
           flexWrap: "wrap"
         }}
       >
+        {/* Tab 1: Media Catalog (All Roles) */}
         <button
           onClick={() => {
             setAdminTab("catalog");
@@ -514,7 +490,7 @@ export const AdminPanel = () => {
           }}
         >
           <ImageIcon size={18} />
-          <span>Media Catalog & Uploader</span>
+          <span>Media Catalog & Moderation</span>
           <span
             style={{
               fontSize: "0.75rem",
@@ -527,69 +503,102 @@ export const AdminPanel = () => {
           </span>
         </button>
 
-        <button
-          onClick={() => {
-            setAdminTab("badges");
-            window.history.replaceState(null, "", "/badge-panel");
-          }}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            padding: "10px 20px",
-            borderRadius: "var(--radius-full)",
-            fontSize: "0.95rem",
-            fontWeight: 700,
-            cursor: "pointer",
-            background: adminTab === "badges" ? "linear-gradient(135deg, #0095f6 0%, #00dfd8 100%)" : "var(--bg-surface)",
-            color: adminTab === "badges" ? "#fff" : "var(--text-secondary)",
-            border: adminTab === "badges" ? "none" : "1px solid var(--border-light)",
-            boxShadow: adminTab === "badges" ? "0 4px 18px rgba(0, 149, 246, 0.4)" : "none",
-            transition: "all var(--transition-fast)"
-          }}
-        >
-          <VerifiedBadge size={18} />
-          <span>Verified Badge Panel</span>
-          <span
+        {/* Tab 2: Verified Badges (Super Admin & Official) */}
+        {hasAdminPermission("MANAGE_BADGES") && (
+          <button
+            onClick={() => {
+              setAdminTab("badges");
+              window.history.replaceState(null, "", "/badge-panel");
+            }}
             style={{
-              fontSize: "0.75rem",
-              background: adminTab === "badges" ? "rgba(255,255,255,0.25)" : "rgba(0, 149, 246, 0.15)",
-              color: adminTab === "badges" ? "#fff" : "#0095f6",
-              padding: "2px 8px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "10px 20px",
               borderRadius: "var(--radius-full)",
-              fontWeight: 800
+              fontSize: "0.95rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              background: adminTab === "badges" ? "linear-gradient(135deg, #0095f6 0%, #00dfd8 100%)" : "var(--bg-surface)",
+              color: adminTab === "badges" ? "#fff" : "var(--text-secondary)",
+              border: adminTab === "badges" ? "none" : "1px solid var(--border-light)",
+              boxShadow: adminTab === "badges" ? "0 4px 18px rgba(0, 149, 246, 0.4)" : "none",
+              transition: "all var(--transition-fast)"
             }}
           >
-            {verifiedUsers.length} Verified
-          </span>
-        </button>
+            <VerifiedBadge size={18} />
+            <span>Verified Badge Panel</span>
+            <span
+              style={{
+                fontSize: "0.75rem",
+                background: adminTab === "badges" ? "rgba(255,255,255,0.25)" : "rgba(0, 149, 246, 0.15)",
+                color: adminTab === "badges" ? "#fff" : "#0095f6",
+                padding: "2px 8px",
+                borderRadius: "var(--radius-full)",
+                fontWeight: 800
+              }}
+            >
+              {verifiedUsers.length} Verified
+            </span>
+          </button>
+        )}
 
-        <button
-          type="button"
-          className="icon-btn"
-          style={{
-            marginLeft: "auto",
-            width: "auto",
-            padding: "8px 16px",
-            borderRadius: "var(--radius-full)",
-            fontSize: "0.82rem",
-            gap: "6px",
-            color: "#0095f6"
-          }}
-          onClick={() => {
-            const secretUrl = `${window.location.origin}/badge-panel`;
-            if (navigator.clipboard) {
-              navigator.clipboard.writeText(secretUrl);
-              showToast("Secret Badge URL copied! 📋", "success");
-            } else {
-              showToast(`Secret URL: ${secretUrl}`, "info");
-            }
-          }}
-          title="Copy direct secret URL to this Verified Badge Panel"
-        >
-          <VerifiedBadge size={14} />
-          <span>Copy Secret Badge URL</span>
-        </button>
+        {/* Tab 3: Security & Role Passcodes (Super Admin Only) */}
+        {hasAdminPermission("MANAGE_ROLES") && (
+          <button
+            onClick={() => {
+              setAdminTab("security");
+              if (getAuditLogs) setAuditLogsList(getAuditLogs());
+            }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "10px 20px",
+              borderRadius: "var(--radius-full)",
+              fontSize: "0.95rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              background: adminTab === "security" ? "linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)" : "var(--bg-surface)",
+              color: adminTab === "security" ? "#fff" : "var(--text-secondary)",
+              border: adminTab === "security" ? "none" : "1px solid var(--border-light)",
+              boxShadow: adminTab === "security" ? "0 4px 18px rgba(255, 65, 108, 0.4)" : "none",
+              transition: "all var(--transition-fast)"
+            }}
+          >
+            <ShieldCheck size={18} />
+            <span>Role Passcodes & Cyber Shield</span>
+          </button>
+        )}
+
+        {hasAdminPermission("MANAGE_BADGES") && (
+          <button
+            type="button"
+            className="icon-btn"
+            style={{
+              marginLeft: "auto",
+              width: "auto",
+              padding: "8px 16px",
+              borderRadius: "var(--radius-full)",
+              fontSize: "0.82rem",
+              gap: "6px",
+              color: "#0095f6"
+            }}
+            onClick={() => {
+              const secretUrl = `${window.location.origin}/badge-panel`;
+              if (navigator.clipboard) {
+                navigator.clipboard.writeText(secretUrl);
+                showToast("Secret Badge URL copied! 📋", "success");
+              } else {
+                showToast(`Secret URL: ${secretUrl}`, "info");
+              }
+            }}
+            title="Copy direct secret URL to this Verified Badge Panel"
+          >
+            <VerifiedBadge size={14} />
+            <span>Copy Secret Badge URL</span>
+          </button>
+        )}
       </div>
 
       {/* ========================================================
@@ -1527,6 +1536,372 @@ export const AdminPanel = () => {
                 })
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          TAB 3: ROLE PASSCODES & CYBER ATTACK SHIELD
+          ======================================================== */}
+      {adminTab === "security" && hasAdminPermission("MANAGE_ROLES") && (
+        <div style={{ animation: "fadeIn 0.3s ease" }}>
+          {/* Top Banner */}
+          <div
+            style={{
+              background: "linear-gradient(135deg, rgba(255,65,108,0.12) 0%, rgba(255,75,43,0.08) 100%)",
+              border: "1px solid rgba(255,65,108,0.3)",
+              borderRadius: "var(--radius-xl)",
+              padding: "24px 28px",
+              marginBottom: "32px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "20px"
+            }}
+          >
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
+                <ShieldCheck size={28} color="#ff416c" />
+                <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: 800 }}>
+                  Role-Based Access Control (RBAC) & Cyber Shield
+                </h2>
+              </div>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", maxWidth: "750px" }}>
+                Manage separate secure passcodes for Super Admin, Official, and Sub-Admin accounts. Real-time brute force defense, rate limiting, and tamper-proof audit trails protect your system.
+              </p>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+              <div
+                style={{
+                  background: "rgba(16, 185, 129, 0.15)",
+                  border: "1px solid rgba(16, 185, 129, 0.35)",
+                  padding: "8px 16px",
+                  borderRadius: "var(--radius-full)",
+                  color: "#10b981",
+                  fontSize: "0.85rem",
+                  fontWeight: 800,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px"
+                }}
+              >
+                <Fingerprint size={16} />
+                <span>Anti-Brute Force Shield ACTIVE</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 3-Tier Role Passcode Cards */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+              gap: "24px",
+              marginBottom: "36px"
+            }}
+          >
+            {Object.values(ROLE_CONFIG).map((roleItem) => {
+              const isOwner = roleItem.id === ROLES.SUPER_ADMIN;
+              const isEditingThis = editingRole === roleItem.id;
+
+              return (
+                <div
+                  key={roleItem.id}
+                  style={{
+                    background: "var(--bg-surface)",
+                    borderRadius: "var(--radius-xl)",
+                    border: isOwner ? "1.5px solid rgba(255, 65, 108, 0.4)" : "1px solid var(--border-light)",
+                    padding: "24px",
+                    display: "flex",
+                    flexDirection: "column",
+                    boxShadow: isOwner ? "0 10px 30px rgba(255, 65, 108, 0.1)" : "var(--shadow-sm)"
+                  }}
+                >
+                  {/* Role Header */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+                    <div>
+                      <span
+                        style={{
+                          fontSize: "0.72rem",
+                          padding: "4px 10px",
+                          borderRadius: "var(--radius-full)",
+                          background: roleItem.badgeColor,
+                          color: "#fff",
+                          fontWeight: 800,
+                          letterSpacing: "0.5px"
+                        }}
+                      >
+                        {roleItem.badgeText}
+                      </span>
+                      <h3 style={{ fontSize: "1.2rem", fontWeight: 800, marginTop: "8px" }}>
+                        {roleItem.name}
+                      </h3>
+                    </div>
+                    {isOwner ? <Crown size={24} color="#ff416c" /> : roleItem.id === ROLES.OFFICIAL ? <Sparkles size={24} color="#00dfd8" /> : <Shield size={24} color="#7928ca" />}
+                  </div>
+
+                  {/* Description */}
+                  <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: 1.5, marginBottom: "18px", flex: 1 }}>
+                    {roleItem.description}
+                  </p>
+
+                  {/* Permissions List */}
+                  <div style={{ marginBottom: "20px" }}>
+                    <div style={{ fontSize: "0.78rem", fontWeight: 800, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: "8px" }}>
+                      Authorized Capabilities:
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                      {roleItem.permissions.map((perm) => (
+                        <span
+                          key={perm}
+                          style={{
+                            fontSize: "0.7rem",
+                            padding: "3px 8px",
+                            borderRadius: "var(--radius-sm)",
+                            background: "var(--bg-card)",
+                            color: "var(--text-primary)",
+                            border: "1px solid var(--border-subtle)",
+                            fontWeight: 600
+                          }}
+                        >
+                          ✓ {perm.replace(/_/g, " ")}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Passcode Box & Edit */}
+                  <div
+                    style={{
+                      background: "var(--bg-card)",
+                      borderRadius: "var(--radius-lg)",
+                      padding: "14px 16px",
+                      border: "1px solid var(--border-subtle)"
+                    }}
+                  >
+                    {isEditingThis ? (
+                      <div>
+                        <div style={{ fontSize: "0.8rem", fontWeight: 700, marginBottom: "8px" }}>
+                          Set New Passcode for {roleItem.name}:
+                        </div>
+                        <div style={{ display: "flex", gap: "8px" }}>
+                          <input
+                            type="text"
+                            placeholder="Min 4 characters"
+                            className="form-input"
+                            style={{ flex: 1, padding: "8px 12px", fontSize: "0.9rem" }}
+                            value={newRolePassInput}
+                            onChange={(e) => setNewRolePassInput(e.target.value)}
+                            autoFocus
+                          />
+                          <button
+                            type="button"
+                            className="btn-primary"
+                            style={{ padding: "8px 14px", fontSize: "0.85rem" }}
+                            onClick={() => {
+                              if (!newRolePassInput || newRolePassInput.trim().length < 4) {
+                                showToast("Passcode must be at least 4 characters", "error");
+                                return;
+                              }
+                              const ok = changeRolePasscode(roleItem.id, newRolePassInput.trim());
+                              if (ok) {
+                                setRolePasscodes((prev) => ({ ...prev, [roleItem.id]: newRolePassInput.trim() }));
+                                setEditingRole(null);
+                                setNewRolePassInput("");
+                                if (getAuditLogs) setAuditLogsList(getAuditLogs());
+                              }
+                            }}
+                          >
+                            Save
+                          </button>
+                          <button
+                            type="button"
+                            className="nav-tab"
+                            style={{ padding: "8px 12px", fontSize: "0.85rem" }}
+                            onClick={() => {
+                              setEditingRole(null);
+                              setNewRolePassInput("");
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div>
+                          <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", textTransform: "uppercase" }}>
+                            Current Passcode / Key:
+                          </div>
+                          <div style={{ fontFamily: "monospace", fontSize: "1rem", fontWeight: 800, marginTop: "2px" }}>
+                            {rolePasscodes[roleItem.id] ? "••••••••" : "••••"}
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          className="btn-primary"
+                          style={{
+                            padding: "6px 14px",
+                            fontSize: "0.8rem",
+                            background: "var(--bg-surface)",
+                            color: "var(--text-primary)",
+                            border: "1px solid var(--border-light)"
+                          }}
+                          onClick={() => {
+                            setEditingRole(roleItem.id);
+                            setNewRolePassInput(rolePasscodes[roleItem.id] || "");
+                          }}
+                        >
+                          <Key size={14} />
+                          <span>Change Key</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Cyber Security Architecture Matrix */}
+          <div
+            style={{
+              background: "var(--bg-surface)",
+              borderRadius: "var(--radius-xl)",
+              border: "1px solid var(--border-light)",
+              padding: "26px",
+              marginBottom: "36px"
+            }}
+          >
+            <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.3rem", fontWeight: 800, marginBottom: "16px", display: "flex", alignItems: "center", gap: "10px" }}>
+              <ShieldAlert size={22} color="#10b981" />
+              <span>Cyber Attack Defense Protocols</span>
+            </h3>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
+              <div style={{ background: "var(--bg-card)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid var(--border-subtle)" }}>
+                <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#10b981", marginBottom: "4px" }}>
+                  1. Anti-Brute Force Lockout
+                </div>
+                <div style={{ fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                  Maximum 5 failed attempts allowed within 5 minutes. After 5 failures, the portal locks down for 15 minutes with rate-limited delays.
+                </div>
+              </div>
+
+              <div style={{ background: "var(--bg-card)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid var(--border-subtle)" }}>
+                <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#00dfd8", marginBottom: "4px" }}>
+                  2. 2-Hour Auto Session Timeout
+                </div>
+                <div style={{ fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                  Inactive staff sessions automatically expire after 2 hours. Physical devices left unattended will not stay logged in indefinitely.
+                </div>
+              </div>
+
+              <div style={{ background: "var(--bg-card)", padding: "16px", borderRadius: "var(--radius-lg)", border: "1px solid var(--border-subtle)" }}>
+                <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#ff416c", marginBottom: "4px" }}>
+                  3. Sub-Admin Data Isolation
+                </div>
+                <div style={{ fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                  Sub-Admins are strictly isolated from financial payout details, Paddle webhooks, database credentials, and admin-level role alterations.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Tamper-Proof Audit Logs */}
+          <div
+            style={{
+              background: "var(--bg-surface)",
+              borderRadius: "var(--radius-xl)",
+              border: "1px solid var(--border-light)",
+              padding: "26px"
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px", flexWrap: "wrap", gap: "12px" }}>
+              <div>
+                <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.3rem", fontWeight: 800, display: "flex", alignItems: "center", gap: "10px" }}>
+                  <History size={22} color="#7928ca" />
+                  <span>Security & Activity Audit Logs</span>
+                </h3>
+                <p style={{ color: "var(--text-secondary)", fontSize: "0.82rem", marginTop: "2px" }}>
+                  Chronological records of logins, passcode updates, and administrative actions.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="icon-btn"
+                style={{ padding: "8px 16px", borderRadius: "var(--radius-full)", fontSize: "0.82rem", gap: "6px" }}
+                onClick={() => {
+                  if (getAuditLogs) setAuditLogsList(getAuditLogs());
+                  showToast("Audit logs refreshed 🔄", "info");
+                }}
+              >
+                <RefreshCw size={14} />
+                <span>Refresh Logs</span>
+              </button>
+            </div>
+
+            {auditLogsList.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "36px 0", color: "var(--text-muted)", fontSize: "0.9rem" }}>
+                No security incidents or audit events recorded yet.
+              </div>
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.82rem" }}>
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid var(--border-light)", color: "var(--text-muted)", textAlign: "left" }}>
+                      <th style={{ padding: "10px 12px" }}>TIMESTAMP</th>
+                      <th style={{ padding: "10px 12px" }}>ACTION</th>
+                      <th style={{ padding: "10px 12px" }}>ROLE</th>
+                      <th style={{ padding: "10px 12px" }}>DETAILS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {auditLogsList.map((log) => {
+                      const isSuccess = log.action === "LOGIN_SUCCESS" || log.action === "PASSCODE_UPDATED";
+                      const isAlert = log.action.includes("FAILED") || log.action.includes("LOCKOUT");
+
+                      return (
+                        <tr
+                          key={log.id}
+                          style={{
+                            borderBottom: "1px solid var(--border-subtle)",
+                            background: isAlert ? "rgba(239, 68, 68, 0.05)" : "transparent"
+                          }}
+                        >
+                          <td style={{ padding: "12px", color: "var(--text-muted)", whiteSpace: "nowrap", fontFamily: "monospace" }}>
+                            {new Date(log.timestamp).toLocaleString()}
+                          </td>
+                          <td style={{ padding: "12px" }}>
+                            <span
+                              style={{
+                                padding: "3px 8px",
+                                borderRadius: "var(--radius-sm)",
+                                background: isAlert ? "rgba(239, 68, 68, 0.15)" : isSuccess ? "rgba(16, 185, 129, 0.15)" : "var(--bg-card)",
+                                color: isAlert ? "#ef4444" : isSuccess ? "#10b981" : "var(--text-primary)",
+                                fontWeight: 700,
+                                fontSize: "0.72rem"
+                              }}
+                            >
+                              {log.action}
+                            </span>
+                          </td>
+                          <td style={{ padding: "12px", fontWeight: 700 }}>
+                            {log.role}
+                          </td>
+                          <td style={{ padding: "12px", color: "var(--text-secondary)" }}>
+                            {log.details}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       )}

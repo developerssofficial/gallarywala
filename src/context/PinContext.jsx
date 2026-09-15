@@ -19,6 +19,19 @@ import {
 } from "../services/supabase";
 import { calculateRevenueSplit } from "../services/paddle";
 import { updatePageSEO } from "../utils/seo";
+import {
+  ROLES,
+  ROLE_CONFIG,
+  authenticateRolePasscode,
+  getActiveSession,
+  clearActiveSession,
+  hasPermission,
+  updateRolePasscode,
+  getRolePasscodes,
+  getAuditLogs,
+  addAuditLog,
+  getBruteForceStatus
+} from "../services/security";
 
 const PinContext = createContext();
 
@@ -141,23 +154,19 @@ export const PinProvider = ({ children }) => {
     }
   });
 
-  // 7. Admin Secret Security
-  const [adminPin, setAdminPin] = useState(() => {
+  // 7. Role-Based Access Control (RBAC) & Cyber Security State
+  const [adminRole, setAdminRole] = useState(() => {
     try {
-      return localStorage.getItem(STORAGE_KEYS.ADMIN_PIN) || "1234";
+      const session = getActiveSession();
+      if (session && session.role) return session.role;
+      if (sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === "true") return ROLES.SUPER_ADMIN;
+      return null;
     } catch {
-      return "1234";
+      return null;
     }
   });
 
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
-    try {
-      return sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === "true";
-    } catch {
-      return false;
-    }
-  });
-
+  const isAdminAuthenticated = Boolean(adminRole);
   const [isAdminAuthModalOpen, setIsAdminAuthModalOpen] = useState(false);
 
   // 8. Navigation & Modals State
@@ -255,18 +264,18 @@ export const PinProvider = ({ children }) => {
 
         if (isBadgeUrl) {
           setAdminTab("badges");
-          const isAuth = sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === "true";
-          if (isAuth) {
-            setIsAdminAuthenticated(true);
+          const session = getActiveSession();
+          if (session && session.role) {
+            setAdminRole(session.role);
             setActiveView("admin");
           } else {
             setIsAdminAuthModalOpen(true);
           }
         } else if (isAdminUrl) {
           setAdminTab("catalog");
-          const isAuth = sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === "true";
-          if (isAuth) {
-            setIsAdminAuthenticated(true);
+          const session = getActiveSession();
+          if (session && session.role) {
+            setAdminRole(session.role);
             setActiveView("admin");
           } else {
             setIsAdminAuthModalOpen(true);
@@ -802,45 +811,61 @@ export const PinProvider = ({ children }) => {
 
   const isSupabaseConfigured = Boolean(supabaseConfig.url && supabaseConfig.key);
 
-  // Secret Admin Authentication Handler
-  const verifyAdminPin = (inputPin) => {
-    if (inputPin === adminPin || inputPin === "1234") {
-      setIsAdminAuthenticated(true);
+  // Secret Role-Based Authentication & Cyber Protection Handler
+  const verifyAdminPin = (inputPin, targetRole = null) => {
+    const res = authenticateRolePasscode(inputPin, targetRole);
+    if (res.success) {
+      setAdminRole(res.role);
       try {
         sessionStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, "true");
       } catch (e) {}
       setIsAdminAuthModalOpen(false);
       setActiveView("admin");
-      if (adminTab === "badges") {
+      const roleConfig = ROLE_CONFIG[res.role];
+      if (adminTab === "badges" && hasPermission(res.role, "MANAGE_BADGES")) {
         showToast("Verified Badge Panel Unlocked 🏅", "success");
       } else {
-        showToast("Admin Studio Unlocked 🔓", "success");
+        showToast(`${roleConfig?.name || "Staff"} Studio Unlocked 🔓`, "success");
       }
       return true;
     } else {
-      showToast("Incorrect Admin PIN! Access Denied ❌", "error");
+      showToast(res.error || "Incorrect Passcode! Access Denied ❌", "error");
       return false;
     }
   };
 
   const lockAdminPanel = () => {
-    setIsAdminAuthenticated(false);
+    setAdminRole(null);
+    clearActiveSession();
     try {
       sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
       window.history.replaceState(null, "", "/");
     } catch (e) {}
     setActiveView("gallery");
-    showToast("Admin session locked 🔒", "info");
+    showToast("Staff session securely locked 🔒", "info");
+  };
+
+  const hasAdminPermission = (permissionName) => {
+    return hasPermission(adminRole, permissionName);
+  };
+
+  const changeRolePasscode = (role, newPasscode) => {
+    if (!hasPermission(adminRole, "MANAGE_ROLES")) {
+      showToast("Access Denied: Only Super Admin can change role passcodes ❌", "error");
+      return false;
+    }
+    const res = updateRolePasscode(role, newPasscode);
+    if (res.success) {
+      showToast(`Passcode updated for ${ROLE_CONFIG[role]?.name || role}! 🔑`, "success");
+      return true;
+    } else {
+      showToast(res.error || "Failed to update passcode", "error");
+      return false;
+    }
   };
 
   const updateAdminPin = (newPin) => {
-    if (!newPin || newPin.length < 4) {
-      showToast("PIN must be at least 4 digits", "error");
-      return false;
-    }
-    setAdminPin(newPin);
-    showToast("Admin PIN updated successfully! 🔑", "success");
-    return true;
+    return changeRolePasscode(ROLES.SUPER_ADMIN, newPin);
   };
 
   // Like / Unlike Image
@@ -1189,6 +1214,16 @@ export const PinProvider = ({ children }) => {
         isAdminAuthModalOpen,
         setIsAdminAuthModalOpen,
         isAdminAuthenticated,
+        adminRole,
+        setAdminRole,
+        hasAdminPermission,
+        changeRolePasscode,
+        ROLES,
+        ROLE_CONFIG,
+        getRolePasscodes,
+        getAuditLogs,
+        addAuditLog,
+        getBruteForceStatus,
         verifyAdminPin,
         lockAdminPanel,
         updateAdminPin,
