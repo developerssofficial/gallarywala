@@ -820,9 +820,89 @@ a {
   overflow: hidden;
 }
 
-@media (min-width: 820px) {
+/* Desktop Master Side-by-Side Pin Page (Pinterest Layout) */
+@media (min-width: 1024px) {
+  .pin-detail-page-wrapper {
+    max-width: 1760px;
+    display: grid;
+    grid-template-columns: 520px 1fr;
+    gap: 32px;
+    align-items: start;
+    width: 100%;
+  }
+
   .pin-detail-modal {
-    grid-template-columns: 1.15fr 0.85fr;
+    position: sticky;
+    top: 20px;
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+    background: var(--bg-modal);
+    border: 1px solid var(--border-light);
+  }
+
+  .pin-detail-modal .detail-image-side {
+    max-height: 520px;
+    min-height: 380px;
+    background: #000;
+    width: 100%;
+  }
+
+  .pin-detail-modal .detail-image {
+    max-height: 520px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .pin-detail-modal .detail-content-side {
+    padding: 24px;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .pin-detail-related-container {
+    padding-top: 0;
+    width: 100%;
+  }
+
+  .pin-detail-related-container .masonry-columns {
+    column-count: 3;
+    column-gap: 16px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .pin-detail-page-wrapper {
+    grid-template-columns: 560px 1fr;
+    gap: 36px;
+  }
+
+  .pin-detail-modal {
+    max-width: 560px;
+  }
+
+  .pin-detail-modal .detail-image-side {
+    max-height: 580px;
+  }
+
+  .pin-detail-modal .detail-image {
+    max-height: 580px;
+  }
+
+  .pin-detail-related-container .masonry-columns {
+    column-count: 4;
+    column-gap: 18px;
+  }
+}
+
+@media (min-width: 1800px) {
+  .pin-detail-related-container .masonry-columns {
+    column-count: 5;
   }
 }
 
