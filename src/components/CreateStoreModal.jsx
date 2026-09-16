@@ -416,7 +416,7 @@ export const CreateStoreModal = () => {
         {/* ----------------- STEP 2: STORE IDENTITY & PLAN SELECTION ----------------- */}
         {step === 2 && (
           <div>
-            {/* Top Bar with Step Indicator */}
+            {/* Top Bar with Clean Header */}
             <div
               style={{
                 background: "#0f172a",
@@ -424,16 +424,10 @@ export const CreateStoreModal = () => {
                 color: "#ffffff"
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
-                <span style={{ fontSize: "0.75rem", fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", color: "#38bdf8" }}>
-                  Step 1 of 2 • Store Profile
-                </span>
-                <span style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.6)" }}>Next: Product & Stock</span>
-              </div>
               <h3 style={{ fontSize: "1.3rem", fontWeight: 900, margin: 0 }}>
                 Store Identity & Category 🏪
               </h3>
-              <p style={{ margin: "4px 0 0 0", fontSize: "0.85rem", color: "rgba(255,255,255,0.7)" }}>
+              <p style={{ margin: "6px 0 0 0", fontSize: "0.85rem", color: "rgba(255,255,255,0.7)" }}>
                 Set up your official shop handle and merchandising category.
               </p>
             </div>
@@ -492,26 +486,33 @@ export const CreateStoreModal = () => {
 
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
-                      Primary Category
+                      Store Category *
                     </label>
-                    <select
+                    <input
+                      type="text"
+                      required
+                      list="store-category-suggestions"
                       value={storeCategory}
                       onChange={(e) => setStoreCategory(e.target.value)}
+                      placeholder="e.g. Streetwear, Posters, 3D Models, Crafts..."
                       style={{
                         width: "100%",
                         padding: "11px 14px",
                         borderRadius: "10px",
                         border: "1.5px solid #e2e8f0",
                         fontSize: "0.92rem",
-                        background: "#f8fafc"
+                        background: "#f8fafc",
+                        outline: "none"
                       }}
-                    >
-                      <option value="Streetwear Apparel">Streetwear Apparel</option>
-                      <option value="Posters & Canvas Art">Posters & Canvas Art</option>
-                      <option value="Gaming & Desk Accessories">Gaming & Desk Accessories</option>
-                      <option value="Digital Tools & Presets">Digital Tools & Presets</option>
-                      <option value="Collectibles & Figures">Collectibles & Figures</option>
-                    </select>
+                    />
+                    <datalist id="store-category-suggestions">
+                      <option value="Streetwear Apparel" />
+                      <option value="Posters & Canvas Art" />
+                      <option value="Handmade Crafts & Leather" />
+                      <option value="Gaming & Desk Accessories" />
+                      <option value="Digital Tools & Presets" />
+                      <option value="Collectibles & Figures" />
+                    </datalist>
                   </div>
                 </div>
 
@@ -638,7 +639,7 @@ export const CreateStoreModal = () => {
                       cursor: "pointer"
                     }}
                   >
-                    <span>Next: Add 1st Product & Stock</span>
+                    <span>Continue to Product Setup</span>
                     <ArrowRight size={15} />
                   </button>
                 </div>
@@ -650,7 +651,7 @@ export const CreateStoreModal = () => {
         {/* ----------------- STEP 3: FIRST PRODUCT & LOGISTICS (STOCK + DELIVERY PROOF) ----------------- */}
         {step === 3 && (
           <div>
-            {/* Top Bar with Step Indicator */}
+            {/* Top Bar with Clean Header */}
             <div
               style={{
                 background: "#0f172a",
@@ -658,17 +659,11 @@ export const CreateStoreModal = () => {
                 color: "#ffffff"
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
-                <span style={{ fontSize: "0.75rem", fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", color: "#38bdf8" }}>
-                  Step 2 of 2 • First Product Drop
-                </span>
-                <span style={{ fontSize: "0.78rem", color: "#34d399", fontWeight: 700 }}>● Almost Live!</span>
-              </div>
               <h3 style={{ fontSize: "1.3rem", fontWeight: 900, margin: 0 }}>
-                List Your First Product & Stock 📦
+                List Your First Product 📦
               </h3>
-              <p style={{ margin: "4px 0 0 0", fontSize: "0.85rem", color: "rgba(255,255,255,0.7)" }}>
-                Specify pricing, available stock units, and guaranteed delivery speed.
+              <p style={{ margin: "6px 0 0 0", fontSize: "0.85rem", color: "rgba(255,255,255,0.7)" }}>
+                Specify pricing, available stock units, and estimated delivery speed.
               </p>
             </div>
 

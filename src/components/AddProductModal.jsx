@@ -320,9 +320,13 @@ export const AddProductModal = () => {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
-                    Category
+                    Category * (Type any category)
                   </label>
-                  <select
+                  <input
+                    type="text"
+                    required
+                    list="product-category-suggestions"
+                    placeholder="e.g. T-Shirts, Anime Art, Leather, 3D Assets..."
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     style={{
@@ -333,13 +337,18 @@ export const AddProductModal = () => {
                       fontSize: "0.88rem",
                       background: "#f8fafc"
                     }}
-                  >
-                    <option value="Streetwear Apparel">Streetwear Apparel</option>
-                    <option value="Posters & Canvas Art">Posters & Canvas Art</option>
-                    <option value="Gaming & Desk Accessories">Gaming & Desk Accessories</option>
-                    <option value="Digital Tools & Presets">Digital Tools & Presets</option>
-                    <option value="Collectibles & Figures">Collectibles & Figures</option>
-                  </select>
+                  />
+                  <datalist id="product-category-suggestions">
+                    <option value="Streetwear Apparel" />
+                    <option value="Posters & Canvas Art" />
+                    <option value="Gaming & Desk Accessories" />
+                    <option value="Digital Tools & Presets" />
+                    <option value="Collectibles & Figures" />
+                    <option value="Jewelry & Accessories" />
+                    <option value="Handmade Crafts" />
+                    <option value="Photography Prints" />
+                    <option value="Electronics & Keyboards" />
+                  </datalist>
                 </div>
 
                 <div>

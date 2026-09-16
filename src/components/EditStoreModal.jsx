@@ -211,24 +211,30 @@ export const EditStoreModal = () => {
                 <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
                   Primary Category
                 </label>
-                <select
+                <input
+                  type="text"
+                  list="edit-store-category-suggestions"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
+                  placeholder="e.g. Streetwear, Posters, Crafts..."
                   style={{
                     width: "100%",
                     padding: "10px 12px",
                     borderRadius: "8px",
                     border: "1.5px solid #e2e8f0",
                     fontSize: "0.88rem",
-                    background: "#f8fafc"
+                    background: "#f8fafc",
+                    outline: "none"
                   }}
-                >
-                  <option value="Streetwear Apparel">Streetwear Apparel</option>
-                  <option value="Posters & Canvas Art">Posters & Canvas Art</option>
-                  <option value="Gaming & Desk Accessories">Gaming & Desk Accessories</option>
-                  <option value="Digital Tools & Presets">Digital Tools & Presets</option>
-                  <option value="Collectibles & Figures">Collectibles & Figures</option>
-                </select>
+                />
+                <datalist id="edit-store-category-suggestions">
+                  <option value="Streetwear Apparel" />
+                  <option value="Posters & Canvas Art" />
+                  <option value="Handmade Crafts & Leather" />
+                  <option value="Gaming & Desk Accessories" />
+                  <option value="Digital Tools & Presets" />
+                  <option value="Collectibles & Figures" />
+                </datalist>
               </div>
 
               <div>

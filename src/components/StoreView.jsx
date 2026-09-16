@@ -29,15 +29,6 @@ import {
   ExternalLink
 } from "lucide-react";
 
-const STORE_CATEGORIES = [
-  { id: "All Products", label: "All Drops", icon: "✨" },
-  { id: "Streetwear Apparel", label: "Streetwear & Apparel", icon: "👕" },
-  { id: "Posters & Canvas Art", label: "Art Prints & Canvas", icon: "🖼️" },
-  { id: "Gaming & Desk Accessories", label: "Desk Pads & Gaming", icon: "⌨️" },
-  { id: "Digital Tools & Presets", label: "Digital Suites & LUTs", icon: "💾" },
-  { id: "Collectibles & Figures", label: "Art Collectibles", icon: "🎎" }
-];
-
 export const StoreView = () => {
   const {
     marketplaceProducts = [],
@@ -56,6 +47,15 @@ export const StoreView = () => {
   const [sortBy, setSortBy] = useState("featured");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Dynamically compute unique categories from live products
+  const availableCategories = useMemo(() => {
+    const raw = marketplaceProducts
+      .map((p) => p.category?.trim())
+      .filter(Boolean);
+    const unique = Array.from(new Set(raw));
+    return ["All Products", ...unique];
+  }, [marketplaceProducts]);
 
   // Auto-prompt onboarding modal on first visit if user has no store yet
   React.useEffect(() => {
@@ -553,53 +553,55 @@ export const StoreView = () => {
         </div>
         )}
 
-        {/* 5. Shopify Story Bubbles / Visual Category Selector */}
-        <div style={{ marginBottom: "32px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-            <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#64748b", letterSpacing: "1px", textTransform: "uppercase" }}>
-              Explore All Drops by Category
-            </span>
-          </div>
+        {/* Dynamic Category Selector */}
+        {availableCategories.length > 1 && (
+          <div style={{ marginBottom: "32px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+              <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#64748b", letterSpacing: "1px", textTransform: "uppercase" }}>
+                Filter by Category
+              </span>
+            </div>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              overflowX: "auto",
-              paddingBottom: "8px"
-            }}
-          >
-            {STORE_CATEGORIES.map((cat) => {
-              const isActive = selectedCategory.toLowerCase() === cat.id.toLowerCase();
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat.id)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    padding: "9px 16px",
-                    borderRadius: "100px",
-                    fontSize: "0.85rem",
-                    fontWeight: 700,
-                    whiteSpace: "nowrap",
-                    cursor: "pointer",
-                    background: isActive ? "#0f172a" : "#f8fafc",
-                    color: isActive ? "#ffffff" : "#334155",
-                    border: isActive ? "1px solid #0f172a" : "1px solid #e2e8f0",
-                    transition: "all 0.15s ease",
-                    boxShadow: isActive ? "0 4px 12px rgba(15, 23, 42, 0.15)" : "none"
-                  }}
-                >
-                  <span>{cat.icon}</span>
-                  <span>{cat.label}</span>
-                </button>
-              );
-            })}
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                overflowX: "auto",
+                paddingBottom: "8px"
+              }}
+            >
+              {availableCategories.map((catName) => {
+                const isAll = catName === "All Products";
+                const isActive = selectedCategory.toLowerCase() === catName.toLowerCase();
+                return (
+                  <button
+                    key={catName}
+                    type="button"
+                    onClick={() => setSelectedCategory(catName)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "8px 16px",
+                      borderRadius: "100px",
+                      fontSize: "0.85rem",
+                      fontWeight: 700,
+                      whiteSpace: "nowrap",
+                      cursor: "pointer",
+                      background: isActive ? "#0f172a" : "#f8fafc",
+                      color: isActive ? "#ffffff" : "#334155",
+                      border: isActive ? "1px solid #0f172a" : "1px solid #e2e8f0",
+                      transition: "all 0.15s ease",
+                      boxShadow: isActive ? "0 4px 12px rgba(15, 23, 42, 0.15)" : "none"
+                    }}
+                  >
+                    <span>{isAll ? "✨ All Drops" : `📦 ${catName}`}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 6. Shopify Filter & Sort Toolbar */}
         <div
