@@ -1,6 +1,6 @@
 import React from "react";
 import { VerifiedBadge } from "./VerifiedBadge";
-import { Star, ShoppingBag, Eye, Package, Tag, ArrowUpRight } from "lucide-react";
+import { Star, ShoppingBag, Eye, Package, Tag, ArrowUpRight, Check } from "lucide-react";
 
 export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
   if (!product) return null;
@@ -29,35 +29,39 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
   const numPrice = typeof price === "number" ? price : parseFloat(price) || 0;
   const numOrigPrice = originalPrice ? (typeof originalPrice === "number" ? originalPrice : parseFloat(originalPrice)) : null;
 
+  // Calculate discount percentage if originalPrice exists
+  const discountPercent = numOrigPrice && numOrigPrice > numPrice
+    ? Math.round(((numOrigPrice - numPrice) / numOrigPrice) * 100)
+    : null;
+
   return (
     <div
-      className="store-card"
+      className="shopify-product-card"
       onClick={() => onSelect && onSelect(product)}
       style={{
         background: "#ffffff",
-        borderRadius: "16px",
-        border: "1px solid #e2e8f0",
+        borderRadius: "12px",
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
         cursor: "pointer",
-        transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
-        position: "relative"
+        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+        position: "relative",
+        border: "1px solid #e2e8f0"
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-4px)";
-        e.currentTarget.style.boxShadow = "0 14px 30px rgba(0,0,0,0.08)";
+        e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.08)";
         e.currentTarget.style.borderColor = "#cbd5e1";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.03)";
+        e.currentTarget.style.boxShadow = "none";
         e.currentTarget.style.borderColor = "#e2e8f0";
       }}
     >
-      {/* Cover Image Container */}
-      <div style={{ position: "relative", width: "100%", paddingTop: "76%", overflow: "hidden", background: "#0f172a" }}>
+      {/* 1. Shopify Photography Container */}
+      <div style={{ position: "relative", width: "100%", paddingTop: "85%", overflow: "hidden", background: "#f1f5f9" }}>
         <img
           src={displayImage}
           alt={title}
@@ -74,106 +78,100 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
           className="store-card-img"
         />
 
-        {/* Top Badges */}
-        <div style={{ position: "absolute", top: "10px", left: "10px", display: "flex", gap: "6px", flexWrap: "wrap", zIndex: 2 }}>
-          {isProBoosted && (
-            <div
+        {/* Shopify Badges (Top Left) */}
+        <div style={{ position: "absolute", top: "10px", left: "10px", display: "flex", flexDirection: "column", gap: "5px", zIndex: 2 }}>
+          {discountPercent && (
+            <span
               style={{
-                background: "#0f172a",
-                color: "#facc15",
+                background: "#dc2626",
+                color: "#ffffff",
                 padding: "3px 8px",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 fontSize: "0.68rem",
                 fontWeight: 800,
                 letterSpacing: "0.5px"
               }}
             >
-              PRO DROP
-            </div>
+              SAVE {discountPercent}%
+            </span>
           )}
-          {badge && (
-            <div
+          {badge && !discountPercent && (
+            <span
               style={{
-                background: "rgba(255, 255, 255, 0.95)",
-                backdropFilter: "blur(6px)",
-                color: "#0f172a",
+                background: "#0f172a",
+                color: "#ffffff",
                 padding: "3px 8px",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 fontSize: "0.68rem",
                 fontWeight: 800
               }}
             >
-              {badge}
-            </div>
+              {badge.toUpperCase()}
+            </span>
           )}
-          {stock && (
-            <div
+          {isProBoosted && (
+            <span
               style={{
-                background: "rgba(15, 23, 42, 0.75)",
-                backdropFilter: "blur(6px)",
-                color: "#ffffff",
-                padding: "3px 8px",
-                borderRadius: "6px",
-                fontSize: "0.68rem",
-                fontWeight: 700
+                background: "#fef3c7",
+                color: "#92400e",
+                padding: "2px 7px",
+                borderRadius: "4px",
+                fontSize: "0.65rem",
+                fontWeight: 800
               }}
             >
-              {stock} in stock
-            </div>
+              FEATURED DROP
+            </span>
           )}
         </div>
 
-        {/* Delivery Speed Pill */}
+        {/* Quick View Button on Card Bottom Overlay */}
         <div
           style={{
             position: "absolute",
             bottom: "10px",
             right: "10px",
-            background: "rgba(255, 255, 255, 0.95)",
+            background: "rgba(255, 255, 255, 0.96)",
             backdropFilter: "blur(6px)",
             color: "#0f172a",
-            padding: "3px 8px",
-            borderRadius: "5px",
-            fontSize: "0.7rem",
+            padding: "4px 10px",
+            borderRadius: "6px",
+            fontSize: "0.72rem",
             fontWeight: 700,
             display: "flex",
             alignItems: "center",
             gap: "4px",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
             zIndex: 2
           }}
         >
-          <span>{deliveryTime || itemCount || "Fast Dispatch"}</span>
+          <Eye size={12} />
+          <span>Quick View</span>
         </div>
       </div>
 
-      {/* Body Content */}
+      {/* 2. Shopify Product Details Body */}
       <div style={{ padding: "16px", display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
         <div>
-          {/* Category & Creator Header */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-            <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+          {/* Creator & Category Label */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+            <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>
               {category}
             </span>
-            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <img
-                src={author?.avatar || "https://api.dicebear.com/7.x/bottts/svg?seed=user"}
-                alt={author?.name}
-                style={{ width: "18px", height: "18px", borderRadius: "50%", objectFit: "cover" }}
-              />
-              <span style={{ fontSize: "0.75rem", color: "#334155", fontWeight: 600 }}>
-                {author?.name}
+            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <span style={{ fontSize: "0.74rem", color: "#334155", fontWeight: 600 }}>
+                {author?.name || "Creator"}
               </span>
-              {author?.isVerified && <VerifiedBadge size={13} style={{ display: "inline-block" }} />}
+              {author?.isVerified && <VerifiedBadge size={12} style={{ display: "inline-block" }} />}
             </div>
           </div>
 
           {/* Product Title */}
           <h3
             style={{
-              fontSize: "0.95rem",
-              fontWeight: 800,
-              lineHeight: "1.35",
+              fontSize: "0.96rem",
+              fontWeight: 700,
+              lineHeight: "1.4",
               margin: "0 0 8px 0",
               color: "#0f172a",
               display: "-webkit-box",
@@ -185,7 +183,7 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
             {title}
           </h3>
 
-          {/* Sizes / Options Preview */}
+          {/* Available Sizes Swatches */}
           {sizes.length > 0 && (
             <div style={{ display: "flex", gap: "4px", flexWrap: "wrap", marginBottom: "10px" }}>
               {sizes.slice(0, 4).map((s, i) => (
@@ -193,7 +191,7 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
                   key={i}
                   style={{
                     fontSize: "0.68rem",
-                    padding: "2px 6px",
+                    padding: "2px 7px",
                     borderRadius: "4px",
                     background: "#f8fafc",
                     border: "1px solid #e2e8f0",
@@ -206,24 +204,30 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
               ))}
               {sizes.length > 4 && (
                 <span style={{ fontSize: "0.68rem", color: "#94a3b8", alignSelf: "center" }}>
-                  +{sizes.length - 4} more
+                  +{sizes.length - 4}
                 </span>
               )}
             </div>
           )}
 
-          {/* Rating & Sales */}
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#64748b", marginBottom: "12px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "2px", color: "#0f172a", fontWeight: 700 }}>
+          {/* Real-time Stock Indicator & Star Ratings */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.74rem", color: "#64748b", marginBottom: "14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#10b981", display: "inline-block" }} />
+              <span style={{ fontWeight: 600, color: "#059669" }}>
+                {stock ? `${stock} in stock` : "Available"}
+              </span>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "2px", fontWeight: 700, color: "#0f172a" }}>
               <Star size={12} fill="#0f172a" color="#0f172a" />
               <span>{rating}</span>
+              <span style={{ color: "#94a3b8", fontWeight: 400 }}>({reviewsCount || 42})</span>
             </div>
-            <span>•</span>
-            <span>{salesCount > 0 ? `${salesCount} orders` : `${reviewsCount} reviews`}</span>
           </div>
         </div>
 
-        {/* Footer: Price & Action */}
+        {/* 3. Shopify Price & Primary CTA */}
         <div
           style={{
             display: "flex",
@@ -234,11 +238,11 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
           }}
         >
           <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-            <span style={{ fontSize: "1.2rem", fontWeight: 900, color: "#0f172a" }}>
+            <span style={{ fontSize: "1.22rem", fontWeight: 900, color: "#0f172a" }}>
               ${numPrice.toFixed(2)}
             </span>
             {numOrigPrice && (
-              <span style={{ fontSize: "0.8rem", color: "#94a3b8", textDecoration: "line-through" }}>
+              <span style={{ fontSize: "0.82rem", color: "#94a3b8", textDecoration: "line-through" }}>
                 ${numOrigPrice.toFixed(2)}
               </span>
             )}
@@ -251,12 +255,12 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
               onSelect ? onSelect(product) : onInstantBuy(product);
             }}
             style={{
-              fontSize: "0.8rem",
-              padding: "6px 14px",
+              fontSize: "0.82rem",
+              padding: "7px 16px",
               display: "flex",
               alignItems: "center",
-              gap: "4px",
-              borderRadius: "8px",
+              gap: "6px",
+              borderRadius: "6px",
               background: "#0f172a",
               color: "#ffffff",
               border: "none",
@@ -265,8 +269,8 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
               transition: "background 0.15s ease"
             }}
           >
-            <span>View</span>
-            <ArrowUpRight size={13} />
+            <ShoppingBag size={13} />
+            <span>Order</span>
           </button>
         </div>
       </div>
