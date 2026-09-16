@@ -43,7 +43,9 @@ const STORAGE_KEYS = {
   THEME: "gallarywala_theme_v4",
   ADMIN_PIN: "gallarywala_admin_pin_v4",
   ADMIN_AUTH: "gallarywala_admin_session_v4",
-  VERIFIED_USERS: "gallarywala_verified_users_v1"
+  VERIFIED_USERS: "gallarywala_verified_users_v1",
+  USER_STORE: "gallarywala_user_store_v2",
+  MARKETPLACE_PRODUCTS: "gallarywala_marketplace_products_v2"
 };
 
 const normalizePin = (pin) => {
@@ -594,6 +596,138 @@ export const PinProvider = ({ children }) => {
 
     showToast(`🎉 Commercial License Unlocked! Invoice: ${invoiceNumber}`, "success");
     return completeOrder;
+  };
+
+  // 9. Store & Creator Marketplace State (2-Tier Free vs Pro SEO Boosted)
+  const [userStore, setUserStore] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.USER_STORE);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [marketplaceProducts, setMarketplaceProducts] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.MARKETPLACE_PRODUCTS);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [isCreateStoreOpen, setIsCreateStoreOpen] = useState(false);
+  const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+  const [selectedStoreProduct, setSelectedStoreProduct] = useState(null);
+  const [isStoreProductModalOpen, setIsStoreProductModalOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (userStore) {
+        localStorage.setItem(STORAGE_KEYS.USER_STORE, JSON.stringify(userStore));
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.USER_STORE);
+      }
+    } catch (e) {
+      console.warn("Storage error", e);
+    }
+  }, [userStore]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.MARKETPLACE_PRODUCTS, JSON.stringify(marketplaceProducts));
+    } catch (e) {
+      console.warn("Storage error", e);
+    }
+  }, [marketplaceProducts]);
+
+  const createCreatorStore = ({ name, handle, bio, category = "Creator Merch" }) => {
+    const cleanHandle = (handle || name || "creator").trim().replace(/^@/, "").toLowerCase().replace(/\s+/g, "_");
+    const newStore = {
+      id: "store_" + Math.random().toString(36).substring(2, 9),
+      name: (name || "Creator Store").trim(),
+      handle: `@${cleanHandle}`,
+      bio: (bio || "Official creator merchandise and digital assets.").trim(),
+      category,
+      tier: "free", // 'free' | 'pro'
+      createdAt: new Date().toISOString(),
+      productsCount: 0
+    };
+    setUserStore(newStore);
+    try {
+      confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+    } catch (err) {}
+    showToast(`🎉 Congratulations! Your Free Store "@${cleanHandle}" is now live! List up to 5 products free.`, "success");
+    return newStore;
+  };
+
+  const upgradeStoreTier = (targetTier = "pro") => {
+    setUserStore((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        tier: targetTier
+      };
+    });
+
+    // Mark all my existing products as SEO Boosted
+    setMarketplaceProducts((prev) =>
+      prev.map((p) => {
+        if (p.author?.username === userStore?.handle || p.storeId === userStore?.id) {
+          return { ...p, isProBoosted: true };
+        }
+        return p;
+      })
+    );
+
+    try {
+      confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
+    } catch (err) {}
+    showToast("👑 Upgraded to PRO Store! Unlimited product listings and SEO priority boost unlocked!", "success");
+  };
+
+  const addStoreProduct = (prodData) => {
+    const myProds = marketplaceProducts.filter(
+      (p) => p.author?.username === userStore?.handle || p.storeId === userStore?.id
+    );
+
+    // Free Store Limit: 5 Products
+    if (userStore?.tier === "free" && myProds.length >= 5) {
+      showToast("Free Store Limit Reached (5/5 Products). Upgrade to Pro for Unlimited Products & SEO Push! 🚀", "warning");
+      return { success: false, limitReached: true };
+    }
+
+    const isPro = userStore?.tier === "pro";
+
+    const newProduct = {
+      ...prodData,
+      id: prodData.id || "prod_" + Math.random().toString(36).substring(2, 9),
+      storeId: userStore?.id || "store_official",
+      author: {
+        name: userStore?.name || currentUser?.user_metadata?.full_name || "Creator",
+        username: userStore?.handle || `@${currentUser?.user_metadata?.username || "creator"}`,
+        avatar: currentUser?.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(userStore?.handle || "creator")}`,
+        isVerified: isPro || isUserVerified(userStore?.handle)
+      },
+      isProBoosted: isPro,
+      badge: isPro ? "⭐ PRO BOOSTED" : (prodData.badge || "NEW"),
+      rating: 5.0,
+      reviewsCount: 1,
+      salesCount: 0,
+      createdAt: new Date().toISOString()
+    };
+
+    setMarketplaceProducts((prev) => [newProduct, ...prev]);
+    setUserStore((prev) => prev ? { ...prev, productsCount: (prev.productsCount || 0) + 1 } : prev);
+    showToast(`🎉 Product "${newProduct.title}" successfully listed in your store!`, "success");
+    return { success: true, product: newProduct };
+  };
+
+  const deleteStoreProduct = (productId) => {
+    setMarketplaceProducts((prev) => prev.filter((p) => p.id !== productId));
+    setUserStore((prev) => prev ? { ...prev, productsCount: Math.max(0, (prev.productsCount || 1) - 1) } : prev);
+    showToast("Product removed from store.", "info");
   };
 
   // Supabase Auth State Listener & Images Fetcher
@@ -1252,7 +1386,23 @@ export const PinProvider = ({ children }) => {
         isPinOwner,
         myUploadedPinIds,
         isLoading,
-        filteredPins
+        filteredPins,
+        userStore,
+        setUserStore,
+        marketplaceProducts,
+        setMarketplaceProducts,
+        isCreateStoreOpen,
+        setIsCreateStoreOpen,
+        isAddProductOpen,
+        setIsAddProductOpen,
+        selectedStoreProduct,
+        setSelectedStoreProduct,
+        isStoreProductModalOpen,
+        setIsStoreProductModalOpen,
+        createCreatorStore,
+        upgradeStoreTier,
+        addStoreProduct,
+        deleteStoreProduct
       }}
     >
       {children}

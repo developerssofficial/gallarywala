@@ -40,7 +40,11 @@ export const UserProfileModal = () => {
     setSettingsTab,
     handleSignOut,
     downloadImage,
-    isUserVerified
+    isUserVerified,
+    marketplaceProducts = [],
+    userStore,
+    setIsCreateStoreOpen,
+    setIsAddProductOpen
   } = usePins();
 
   const [activeTab, setActiveTab] = useState("boards"); // 'boards' | 'created' | 'shop' | 'liked' | 'purchased'
@@ -60,12 +64,12 @@ export const UserProfileModal = () => {
       p.author?.username === `@${userHandle}` ||
       (currentUser && p.author?.name === userFullName)
   );
-  const myStoreProducts = INITIAL_STORE_PRODUCTS.filter(
+  const myStoreProducts = marketplaceProducts.filter(
     (p) =>
+      p.author?.username === userStore?.handle ||
+      p.storeId === userStore?.id ||
       p.author?.username === `@${userHandle}` ||
-      p.author?.name?.toLowerCase() === userFullName?.toLowerCase() ||
-      userHandle === "gallarywala" ||
-      userHandle === "admin"
+      p.author?.name?.toLowerCase() === userFullName?.toLowerCase()
   );
   const myLikedPins = pins.filter((p) => likedPinIds.includes(p.id));
   const myPurchasedPins = pins.filter((p) => purchasedPinIds.includes(p.id));
@@ -528,26 +532,67 @@ export const UserProfileModal = () => {
               }}
             >
               <div>
-                <h3 style={{ fontSize: "1.15rem", fontWeight: 800, margin: "0 0 4px 0" }}>
-                  Creator Storefront & Products
-                </h3>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                  <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0 }}>
+                    {userStore?.name || "Creator Storefront"}
+                  </h3>
+                  {userStore?.tier === "pro" ? (
+                    <span style={{ fontSize: "0.7rem", background: "rgba(234, 179, 8, 0.15)", color: "#eab308", padding: "2px 8px", borderRadius: "6px", fontWeight: 800 }}>
+                      👑 PRO (UNLIMITED & SEO BOOSTED)
+                    </span>
+                  ) : userStore ? (
+                    <span style={{ fontSize: "0.7rem", background: "rgba(16, 185, 129, 0.15)", color: "#10b981", padding: "2px 8px", borderRadius: "6px", fontWeight: 800 }}>
+                      FREE STORE ({myStoreProducts.length}/5)
+                    </span>
+                  ) : null}
+                </div>
                 <p style={{ color: "var(--text-muted)", fontSize: "0.82rem", margin: 0 }}>
-                  Official merchandise, physical apparel, and digital creator suites available for order.
+                  {userStore?.bio || "Official merchandise, physical apparel, and digital creator suites available for order."}
                 </p>
               </div>
 
-              <button
-                type="button"
-                className="btn-primary"
-                onClick={() => {
-                  setIsProfileOpen(false);
-                  setActiveView("store");
-                }}
-                style={{ fontSize: "0.82rem", padding: "8px 16px" }}
-              >
-                <ShoppingBag size={15} />
-                <span>Visit Main Store</span>
-              </button>
+              <div style={{ display: "flex", gap: "8px" }}>
+                {!userStore ? (
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={() => {
+                      setIsProfileOpen(false);
+                      setIsCreateStoreOpen(true);
+                    }}
+                    style={{ fontSize: "0.82rem", padding: "8px 16px" }}
+                  >
+                    <Package size={15} />
+                    <span>Get Free Store</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={() => {
+                      setIsProfileOpen(false);
+                      setIsAddProductOpen(true);
+                    }}
+                    style={{ fontSize: "0.82rem", padding: "8px 16px" }}
+                  >
+                    <Plus size={15} />
+                    <span>+ Add Product</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  className="nav-tab"
+                  onClick={() => {
+                    setIsProfileOpen(false);
+                    setActiveView("store");
+                  }}
+                  style={{ fontSize: "0.82rem", padding: "8px 14px", border: "1px solid var(--border-light)" }}
+                >
+                  <ShoppingBag size={15} />
+                  <span>Main Store</span>
+                </button>
+              </div>
             </div>
 
             {myStoreProducts.length === 0 ? (
@@ -563,22 +608,27 @@ export const UserProfileModal = () => {
               >
                 <Package size={38} color="var(--color-primary)" style={{ marginBottom: "12px", opacity: 0.8 }} />
                 <h4 style={{ fontSize: "1.05rem", fontWeight: 700, color: "var(--text-main)", marginBottom: "6px" }}>
-                  No store products listed yet
+                  {!userStore ? "Launch Your Free Store in 30 Seconds!" : "No products listed in your store yet"}
                 </h4>
                 <p style={{ fontSize: "0.85rem", maxWidth: "380px", margin: "0 auto 16px auto" }}>
-                  Enable monetization in settings to list physical merch, custom apparel, and digital tools in your creator store.
+                  {!userStore
+                    ? "Start selling physical apparel, framed prints, desk mats, and digital tools with 5 free listings."
+                    : "You have 5 free slots available on your Free Store Plan. List your first product now!"}
                 </p>
                 <button
                   type="button"
-                  className="nav-tab"
+                  className="btn-primary"
                   onClick={() => {
                     setIsProfileOpen(false);
-                    setSettingsTab("monetization");
-                    setIsSettingsOpen(true);
+                    if (!userStore) {
+                      setIsCreateStoreOpen(true);
+                    } else {
+                      setIsAddProductOpen(true);
+                    }
                   }}
-                  style={{ border: "1px solid var(--border-light)", fontSize: "0.85rem", padding: "8px 16px" }}
+                  style={{ padding: "8px 20px", fontSize: "0.85rem" }}
                 >
-                  Configure Store & Payouts
+                  {!userStore ? "Claim Your Free Store 🚀" : "+ List Your First Product"}
                 </button>
               </div>
             ) : (
