@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { usePins } from "../context/PinContext";
 import { StoreProductCard } from "./StoreProductCard";
 import { StoreProductModal } from "./StoreProductModal";
+import { CreatorStorefront } from "./CreatorStorefront";
 import { VerifiedBadge } from "./VerifiedBadge";
 import {
   ShoppingBag,
@@ -23,7 +24,9 @@ import {
   HeartHandshake,
   Layers,
   Star,
-  ChevronDown
+  ChevronDown,
+  Store,
+  ExternalLink
 } from "lucide-react";
 
 const STORE_CATEGORIES = [
@@ -38,7 +41,10 @@ const STORE_CATEGORIES = [
 export const StoreView = () => {
   const {
     marketplaceProducts = [],
+    allStores = [],
     userStore,
+    activeStorefront,
+    setActiveStorefront,
     setIsCreateStoreOpen,
     setIsAddProductOpen,
     upgradeStoreTier,
@@ -47,7 +53,7 @@ export const StoreView = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Products");
-  const [sortBy, setSortBy] = useState("featured"); // 'featured' | 'price-low' | 'price-high' | 'rating' | 'best-selling'
+  const [sortBy, setSortBy] = useState("featured");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -60,6 +66,16 @@ export const StoreView = () => {
       }
     }
   }, [userStore, setIsCreateStoreOpen]);
+
+  // If a dedicated creator storefront is active, render it!
+  if (activeStorefront) {
+    return (
+      <CreatorStorefront
+        storeHandle={activeStorefront}
+        onBack={() => setActiveStorefront(null)}
+      />
+    );
+  }
 
   // Filter & Sort Products (Shopify-style catalog engine)
   const filteredProducts = useMemo(() => {
@@ -158,10 +174,10 @@ export const StoreView = () => {
               </div>
               <div>
                 <div style={{ fontWeight: 800, fontSize: "0.92rem", color: "#0f172a" }}>
-                  Want to sell your own merch on GallaryWala?
+                  Want to open your own creator storefront on GallaryWala?
                 </div>
                 <div style={{ fontSize: "0.8rem", color: "#64748b" }}>
-                  Launch your Shopify-style creator storefront with up to 5 free product drops.
+                  Launch your dedicated Shopify-style brand page with up to 5 free product drops.
                 </div>
               </div>
             </div>
@@ -183,7 +199,7 @@ export const StoreView = () => {
                 cursor: "pointer"
               }}
             >
-              <span>Open Store in 30s</span>
+              <span>Launch Creator Store</span>
               <ArrowRight size={14} />
             </button>
           </div>
@@ -240,13 +256,34 @@ export const StoreView = () => {
                 </div>
                 <div style={{ fontSize: "0.78rem", color: "#64748b", marginTop: "2px" }}>
                   {userStore.tier === "free"
-                    ? `${Math.max(0, 5 - myProdsCount)} free listing slot(s) remaining. Upgrade to Pro for unlimited drops.`
+                    ? `${Math.max(0, 5 - myProdsCount)} free slot(s) remaining. Upgrade to Pro for unlimited drops.`
                     : "Active Storefront • Priority Search Indexing & Google Rich Snippets"}
                 </div>
               </div>
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <button
+                type="button"
+                onClick={() => setActiveStorefront(userStore.handle)}
+                style={{
+                  fontSize: "0.82rem",
+                  padding: "8px 14px",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "8px",
+                  color: "#0f172a",
+                  background: "#f8fafc",
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  cursor: "pointer"
+                }}
+              >
+                <Store size={14} />
+                <span>View My Storefront</span>
+              </button>
+
               {userStore.tier === "free" && (
                 <button
                   type="button"
@@ -300,7 +337,7 @@ export const StoreView = () => {
             position: "relative",
             borderRadius: "20px",
             overflow: "hidden",
-            marginBottom: "40px",
+            marginBottom: "36px",
             background: "#0f172a",
             minHeight: "360px",
             display: "flex",
@@ -359,11 +396,11 @@ export const StoreView = () => {
                 letterSpacing: "-0.03em"
               }}
             >
-              Authentic Creator Merch & Physical Drops
+              Creator Merchandise & Apparel Drops
             </h1>
 
             <p style={{ color: "#cbd5e1", fontSize: "1rem", lineHeight: 1.6, margin: "0 0 28px 0" }}>
-              Shop heavyweight vintage apparel, museum-quality framed canvas art, custom desk pads, and digital preset toolkits directly from independent creators.
+              Explore dedicated storefronts from independent artists. Heavyweight vintage apparel, archival canvas art, desk pads, and digital suites.
             </p>
 
             <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
@@ -407,21 +444,118 @@ export const StoreView = () => {
                     cursor: "pointer"
                   }}
                 >
-                  Start Selling (Free)
+                  Open Your Store (Free)
                 </button>
               )}
             </div>
           </div>
         </div>
 
-        {/* 4. Shopify Story Bubbles / Visual Category Selector */}
-        <div style={{ marginBottom: "36px" }}>
+        {/* 4. FEATURED CREATOR SHOPIFY STOREFRONTS CAROUSEL */}
+        <div style={{ marginBottom: "42px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-            <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#64748b", letterSpacing: "1px", textTransform: "uppercase" }}>
-              Explore Collections
-            </span>
+            <div>
+              <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#64748b", letterSpacing: "1px", textTransform: "uppercase" }}>
+                Verified Creator Shops
+              </span>
+              <h3 style={{ fontSize: "1.3rem", fontWeight: 900, color: "#0f172a", margin: "2px 0 0 0" }}>
+                Featured Creator Storefronts
+              </h3>
+            </div>
             <span style={{ fontSize: "0.82rem", color: "#64748b" }}>
-              {marketplaceProducts.length} Curated Items
+              {allStores.length} Active Creator Brands
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gap: "20px"
+            }}
+          >
+            {allStores.map((st) => (
+              <div
+                key={st.id || st.handle}
+                onClick={() => setActiveStorefront(st.handle)}
+                style={{
+                  background: "#ffffff",
+                  border: "1.5px solid #e2e8f0",
+                  borderRadius: "16px",
+                  overflow: "hidden",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  display: "flex",
+                  flexDirection: "column"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-3px)";
+                  e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.06)";
+                  e.currentTarget.style.borderColor = "#0f172a";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "none";
+                  e.currentTarget.style.borderColor = "#e2e8f0";
+                }}
+              >
+                {/* Store Banner */}
+                <div style={{ position: "relative", height: "100px", width: "100%", background: "#0f172a" }}>
+                  <img
+                    src={st.bannerUrl}
+                    alt={st.name}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.85 }}
+                  />
+                  {st.tier === "pro" && (
+                    <span style={{ position: "absolute", top: "8px", right: "8px", background: "#fef3c7", color: "#92400e", fontSize: "0.65rem", fontWeight: 800, padding: "2px 6px", borderRadius: "4px" }}>
+                      👑 PRO
+                    </span>
+                  )}
+                </div>
+
+                {/* Store Body */}
+                <div style={{ padding: "16px", display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "-30px", marginBottom: "8px" }}>
+                      <img
+                        src={st.logoUrl}
+                        alt={st.name}
+                        style={{ width: "44px", height: "44px", borderRadius: "10px", border: "3px solid #ffffff", objectFit: "cover", background: "#ffffff", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
+                      />
+                      <div style={{ paddingTop: "18px" }}>
+                        <div style={{ fontWeight: 800, fontSize: "0.95rem", color: "#0f172a", display: "flex", alignItems: "center", gap: "4px" }}>
+                          <span>{st.name}</span>
+                          {st.isVerified && <VerifiedBadge size={13} />}
+                        </div>
+                        <span style={{ fontSize: "0.75rem", color: "#64748b" }}>{st.handle}</span>
+                      </div>
+                    </div>
+
+                    <p style={{ margin: "0 0 12px 0", fontSize: "0.82rem", color: "#475569", lineHeight: 1.4, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                      {st.tagline || st.bio}
+                    </p>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "10px", borderTop: "1px solid #f1f5f9" }}>
+                    <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#059669" }}>
+                      {st.category}
+                    </span>
+                    <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#0f172a", display: "flex", alignItems: "center", gap: "4px" }}>
+                      <span>Visit Shop</span>
+                      <ArrowRight size={13} />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 5. Shopify Story Bubbles / Visual Category Selector */}
+        <div style={{ marginBottom: "32px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+            <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#64748b", letterSpacing: "1px", textTransform: "uppercase" }}>
+              Explore All Drops by Category
             </span>
           </div>
 
@@ -444,9 +578,9 @@ export const StoreView = () => {
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
-                    padding: "10px 18px",
+                    padding: "9px 16px",
                     borderRadius: "100px",
-                    fontSize: "0.88rem",
+                    fontSize: "0.85rem",
                     fontWeight: 700,
                     whiteSpace: "nowrap",
                     cursor: "pointer",
@@ -465,7 +599,7 @@ export const StoreView = () => {
           </div>
         </div>
 
-        {/* 5. Shopify Filter & Sort Toolbar */}
+        {/* 6. Shopify Filter & Sort Toolbar */}
         <div
           id="shopify-catalog"
           style={{
@@ -485,7 +619,7 @@ export const StoreView = () => {
               {selectedCategory}
             </span>
             <span style={{ fontSize: "0.85rem", color: "#64748b" }}>
-              ({filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"})
+              ({filteredProducts.length} {filteredProducts.length === 1 ? "drop" : "drops"})
             </span>
           </div>
 
@@ -506,7 +640,7 @@ export const StoreView = () => {
               <Search size={15} color="#94a3b8" style={{ marginRight: "6px" }} />
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Search all drops..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
@@ -557,7 +691,7 @@ export const StoreView = () => {
           </div>
         </div>
 
-        {/* 6. Shopify Product Grid */}
+        {/* 7. Shopify Product Grid */}
         <div style={{ marginBottom: "60px" }}>
           {filteredProducts.length === 0 ? (
             <div
@@ -616,7 +750,7 @@ export const StoreView = () => {
           )}
         </div>
 
-        {/* 7. Shopify Trust & Guarantee Strip */}
+        {/* 8. Shopify Trust & Guarantee Strip */}
         <div
           style={{
             borderTop: "1px solid #e2e8f0",
@@ -684,7 +818,7 @@ export const StoreView = () => {
         </div>
       </div>
 
-      {/* 8. Product Details & Checkout Modal */}
+      {/* 9. Product Details & Checkout Modal */}
       <StoreProductModal
         product={selectedProduct}
         isOpen={isModalOpen}

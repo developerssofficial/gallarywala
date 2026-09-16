@@ -191,3 +191,90 @@ export const INITIAL_STORE_PRODUCTS = [
     }
   }
 ];
+
+export const INITIAL_CREATOR_STORES = [
+  {
+    id: "store_tokyovisuals",
+    name: "Tokyo Visuals Studio",
+    handle: "@tokyovisuals",
+    tagline: "Heavyweight Streetwear & Archival Tokyo Aesthetics",
+    bio: "Independent Tokyo-inspired apparel studio producing small-batch vintage streetwear drops, acid-washed heavyweight hoodies, and museum-grade physical canvas art.",
+    announcement: "⚡ New Autumn Drop Live • Free Express Courier on Orders Over $50",
+    category: "Streetwear Apparel",
+    tier: "pro",
+    bannerUrl: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1600&q=85",
+    logoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&q=80",
+    rating: 4.9,
+    ordersCount: 520,
+    isVerified: true,
+    socialLinks: {
+      instagram: "https://instagram.com",
+      twitter: "https://x.com",
+      youtube: "https://youtube.com",
+      website: "https://tokyovisuals.com"
+    }
+  },
+  {
+    id: "store_cybercreator",
+    name: "CyberCreator Atelier",
+    handle: "@cybercreator",
+    tagline: "Fine Art Canvas Prints & Collectible Figurines",
+    bio: "Specializing in 4K archival canvas art prints and hand-painted limited edition mecha and cyberpunk resin figurines with certificates of authenticity.",
+    announcement: "🎨 Worldwide Insured Shipping • All Prints Hand-Numbered by Artist",
+    category: "Posters & Canvas Art",
+    tier: "pro",
+    bannerUrl: "https://images.unsplash.com/photo-1563089145-599997674d42?w=1600&q=85",
+    logoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80",
+    rating: 5.0,
+    ordersCount: 310,
+    isVerified: true,
+    socialLinks: {
+      instagram: "https://instagram.com",
+      twitter: "https://x.com",
+      youtube: "",
+      website: ""
+    }
+  },
+  {
+    id: "store_neonartist",
+    name: "NeonArt Lab",
+    handle: "@neonartist",
+    tagline: "Professional Lightroom Suites, LUTs & Creative Tools",
+    bio: "Digital creator producing cinema-grade color grading LUTs, Lightroom master presets, and visual effects assets used by over 10,000 photographers worldwide.",
+    announcement: "💾 Instant Download Access + Free Cloud Lifetime Updates",
+    category: "Digital Tools & Presets",
+    tier: "pro",
+    bannerUrl: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=1600&q=85",
+    logoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&q=80",
+    rating: 4.9,
+    ordersCount: 890,
+    isVerified: true,
+    socialLinks: {
+      instagram: "https://instagram.com",
+      twitter: "https://x.com",
+      youtube: "https://youtube.com",
+      website: "https://neonart.io"
+    }
+  },
+  {
+    id: "store_gallarywala",
+    name: "GallaryWala Official Merch",
+    handle: "@gallarywala",
+    tagline: "Exclusive Studio Desk Mats & Creator Gear",
+    bio: "The official merchandise division of GallaryWala. Engineered for streamers, creators, and visual artists with premium materials and ergonomic designs.",
+    announcement: "📦 Official Platform Guarantee • 14-Day Free Exchanges",
+    category: "Gaming & Desk Accessories",
+    tier: "pro",
+    bannerUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1600&q=85",
+    logoUrl: "https://api.dicebear.com/7.x/shapes/svg?seed=gallarywala",
+    rating: 4.8,
+    ordersCount: 1420,
+    isVerified: true,
+    socialLinks: {
+      instagram: "https://instagram.com",
+      twitter: "https://x.com",
+      youtube: "",
+      website: "https://gallarywala.vercel.app"
+    }
+  }
+];

@@ -20,6 +20,7 @@ import { BoardView } from "./components/BoardView";
 import { StoreView } from "./components/StoreView";
 import { CreateStoreModal } from "./components/CreateStoreModal";
 import { AddProductModal } from "./components/AddProductModal";
+import { EditStoreModal } from "./components/EditStoreModal";
 import { ToastContainer } from "./components/Toast";
 import { Footer } from "./components/Footer";
 
@@ -59,6 +60,7 @@ const MainContent = () => {
       <ReportModal />
       <CreateStoreModal />
       <AddProductModal />
+      <EditStoreModal />
       <ToastContainer />
 
       {/* Backend Infrastructure Modals (Owner/Admin Only) */}

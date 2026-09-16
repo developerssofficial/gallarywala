@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { INITIAL_PINS, INITIAL_BOARDS } from "../data/mockPins";
-import { INITIAL_STORE_PRODUCTS } from "../data/mockStoreProducts";
+import { INITIAL_STORE_PRODUCTS, INITIAL_CREATOR_STORES } from "../data/mockStoreProducts";
 import confetti from "canvas-confetti";
 import {
   getSupabaseConfig,
@@ -624,8 +624,21 @@ export const PinProvider = ({ children }) => {
 
   const [isCreateStoreOpen, setIsCreateStoreOpen] = useState(false);
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+  const [isEditStoreOpen, setIsEditStoreOpen] = useState(false);
+  const [activeStorefront, setActiveStorefront] = useState(null); // null = Marketplace Hub, or store object/handle for dedicated shop
   const [selectedStoreProduct, setSelectedStoreProduct] = useState(null);
   const [isStoreProductModalOpen, setIsStoreProductModalOpen] = useState(false);
+
+  // All verified creator stores including user's custom store
+  const allStores = React.useMemo(() => {
+    if (userStore) {
+      const exists = INITIAL_CREATOR_STORES.some((s) => s.handle === userStore.handle);
+      if (!exists) {
+        return [userStore, ...INITIAL_CREATOR_STORES];
+      }
+    }
+    return INITIAL_CREATOR_STORES;
+  }, [userStore]);
 
   useEffect(() => {
     try {
@@ -647,15 +660,28 @@ export const PinProvider = ({ children }) => {
     }
   }, [marketplaceProducts]);
 
-  const createCreatorStore = ({ name, handle, bio, category = "Creator Merch" }) => {
+  const createCreatorStore = ({ name, handle, bio, category = "Creator Merch", bannerUrl, logoUrl }) => {
     const cleanHandle = (handle || name || "creator").trim().replace(/^@/, "").toLowerCase().replace(/\s+/g, "_");
     const newStore = {
       id: "store_" + Math.random().toString(36).substring(2, 9),
       name: (name || "Creator Store").trim(),
       handle: `@${cleanHandle}`,
+      tagline: (bio || "Official creator merchandise, apparel & digital drops.").trim(),
       bio: (bio || "Official creator merchandise and digital assets.").trim(),
+      announcement: "⚡ Welcome to our official store • Fast Tracked Shipping",
       category,
       tier: "free", // 'free' | 'pro'
+      bannerUrl: bannerUrl || "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1600&q=85",
+      logoUrl: logoUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(cleanHandle)}`,
+      rating: 5.0,
+      ordersCount: 0,
+      isVerified: false,
+      socialLinks: {
+        instagram: "",
+        twitter: "",
+        youtube: "",
+        website: ""
+      },
       createdAt: new Date().toISOString(),
       productsCount: 0
     };
@@ -665,6 +691,19 @@ export const PinProvider = ({ children }) => {
     } catch (err) {}
     showToast(`🎉 Congratulations! Your Free Store "@${cleanHandle}" is now live! List up to 5 products free.`, "success");
     return newStore;
+  };
+
+  const updateCreatorStore = (updatedFields) => {
+    setUserStore((prev) => {
+      if (!prev) return prev;
+      const updated = {
+        ...prev,
+        ...updatedFields,
+        handle: updatedFields.handle ? (updatedFields.handle.startsWith("@") ? updatedFields.handle : `@${updatedFields.handle}`) : prev.handle
+      };
+      return updated;
+    });
+    showToast("✨ Storefront settings & branding updated successfully!", "success");
   };
 
   const upgradeStoreTier = (targetTier = "pro") => {
@@ -1396,15 +1435,21 @@ export const PinProvider = ({ children }) => {
         setUserStore,
         marketplaceProducts,
         setMarketplaceProducts,
+        allStores,
+        activeStorefront,
+        setActiveStorefront,
         isCreateStoreOpen,
         setIsCreateStoreOpen,
         isAddProductOpen,
         setIsAddProductOpen,
+        isEditStoreOpen,
+        setIsEditStoreOpen,
         selectedStoreProduct,
         setSelectedStoreProduct,
         isStoreProductModalOpen,
         setIsStoreProductModalOpen,
         createCreatorStore,
+        updateCreatorStore,
         upgradeStoreTier,
         addStoreProduct,
         deleteStoreProduct
