@@ -21,7 +21,9 @@ export const MobileBottomNav = () => {
     setSelectedCategory,
     currentUser,
     setIsAuthModalOpen,
-    showToast
+    showToast,
+    userStore,
+    setIsCreateStoreOpen
   } = usePins();
 
   const totalSavedPins = boards.reduce((acc, b) => acc + (b.pinIds?.length || 0), 0);
@@ -82,6 +84,9 @@ export const MobileBottomNav = () => {
         className={`mobile-nav-btn ${activeView === "store" ? "active" : ""}`}
         onClick={() => {
           setActiveView("store");
+          if (!userStore) {
+            setIsCreateStoreOpen(true);
+          }
           window.scrollTo({ top: 0, behavior: "smooth" });
         }}
       >

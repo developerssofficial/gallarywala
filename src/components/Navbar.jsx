@@ -40,7 +40,9 @@ export const Navbar = () => {
     handleSignOut,
     isUserVerified,
     setIsAuthModalOpen,
-    showToast
+    showToast,
+    userStore,
+    setIsCreateStoreOpen
   } = usePins();
 
   const searchInputRef = useRef(null);
@@ -191,7 +193,16 @@ export const Navbar = () => {
           {/* Store / Marketplace Tab */}
           <button
             className={`nav-tab hide-on-mobile ${activeView === "store" ? "active" : ""}`}
-            onClick={() => setActiveView(activeView === "store" ? "gallery" : "store")}
+            onClick={() => {
+              if (activeView !== "store") {
+                setActiveView("store");
+                if (!userStore) {
+                  setIsCreateStoreOpen(true);
+                }
+              } else {
+                setActiveView("gallery");
+              }
+            }}
             style={{
               display: "flex",
               alignItems: "center",

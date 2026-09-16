@@ -13,13 +13,21 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
     category,
     productType,
     itemCount,
-    rating,
-    reviewsCount,
-    salesCount,
+    rating = 5.0,
+    reviewsCount = 0,
+    salesCount = 0,
     coverImage,
+    coverUrl,
+    stock,
+    deliveryTime,
+    isProBoosted,
     sizes = [],
     author
   } = product;
+
+  const displayImage = coverUrl || coverImage || "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=1200&q=85";
+  const numPrice = typeof price === "number" ? price : parseFloat(price) || 0;
+  const numOrigPrice = originalPrice ? (typeof originalPrice === "number" ? originalPrice : parseFloat(originalPrice)) : null;
 
   return (
     <div
@@ -41,7 +49,7 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
       {/* Cover Image & Badges */}
       <div style={{ position: "relative", width: "100%", paddingTop: "72%", overflow: "hidden", background: "var(--bg-surface)" }}>
         <img
-          src={coverImage}
+          src={displayImage}
           alt={title}
           loading="lazy"
           style={{
@@ -57,7 +65,23 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
         />
 
         {/* Top Badges */}
-        <div style={{ position: "absolute", top: "10px", left: "10px", display: "flex", gap: "6px", flexWrap: "wrap" }}>
+        <div style={{ position: "absolute", top: "10px", left: "10px", display: "flex", gap: "6px", flexWrap: "wrap", zIndex: 2 }}>
+          {isProBoosted && (
+            <div
+              style={{
+                background: "linear-gradient(135deg, #eab308 0%, #ca8a04 100%)",
+                color: "#000",
+                padding: "3px 8px",
+                borderRadius: "var(--radius-full)",
+                fontSize: "0.68rem",
+                fontWeight: 900,
+                letterSpacing: "0.5px",
+                boxShadow: "0 4px 10px rgba(0,0,0,0.2)"
+              }}
+            >
+              👑 PRO BOOST
+            </div>
+          )}
           {badge && (
             <div
               style={{
@@ -75,9 +99,24 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
               {badge}
             </div>
           )}
+          {stock && (
+            <div
+              style={{
+                background: "rgba(16, 185, 129, 0.9)",
+                backdropFilter: "blur(6px)",
+                color: "#fff",
+                padding: "3px 8px",
+                borderRadius: "var(--radius-full)",
+                fontSize: "0.68rem",
+                fontWeight: 800
+              }}
+            >
+              📦 {stock} in stock
+            </div>
+          )}
         </div>
 
-        {/* Product Type Pill */}
+        {/* Product Type & Delivery Pill */}
         <div
           style={{
             position: "absolute",
@@ -93,11 +132,12 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
             display: "flex",
             alignItems: "center",
             gap: "5px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            zIndex: 2
           }}
         >
           <Package size={12} color="var(--color-primary)" />
-          <span>{itemCount}</span>
+          <span>{deliveryTime || itemCount || "Fast Dispatch"}</span>
         </div>
       </div>
 
@@ -191,11 +231,11 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
         >
           <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
             <span style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--color-primary)" }}>
-              ${price.toFixed(2)}
+              ${numPrice.toFixed(2)}
             </span>
-            {originalPrice && (
+            {numOrigPrice && (
               <span style={{ fontSize: "0.82rem", color: "var(--text-muted)", textDecoration: "line-through" }}>
-                ${originalPrice.toFixed(2)}
+                ${numOrigPrice.toFixed(2)}
               </span>
             )}
           </div>

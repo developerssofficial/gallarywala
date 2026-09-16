@@ -44,6 +44,16 @@ export const StoreView = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Auto-prompt onboarding modal on first visit if user has no store yet
+  React.useEffect(() => {
+    if (!userStore) {
+      const hasSkipped = sessionStorage.getItem("gw_store_onboarding_skipped");
+      if (!hasSkipped) {
+        setIsCreateStoreOpen(true);
+      }
+    }
+  }, [userStore, setIsCreateStoreOpen]);
+
   // Filter products
   const filteredProducts = useMemo(() => {
     return marketplaceProducts.filter((prod) => {
