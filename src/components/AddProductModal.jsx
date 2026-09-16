@@ -11,7 +11,10 @@ import {
   Layers,
   Upload,
   ShieldCheck,
-  AlertCircle
+  AlertCircle,
+  Truck,
+  RotateCcw,
+  Box
 } from "lucide-react";
 
 export const AddProductModal = () => {
@@ -27,15 +30,17 @@ export const AddProductModal = () => {
   } = usePins();
 
   const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("19.99");
-  const [originalPrice, setOriginalPrice] = useState("29.99");
+  const [price, setPrice] = useState("29.99");
+  const [originalPrice, setOriginalPrice] = useState("45.00");
   const [category, setCategory] = useState("Streetwear Apparel");
   const [productType, setProductType] = useState("physical"); // 'physical' | 'digital'
   const [coverImage, setCoverImage] = useState("https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=1200&q=85");
   const [description, setDescription] = useState("");
+  const [stock, setStock] = useState("50");
+  const [deliveryTime, setDeliveryTime] = useState("2-4 Business Days Express Dispatch");
+  const [returnPolicy, setReturnPolicy] = useState("14-Day Free Exchange Guarantee");
   const [sizesInput, setSizesInput] = useState("S, M, L, XL, 2XL");
-  const [materialSpec, setMaterialSpec] = useState("240 GSM Combed Cotton");
-  const [shippingSpec, setShippingSpec] = useState("Worldwide Insured Delivery (3-7 Days)");
+  const [materialSpec, setMaterialSpec] = useState("240 GSM Combed Heavyweight Cotton");
 
   if (!isAddProductOpen) return null;
 
@@ -46,25 +51,36 @@ export const AddProductModal = () => {
         <div
           className="modal-container"
           onClick={(e) => e.stopPropagation()}
-          style={{ maxWidth: "480px", textAlign: "center", padding: "32px 24px" }}
+          style={{ maxWidth: "460px", textAlign: "center", padding: "36px 28px", background: "#ffffff", borderRadius: "16px" }}
         >
-          <Package size={48} color="var(--color-primary)" style={{ margin: "0 auto 16px auto" }} />
-          <h3 style={{ fontSize: "1.3rem", fontWeight: 800, marginBottom: "8px" }}>
-            You Need a Store First!
+          <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "#f1f5f9", color: "#0f172a", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
+            <Package size={24} />
+          </div>
+          <h3 style={{ fontSize: "1.3rem", fontWeight: 800, marginBottom: "8px", color: "#0f172a" }}>
+            You Need a Store First
           </h3>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.88rem", marginBottom: "20px", lineHeight: 1.5 }}>
-            Launch your free creator store in 30 seconds to start listing up to 5 products for free.
+          <p style={{ color: "#64748b", fontSize: "0.88rem", marginBottom: "22px", lineHeight: 1.5 }}>
+            Set up your official creator store in 30 seconds to start publishing up to 5 product drops for free.
           </p>
           <button
             type="button"
-            className="btn-primary"
             onClick={() => {
               setIsAddProductOpen(false);
               setIsCreateStoreOpen(true);
             }}
-            style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: "0.95rem" }}
+            style={{
+              width: "100%",
+              background: "#0f172a",
+              color: "#ffffff",
+              border: "none",
+              padding: "12px",
+              borderRadius: "10px",
+              fontSize: "0.92rem",
+              fontWeight: 700,
+              cursor: "pointer"
+            }}
           >
-            Get Your Free Store Now 🚀
+            Launch Free Store in 30s
           </button>
         </div>
       </div>
@@ -98,260 +114,387 @@ export const AddProductModal = () => {
       originalPrice: originalPrice ? Number(originalPrice) : null,
       category,
       productType,
-      itemCount: productType === "physical" ? "Physical Merch" : "Digital Asset Suite",
-      coverImage: coverImage.trim(),
-      previewImages: [coverImage.trim()],
-      description: description.trim() || "High quality official creator product.",
+      coverUrl: coverImage.trim(),
+      description: description.trim() || `${title.trim()} — Official verified creator merchandise drop.`,
+      stock: parseInt(stock, 10) || 50,
+      deliveryTime: deliveryTime.trim(),
+      returnPolicy: returnPolicy.trim(),
       sizes: sizesArr,
       specs: {
-        material: materialSpec.trim() || "Premium Grade",
-        shipping: shippingSpec.trim() || "Instant Delivery"
-      },
-      features: [
-        "100% Quality Guaranteed",
-        "Official GallaryWala Authenticity Tag",
-        productType === "physical" ? "Insured Delivery & Tracking" : "Instant Cloud ZIP Download"
-      ]
+        material: materialSpec.trim() || "Premium Heavyweight Fabric",
+        shipping: deliveryTime.trim(),
+        stockQuantity: `${stock} Units Available`,
+        guarantee: returnPolicy.trim()
+      }
     });
 
-    if (res.success) {
-      setIsAddProductOpen(false);
+    if (res && res.limitReached) {
+      return;
     }
+
+    setIsAddProductOpen(false);
+    setTitle("");
+    setDescription("");
+    showToast(`🎉 Product "${title.trim()}" published to your store!`, "success");
   };
 
   return (
-    <div
-      className="modal-backdrop"
-      onClick={() => setIsAddProductOpen(false)}
-      style={{ zIndex: 10010 }}
-    >
+    <div className="modal-backdrop" onClick={() => setIsAddProductOpen(false)} style={{ zIndex: 10020 }}>
       <div
         className="modal-container"
         onClick={(e) => e.stopPropagation()}
         style={{
-          maxWidth: "700px",
+          maxWidth: "640px",
           width: "95%",
           maxHeight: "92vh",
           overflowY: "auto",
-          background: "var(--bg-card)",
-          borderRadius: "var(--radius-xl)",
-          boxShadow: "0 25px 60px rgba(0,0,0,0.35)",
-          border: "1px solid var(--border-light)",
-          padding: "28px"
+          background: "#ffffff",
+          borderRadius: "16px",
+          padding: 0,
+          boxShadow: "0 25px 60px rgba(0,0,0,0.25)"
         }}
       >
         {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+        <div
+          style={{
+            padding: "20px 24px",
+            borderBottom: "1px solid #e2e8f0",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
+        >
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-              <h2 style={{ fontSize: "1.35rem", fontWeight: 800, margin: 0 }}>
-                List New Store Product
-              </h2>
-              {userStore.tier === "pro" ? (
-                <span style={{ fontSize: "0.72rem", background: "rgba(234, 179, 8, 0.15)", color: "#eab308", padding: "2px 8px", borderRadius: "6px", fontWeight: 800 }}>
-                  👑 PRO STORE (UNLIMITED)
-                </span>
-              ) : (
-                <span style={{ fontSize: "0.72rem", background: "rgba(16, 185, 129, 0.15)", color: "#10b981", padding: "2px 8px", borderRadius: "6px", fontWeight: 800 }}>
-                  FREE STORE ({myProdsCount}/5 USED)
-                </span>
-              )}
-            </div>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.82rem", margin: 0 }}>
-              Add a new physical merch item, apparel, or digital creative suite to your store.
-            </p>
+            <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+              Shopify Product Editor
+            </span>
+            <h3 style={{ fontSize: "1.2rem", fontWeight: 900, margin: "2px 0 0 0", color: "#0f172a" }}>
+              Add New Product Drop
+            </h3>
           </div>
-
           <button
             type="button"
-            className="icon-btn"
             onClick={() => setIsAddProductOpen(false)}
+            style={{
+              background: "#f1f5f9",
+              border: "none",
+              borderRadius: "50%",
+              width: "32px",
+              height: "32px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#475569"
+            }}
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
-        {/* Free Plan Limit Alert if 5/5 reached */}
+        {/* Free Plan Limit Notice */}
         {isFreeLimitReached ? (
-          <div
-            style={{
-              padding: "28px 20px",
-              textAlign: "center",
-              background: "rgba(121, 40, 202, 0.08)",
-              border: "1px solid var(--color-primary)",
-              borderRadius: "var(--radius-md)",
-              marginBottom: "20px"
-            }}
-          >
-            <Crown size={36} color="#eab308" style={{ margin: "0 auto 12px auto" }} />
-            <h3 style={{ fontSize: "1.15rem", fontWeight: 800, marginBottom: "6px", color: "var(--text-main)" }}>
-              Free Store Limit Reached (5 of 5 Products)
-            </h3>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", maxWidth: "420px", margin: "0 auto 18px auto", lineHeight: 1.4 }}>
-              You have used all 5 free product slots. Upgrade to <strong>Pro Store</strong> to unlock unlimited listings, <strong>SEO Google Boost</strong>, and priority banner placement!
+          <div style={{ padding: "32px 24px", textAlign: "center" }}>
+            <div style={{ width: "44px", height: "44px", borderRadius: "10px", background: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px" }}>
+              <Crown size={22} />
+            </div>
+            <h4 style={{ fontSize: "1.15rem", fontWeight: 800, margin: "0 0 8px 0", color: "#0f172a" }}>
+              Free Store Limit Reached (5/5 Products)
+            </h4>
+            <p style={{ color: "#64748b", fontSize: "0.88rem", maxWidth: "420px", margin: "0 auto 20px", lineHeight: 1.5 }}>
+              You have used all 5 free product slots. Upgrade to Pro for unlimited drops and priority Google SEO rich indexing.
             </p>
             <button
               type="button"
-              className="btn-primary"
-              onClick={() => upgradeStoreTier("pro")}
-              style={{ padding: "10px 24px", fontSize: "0.9rem" }}
+              onClick={() => {
+                upgradeStoreTier("pro");
+                showToast("👑 Upgraded to PRO Store! Unlimited products unlocked.", "success");
+              }}
+              style={{
+                background: "#0f172a",
+                color: "#fff",
+                border: "none",
+                padding: "11px 24px",
+                borderRadius: "8px",
+                fontSize: "0.9rem",
+                fontWeight: 700,
+                cursor: "pointer"
+              }}
             >
-              🚀 Upgrade to Pro for Unlimited Products & SEO Push
+              Upgrade to PRO (Unlimited Drops)
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            {/* Title & Product Type */}
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "12px" }}>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Product Title *</label>
+          <form onSubmit={handleSubmit} style={{ padding: "24px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {/* Title */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
+                  Product Title *
+                </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Gojo Satoru Vintage Heavyweight Tee"
-                  className="form-input"
+                  placeholder="e.g. Heavyweight Tokyo Vintage Acid-Wash Tee"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "10px 12px",
+                    borderRadius: "8px",
+                    border: "1.5px solid #e2e8f0",
+                    fontSize: "0.9rem",
+                    background: "#f8fafc"
+                  }}
                 />
               </div>
 
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Type</label>
-                <select
-                  className="form-select"
-                  value={productType}
-                  onChange={(e) => setProductType(e.target.value)}
+              {/* Pricing, Compare Price & Stock in 3 columns */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
+                    Price ($) *
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    placeholder="29.99"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "10px 12px",
+                      borderRadius: "8px",
+                      border: "1.5px solid #e2e8f0",
+                      fontSize: "0.9rem",
+                      background: "#f8fafc"
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
+                    Compare-at ($)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="45.00"
+                    value={originalPrice}
+                    onChange={(e) => setOriginalPrice(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "10px 12px",
+                      borderRadius: "8px",
+                      border: "1.5px solid #e2e8f0",
+                      fontSize: "0.9rem",
+                      background: "#f8fafc"
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
+                    Stock Units *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    placeholder="50"
+                    value={stock}
+                    onChange={(e) => setStock(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "10px 12px",
+                      borderRadius: "8px",
+                      border: "1.5px solid #e2e8f0",
+                      fontSize: "0.9rem",
+                      background: "#f8fafc"
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Category & Product Type */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
+                    Category
+                  </label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "10px 12px",
+                      borderRadius: "8px",
+                      border: "1.5px solid #e2e8f0",
+                      fontSize: "0.88rem",
+                      background: "#f8fafc"
+                    }}
+                  >
+                    <option value="Streetwear Apparel">Streetwear Apparel</option>
+                    <option value="Posters & Canvas Art">Posters & Canvas Art</option>
+                    <option value="Gaming & Desk Accessories">Gaming & Desk Accessories</option>
+                    <option value="Digital Tools & Presets">Digital Tools & Presets</option>
+                    <option value="Collectibles & Figures">Collectibles & Figures</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
+                    Fulfillment Type
+                  </label>
+                  <select
+                    value={productType}
+                    onChange={(e) => setProductType(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "10px 12px",
+                      borderRadius: "8px",
+                      border: "1.5px solid #e2e8f0",
+                      fontSize: "0.88rem",
+                      background: "#f8fafc"
+                    }}
+                  >
+                    <option value="physical">Physical Drop (Shipped Courier)</option>
+                    <option value="digital">Digital Asset (Instant Download)</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Image URL & Live Preview */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
+                  Product Image URL
+                </label>
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                  <input
+                    type="url"
+                    required
+                    placeholder="https://images.unsplash.com/..."
+                    value={coverImage}
+                    onChange={(e) => setCoverImage(e.target.value)}
+                    style={{
+                      flex: 1,
+                      padding: "10px 12px",
+                      borderRadius: "8px",
+                      border: "1.5px solid #e2e8f0",
+                      fontSize: "0.88rem",
+                      background: "#f8fafc"
+                    }}
+                  />
+                  {coverImage && (
+                    <img
+                      src={coverImage}
+                      alt="Preview"
+                      style={{ width: "40px", height: "40px", borderRadius: "6px", objectFit: "cover", border: "1px solid #e2e8f0" }}
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* Delivery Speed & Return Policy */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
+                    Dispatch & Shipping Speed
+                  </label>
+                  <input
+                    type="text"
+                    value={deliveryTime}
+                    onChange={(e) => setDeliveryTime(e.target.value)}
+                    placeholder="e.g. 2-4 Business Days Express"
+                    style={{
+                      width: "100%",
+                      padding: "10px 12px",
+                      borderRadius: "8px",
+                      border: "1.5px solid #e2e8f0",
+                      fontSize: "0.88rem",
+                      background: "#f8fafc"
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
+                    Sizes / Available Variants
+                  </label>
+                  <input
+                    type="text"
+                    value={sizesInput}
+                    onChange={(e) => setSizesInput(e.target.value)}
+                    placeholder="S, M, L, XL, 2XL"
+                    style={{
+                      width: "100%",
+                      padding: "10px 12px",
+                      borderRadius: "8px",
+                      border: "1.5px solid #e2e8f0",
+                      fontSize: "0.88rem",
+                      background: "#f8fafc"
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#0f172a" }}>
+                  Product Description
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Detailed material specs, sizing guidance, and craftsmanship..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "10px 12px",
+                    borderRadius: "8px",
+                    border: "1.5px solid #e2e8f0",
+                    fontSize: "0.88rem",
+                    background: "#f8fafc",
+                    resize: "none"
+                  }}
+                />
+              </div>
+
+              {/* Buttons */}
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => setIsAddProductOpen(false)}
+                  style={{
+                    background: "transparent",
+                    border: "1px solid #e2e8f0",
+                    padding: "10px 18px",
+                    borderRadius: "8px",
+                    fontSize: "0.88rem",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    color: "#475569"
+                  }}
                 >
-                  <option value="physical">Physical Merch</option>
-                  <option value="digital">Digital Tool / Suite</option>
-                </select>
-              </div>
-            </div>
+                  Cancel
+                </button>
 
-            {/* Price & Category */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1.5fr", gap: "12px" }}>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Price ($ USD) *</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  required
-                  placeholder="19.99"
-                  className="form-input"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Original Price (Discount)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="29.99"
-                  className="form-input"
-                  value={originalPrice}
-                  onChange={(e) => setOriginalPrice(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Category</label>
-                <select
-                  className="form-select"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                <button
+                  type="submit"
+                  style={{
+                    background: "#0f172a",
+                    color: "#ffffff",
+                    border: "none",
+                    padding: "10px 22px",
+                    borderRadius: "8px",
+                    fontSize: "0.9rem",
+                    fontWeight: 800,
+                    cursor: "pointer"
+                  }}
                 >
-                  <option value="Streetwear Apparel">Streetwear Apparel</option>
-                  <option value="Posters & Canvas Art">Posters & Canvas Art</option>
-                  <option value="Gaming & Desk Accessories">Gaming & Desk Accessories</option>
-                  <option value="Digital Tools & Presets">Digital Tools & Presets</option>
-                  <option value="Collectibles & Figures">Collectibles & Figures</option>
-                </select>
+                  Publish Product Drop
+                </button>
               </div>
-            </div>
-
-            {/* Cover Image URL */}
-            <div className="form-group" style={{ margin: 0 }}>
-              <label className="form-label">Product Image / Mockup URL *</label>
-              <input
-                type="url"
-                required
-                placeholder="https://images.unsplash.com/..."
-                className="form-input"
-                value={coverImage}
-                onChange={(e) => setCoverImage(e.target.value)}
-              />
-            </div>
-
-            {/* Sizes & Variants */}
-            <div className="form-group" style={{ margin: 0 }}>
-              <label className="form-label">Sizes / Options (Comma separated)</label>
-              <input
-                type="text"
-                placeholder="S, M, L, XL, 2XL (or 18x24 inch, 24x36 inch)"
-                className="form-input"
-                value={sizesInput}
-                onChange={(e) => setSizesInput(e.target.value)}
-              />
-            </div>
-
-            {/* Specs (Material & Shipping) */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Material / Format Spec</label>
-                <input
-                  type="text"
-                  placeholder="e.g. 240 GSM Combed Cotton"
-                  className="form-input"
-                  value={materialSpec}
-                  onChange={(e) => setMaterialSpec(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Shipping / Delivery Spec</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Worldwide Insured (3-7 Days)"
-                  className="form-input"
-                  value={shippingSpec}
-                  onChange={(e) => setShippingSpec(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="form-group" style={{ margin: 0 }}>
-              <label className="form-label">Product Description</label>
-              <textarea
-                className="form-textarea"
-                rows={2}
-                placeholder="Describe fit, material, artwork details, and what makes this product special..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-
-            {/* Action Buttons */}
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-              <button
-                type="button"
-                className="nav-tab"
-                onClick={() => setIsAddProductOpen(false)}
-                style={{ padding: "10px 18px", border: "1px solid var(--border-light)" }}
-              >
-                Cancel
-              </button>
-
-              <button
-                type="submit"
-                className="btn-primary"
-                style={{ padding: "10px 24px", fontSize: "0.92rem", display: "flex", alignItems: "center", gap: "6px" }}
-              >
-                <Plus size={16} />
-                <span>Publish Product to Store</span>
-              </button>
             </div>
           </form>
         )}
