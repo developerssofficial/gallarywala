@@ -179,10 +179,100 @@ export const PinProvider = ({ children }) => {
   const [isCloudinarySettingsOpen, setIsCloudinarySettingsOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState("general");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [activeView, setActiveView] = useState("gallery"); // 'gallery' | 'admin' | 'board'
   const [selectedBoardId, setSelectedBoardId] = useState(null);
   const [toasts, setToasts] = useState([]);
   const [adminTab, setAdminTab] = useState("catalog"); // 'catalog' | 'badges'
+
+  // Dynamic initial view & storefront based on current window location
+  const [activeView, setActiveView] = useState(() => {
+    try {
+      const path = (window.location.pathname || "").toLowerCase();
+      if (path.startsWith("/store")) return "store";
+      if (path.startsWith("/admin")) return "admin";
+      if (path.startsWith("/board")) return "board";
+    } catch (e) {}
+    return "gallery";
+  });
+
+  const [activeStorefront, setActiveStorefront] = useState(() => {
+    try {
+      const path = window.location.pathname || "";
+      if (path.toLowerCase().startsWith("/store")) {
+        const parts = path.split("/").filter(Boolean);
+        const handlePart = parts[1];
+        if (handlePart) {
+          return handlePart.startsWith("@") ? handlePart : `@${handlePart}`;
+        }
+      }
+    } catch (e) {}
+    return null;
+  });
+
+  // Synced View Navigator with URL History pushState & dynamic title
+  const handleSetActiveView = (viewOrFn, storefrontHandle = null) => {
+    setActiveView((prev) => {
+      const nextView = typeof viewOrFn === "function" ? viewOrFn(prev) : viewOrFn;
+      try {
+        if (nextView === "store") {
+          const targetStorefront = storefrontHandle || activeStorefront;
+          const path = targetStorefront
+            ? `/store/${targetStorefront.startsWith("@") ? targetStorefront : `@${targetStorefront}`}`
+            : "/store";
+          if (window.location.pathname !== path) {
+            window.history.pushState({ view: "store", storefront: targetStorefront }, "", path);
+          }
+          document.title = targetStorefront
+            ? `${targetStorefront}'s Official Storefront | GallaryWala`
+            : "Creator Drops & Merchandise Store | GallaryWala";
+        } else if (nextView === "admin") {
+          if (window.location.pathname !== "/admin") {
+            window.history.pushState({ view: "admin" }, "", "/admin");
+          }
+          document.title = "Admin Studio & Badges | GallaryWala";
+        } else if (nextView === "board") {
+          if (window.location.pathname !== "/board") {
+            window.history.pushState({ view: "board" }, "", "/board");
+          }
+          document.title = "Saved Visuals & Boards | GallaryWala";
+        } else {
+          // Gallery view
+          setActiveStorefront(null);
+          const url = new URL(window.location.href);
+          if (url.pathname !== "/") {
+            window.history.pushState({}, "", "/" + (url.search ? url.search : ""));
+          }
+          if (!activePin) {
+            document.title = "GallaryWala - Discover & Share Premium 4K Visuals & Wallpapers";
+          }
+        }
+      } catch (e) {
+        console.error("View URL routing error", e);
+      }
+      return nextView;
+    });
+  };
+
+  // Synced Storefront Navigator with /store/@handle URL support
+  const handleSetActiveStorefront = (storefront) => {
+    setActiveStorefront(storefront);
+    try {
+      if (storefront) {
+        const clean = storefront.startsWith("@") ? storefront : `@${storefront}`;
+        const path = `/store/${clean}`;
+        if (window.location.pathname !== path) {
+          window.history.pushState({ view: "store", storefront: clean }, "", path);
+        }
+        document.title = `${clean}'s Official Storefront | GallaryWala`;
+      } else {
+        if (activeView === "store" && window.location.pathname !== "/store") {
+          window.history.pushState({ view: "store" }, "", "/store");
+          document.title = "Creator Drops & Merchandise Store | GallaryWala";
+        }
+      }
+    } catch (e) {
+      console.error("Storefront URL routing error", e);
+    }
+  };
 
   // Enhanced setActivePin wrapper to automatically sync URL (?pin=pin_id) & document.title
   const handleSetActivePin = (pinOrFn) => {
@@ -202,7 +292,11 @@ export const PinProvider = ({ children }) => {
             const newUrl = url.pathname + (url.search ? url.search : "");
             window.history.pushState({}, "", newUrl);
           }
-          document.title = "GallaryWala - Discover & Share Premium 4K Visuals & Wallpapers";
+          if (activeView === "store") {
+            document.title = activeStorefront ? `${activeStorefront}'s Official Storefront | GallaryWala` : "Creator Drops & Merchandise Store | GallaryWala";
+          } else {
+            document.title = "GallaryWala - Discover & Share Premium 4K Visuals & Wallpapers";
+          }
         }
       } catch (e) {
         console.error("URL sync error", e);
@@ -220,7 +314,7 @@ export const PinProvider = ({ children }) => {
     });
   }, [activePin, selectedCategory, searchQuery]);
 
-  // URL Routing Listener for /badges, /admin, and direct ?pin=pin_id deep links
+  // URL Routing Listener for /store, /store/@handle, /badges, /admin, and ?pin=pin_id deep links
   useEffect(() => {
     const handleUrlRoute = () => {
       try {
@@ -243,10 +337,25 @@ export const PinProvider = ({ children }) => {
           }
         } else if (!pinId && activePin) {
           setActivePin(null);
-          document.title = "GallaryWala - Discover & Share Premium 4K Visuals & Wallpapers";
         }
 
-        // 2. Badges & Admin Portal Routing
+        // 2. Store & Dedicated Storefront Routing (/store, /store/@handle)
+        if (path.startsWith("/store") || search.includes("view=store")) {
+          const parts = window.location.pathname.split("/").filter(Boolean);
+          const handlePart = parts[1];
+          setActiveView("store");
+          if (handlePart) {
+            const formatted = handlePart.startsWith("@") ? handlePart : `@${handlePart}`;
+            setActiveStorefront(formatted);
+            document.title = `${formatted}'s Official Storefront | GallaryWala`;
+          } else {
+            setActiveStorefront(null);
+            document.title = "Creator Drops & Merchandise Store | GallaryWala";
+          }
+          return;
+        }
+
+        // 3. Badges & Admin Portal Routing
         const isBadgeUrl =
           path.includes("/badges") ||
           path.includes("/badge-panel") ||
@@ -280,6 +389,12 @@ export const PinProvider = ({ children }) => {
             setActiveView("admin");
           } else {
             setIsAdminAuthModalOpen(true);
+          }
+        } else if (path === "/" || path === "") {
+          setActiveView("gallery");
+          setActiveStorefront(null);
+          if (!pinId) {
+            document.title = "GallaryWala - Discover & Share Premium 4K Visuals & Wallpapers";
           }
         }
       } catch (e) {
@@ -627,7 +742,6 @@ export const PinProvider = ({ children }) => {
   const [isCreateStoreOpen, setIsCreateStoreOpen] = useState(false);
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [isEditStoreOpen, setIsEditStoreOpen] = useState(false);
-  const [activeStorefront, setActiveStorefront] = useState(null); // null = Marketplace Hub, or store object/handle for dedicated shop
   const [selectedStoreProduct, setSelectedStoreProduct] = useState(null);
   const [isStoreProductModalOpen, setIsStoreProductModalOpen] = useState(false);
 
@@ -1395,7 +1509,7 @@ export const PinProvider = ({ children }) => {
         lockAdminPanel,
         updateAdminPin,
         activeView,
-        setActiveView,
+        setActiveView: handleSetActiveView,
         selectedBoardId,
         setSelectedBoardId,
         toasts,
@@ -1439,7 +1553,7 @@ export const PinProvider = ({ children }) => {
         setMarketplaceProducts,
         allStores,
         activeStorefront,
-        setActiveStorefront,
+        setActiveStorefront: handleSetActiveStorefront,
         isCreateStoreOpen,
         setIsCreateStoreOpen,
         isAddProductOpen,
