@@ -29,7 +29,7 @@ const STORE_CATEGORIES = [
 ];
 
 export const StoreView = () => {
-  const { setActivePin, setIsProfileOpen, isUserVerified } = usePins();
+  const { setActivePin, setIsProfileOpen, isUserVerified, setActiveView } = usePins();
   
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Products");
@@ -264,18 +264,43 @@ export const StoreView = () => {
         {filteredProducts.length === 0 ? (
           <div
             style={{
-              padding: "60px 20px",
+              padding: "70px 24px",
               textAlign: "center",
               background: "var(--bg-surface)",
-              borderRadius: "var(--radius-lg)",
-              border: "1px dashed var(--border-light)"
+              borderRadius: "var(--radius-xl)",
+              border: "1px dashed var(--border-light)",
+              margin: "20px 0"
             }}
           >
-            <ShoppingBag size={40} color="var(--text-muted)" style={{ margin: "0 auto 12px" }} />
-            <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: "0 0 6px 0" }}>No matching bundles found</h3>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", margin: 0 }}>
-              Try searching for "Anime", "Cyberpunk", or reset the category filter.
+            <div
+              style={{
+                width: "64px",
+                height: "64px",
+                borderRadius: "50%",
+                background: "rgba(121, 40, 202, 0.1)",
+                color: "var(--color-primary)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 16px auto"
+              }}
+            >
+              <ShoppingBag size={32} />
+            </div>
+            <h3 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0 0 8px 0", color: "var(--text-main)" }}>
+              Store Drops & Creator Merch Coming Soon 🛍️
+            </h3>
+            <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", maxWidth: "450px", margin: "0 auto 24px auto", lineHeight: 1.5 }}>
+              Official merchandise drops, creator apparel, canvas art, and master suites will be listed here soon. Stay tuned!
             </p>
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => setActiveView("gallery")}
+              style={{ padding: "10px 22px", fontSize: "0.9rem" }}
+            >
+              Explore 4K Gallery Wallpapers
+            </button>
           </div>
         ) : (
           <div
