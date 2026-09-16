@@ -22,7 +22,7 @@ export const ROLE_CONFIG = {
     badgeText: "👑 SUPER ADMIN",
     badgeColor: "linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)",
     description: "Full system authority. Paddle, Payments, Database, API Keys, Badge Management & Role Control.",
-    defaultPasscode: "admin1234", // Can be changed via Security settings
+    defaultPasscode: import.meta.env.VITE_SUPERADMIN_PASSCODE || "admin1234",
     permissions: [
       "MANAGE_ALL",
       "MANAGE_PAYMENTS",
@@ -42,7 +42,7 @@ export const ROLE_CONFIG = {
     badgeText: "🌟 OFFICIAL MASTER",
     badgeColor: "linear-gradient(135deg, #00dfd8 0%, #007cf0 100%)",
     description: "Official brand master account. Verified uploads, featured artwork, studio catalog & content management.",
-    defaultPasscode: "official2026",
+    defaultPasscode: import.meta.env.VITE_OFFICIAL_PASSCODE || "official2026",
     permissions: [
       "OFFICIAL_BADGE",
       "PUBLISH_VERIFIED",
@@ -59,7 +59,7 @@ export const ROLE_CONFIG = {
     badgeText: "🛡️ SUB-ADMIN",
     badgeColor: "linear-gradient(135deg, #7928ca 0%, #4338ca 100%)",
     description: "Restricted staff account. Content moderation, editing tags/titles, and removing inappropriate pins.",
-    defaultPasscode: "subadmin123",
+    defaultPasscode: import.meta.env.VITE_SUBADMIN_PASSCODE || "subadmin123",
     permissions: [
       "MANAGE_CONTENT",
       "EDIT_TAGS",
@@ -247,7 +247,7 @@ export function authenticateRolePasscode(inputPasscode, selectedRole = null) {
 
   // If a specific role was selected, check only that role
   if (selectedRole && passcodes[selectedRole]) {
-    if (cleanPass === passcodes[selectedRole] || (selectedRole === ROLES.SUPER_ADMIN && cleanPass === "1234")) {
+    if (cleanPass === passcodes[selectedRole]) {
       resetFailedAttempts();
       const session = createSession(selectedRole);
       addAuditLog({
@@ -260,7 +260,7 @@ export function authenticateRolePasscode(inputPasscode, selectedRole = null) {
   } else {
     // Auto-detect role based on passcode
     for (const [roleKey, pass] of Object.entries(passcodes)) {
-      if (cleanPass === pass || (roleKey === ROLES.SUPER_ADMIN && cleanPass === "1234")) {
+      if (cleanPass === pass) {
         resetFailedAttempts();
         const session = createSession(roleKey);
         addAuditLog({

@@ -260,13 +260,7 @@ export const AdminAuthModal = () => {
           <div className="form-group" style={{ position: "relative", marginBottom: "14px" }}>
             <input
               type={showPin ? "text" : "password"}
-              placeholder={
-                selectedRole === ROLES.SUPER_ADMIN
-                  ? "Enter Super Admin Passcode (Default: 1234 or admin1234)"
-                  : selectedRole === ROLES.OFFICIAL
-                  ? "Enter Official Passcode (Default: official2026)"
-                  : "Enter Sub-Admin Passcode (Default: subadmin123)"
-              }
+              placeholder="Enter Security Passcode / PIN"
               className="form-input"
               style={{
                 textAlign: "center",
