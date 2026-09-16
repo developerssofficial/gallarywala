@@ -57,10 +57,14 @@ export const StoreProductModal = ({ product, isOpen, onClose }) => {
     reviewsCount,
     salesCount,
     coverImage,
-    previewImages = [coverImage],
+    coverUrl,
+    previewImages,
     features = [],
     author
   } = product;
+
+  const displayCover = coverUrl || coverImage || "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=1200&q=85";
+  const allPreviews = previewImages && previewImages.length > 0 ? previewImages : [displayCover];
 
   const currentSize = selectedSize || sizes[0] || "Standard Edition";
   const split = calculateRevenueSplit(price);
@@ -282,7 +286,7 @@ export const StoreProductModal = ({ product, isOpen, onClose }) => {
                 }}
               >
                 <img
-                  src={previewImages[activeImageIndex] || coverImage}
+                  src={allPreviews[activeImageIndex] || displayCover}
                   alt={title}
                   style={{
                     position: "absolute",
@@ -296,9 +300,9 @@ export const StoreProductModal = ({ product, isOpen, onClose }) => {
               </div>
 
               {/* Thumbnails list */}
-              {previewImages.length > 1 && (
+              {allPreviews.length > 1 && (
                 <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "6px", marginBottom: "16px" }}>
-                  {previewImages.map((img, i) => (
+                  {allPreviews.map((img, i) => (
                     <button
                       key={i}
                       type="button"

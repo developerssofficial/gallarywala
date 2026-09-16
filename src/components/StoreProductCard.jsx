@@ -1,6 +1,6 @@
 import React from "react";
 import { VerifiedBadge } from "./VerifiedBadge";
-import { Star, ShoppingBag, Eye, Package, Tag, Sparkles } from "lucide-react";
+import { Star, ShoppingBag, Eye, Package, Tag, ArrowUpRight } from "lucide-react";
 
 export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
   if (!product) return null;
@@ -25,7 +25,7 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
     author
   } = product;
 
-  const displayImage = coverUrl || coverImage || "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=1200&q=85";
+  const displayImage = coverUrl || coverImage || "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=1000&q=85";
   const numPrice = typeof price === "number" ? price : parseFloat(price) || 0;
   const numOrigPrice = originalPrice ? (typeof originalPrice === "number" ? originalPrice : parseFloat(originalPrice)) : null;
 
@@ -34,20 +34,30 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
       className="store-card"
       onClick={() => onSelect && onSelect(product)}
       style={{
-        background: "var(--bg-card)",
-        borderRadius: "var(--radius-lg)",
-        border: "1px solid var(--border-light)",
+        background: "#ffffff",
+        borderRadius: "16px",
+        border: "1px solid #e2e8f0",
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
         cursor: "pointer",
-        transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-        boxShadow: "var(--shadow-sm)",
+        transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
         position: "relative"
       }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-4px)";
+        e.currentTarget.style.boxShadow = "0 14px 30px rgba(0,0,0,0.08)";
+        e.currentTarget.style.borderColor = "#cbd5e1";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.03)";
+        e.currentTarget.style.borderColor = "#e2e8f0";
+      }}
     >
-      {/* Cover Image & Badges */}
-      <div style={{ position: "relative", width: "100%", paddingTop: "72%", overflow: "hidden", background: "var(--bg-surface)" }}>
+      {/* Cover Image Container */}
+      <div style={{ position: "relative", width: "100%", paddingTop: "76%", overflow: "hidden", background: "#0f172a" }}>
         <img
           src={displayImage}
           alt={title}
@@ -59,7 +69,7 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            transition: "transform 0.5s ease"
+            transition: "transform 0.4s ease"
           }}
           className="store-card-img"
         />
@@ -69,31 +79,28 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
           {isProBoosted && (
             <div
               style={{
-                background: "linear-gradient(135deg, #eab308 0%, #ca8a04 100%)",
-                color: "#000",
+                background: "#0f172a",
+                color: "#facc15",
                 padding: "3px 8px",
-                borderRadius: "var(--radius-full)",
+                borderRadius: "6px",
                 fontSize: "0.68rem",
-                fontWeight: 900,
-                letterSpacing: "0.5px",
-                boxShadow: "0 4px 10px rgba(0,0,0,0.2)"
+                fontWeight: 800,
+                letterSpacing: "0.5px"
               }}
             >
-              👑 PRO BOOST
+              PRO DROP
             </div>
           )}
           {badge && (
             <div
               style={{
-                background: "rgba(12, 14, 20, 0.85)",
-                backdropFilter: "blur(8px)",
-                color: "#fff",
-                padding: "4px 10px",
-                borderRadius: "var(--radius-full)",
-                fontSize: "0.72rem",
-                fontWeight: 800,
-                letterSpacing: "0.5px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
+                background: "rgba(255, 255, 255, 0.95)",
+                backdropFilter: "blur(6px)",
+                color: "#0f172a",
+                padding: "3px 8px",
+                borderRadius: "6px",
+                fontSize: "0.68rem",
+                fontWeight: 800
               }}
             >
               {badge}
@@ -102,21 +109,21 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
           {stock && (
             <div
               style={{
-                background: "rgba(16, 185, 129, 0.9)",
+                background: "rgba(15, 23, 42, 0.75)",
                 backdropFilter: "blur(6px)",
-                color: "#fff",
+                color: "#ffffff",
                 padding: "3px 8px",
-                borderRadius: "var(--radius-full)",
+                borderRadius: "6px",
                 fontSize: "0.68rem",
-                fontWeight: 800
+                fontWeight: 700
               }}
             >
-              📦 {stock} in stock
+              {stock} in stock
             </div>
           )}
         </div>
 
-        {/* Product Type & Delivery Pill */}
+        {/* Delivery Speed Pill */}
         <div
           style={{
             position: "absolute",
@@ -124,19 +131,18 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
             right: "10px",
             background: "rgba(255, 255, 255, 0.95)",
             backdropFilter: "blur(6px)",
-            color: "#0c0e14",
-            padding: "4px 9px",
-            borderRadius: "6px",
-            fontSize: "0.72rem",
-            fontWeight: 800,
+            color: "#0f172a",
+            padding: "3px 8px",
+            borderRadius: "5px",
+            fontSize: "0.7rem",
+            fontWeight: 700,
             display: "flex",
             alignItems: "center",
-            gap: "5px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            gap: "4px",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
             zIndex: 2
           }}
         >
-          <Package size={12} color="var(--color-primary)" />
           <span>{deliveryTime || itemCount || "Fast Dispatch"}</span>
         </div>
       </div>
@@ -144,9 +150,9 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
       {/* Body Content */}
       <div style={{ padding: "16px", display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
         <div>
-          {/* Category & Creator */}
+          {/* Category & Creator Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-            <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "var(--color-primary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+            <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>
               {category}
             </span>
             <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
@@ -155,21 +161,21 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
                 alt={author?.name}
                 style={{ width: "18px", height: "18px", borderRadius: "50%", objectFit: "cover" }}
               />
-              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>
+              <span style={{ fontSize: "0.75rem", color: "#334155", fontWeight: 600 }}>
                 {author?.name}
               </span>
               {author?.isVerified && <VerifiedBadge size={13} style={{ display: "inline-block" }} />}
             </div>
           </div>
 
-          {/* Title */}
+          {/* Product Title */}
           <h3
             style={{
-              fontSize: "0.98rem",
+              fontSize: "0.95rem",
               fontWeight: 800,
               lineHeight: "1.35",
               margin: "0 0 8px 0",
-              color: "var(--text-main)",
+              color: "#0f172a",
               display: "-webkit-box",
               WebkitLineClamp: 2,
               WebkitBoxOrient: "vertical",
@@ -189,9 +195,9 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
                     fontSize: "0.68rem",
                     padding: "2px 6px",
                     borderRadius: "4px",
-                    background: "var(--bg-surface)",
-                    border: "1px solid var(--border-light)",
-                    color: "var(--text-muted)",
+                    background: "#f8fafc",
+                    border: "1px solid #e2e8f0",
+                    color: "#475569",
                     fontWeight: 700
                   }}
                 >
@@ -199,7 +205,7 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
                 </span>
               ))}
               {sizes.length > 4 && (
-                <span style={{ fontSize: "0.68rem", color: "var(--text-muted)", alignSelf: "center" }}>
+                <span style={{ fontSize: "0.68rem", color: "#94a3b8", alignSelf: "center" }}>
                   +{sizes.length - 4} more
                 </span>
               )}
@@ -207,15 +213,13 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
           )}
 
           {/* Rating & Sales */}
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "14px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "3px", color: "#eab308", fontWeight: 700 }}>
-              <Star size={13} fill="#eab308" color="#eab308" />
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#64748b", marginBottom: "12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "2px", color: "#0f172a", fontWeight: 700 }}>
+              <Star size={12} fill="#0f172a" color="#0f172a" />
               <span>{rating}</span>
             </div>
             <span>•</span>
-            <span>({reviewsCount} reviews)</span>
-            <span>•</span>
-            <span>{salesCount} orders</span>
+            <span>{salesCount > 0 ? `${salesCount} orders` : `${reviewsCount} reviews`}</span>
           </div>
         </div>
 
@@ -226,41 +230,44 @@ export const StoreProductCard = ({ product, onSelect, onInstantBuy }) => {
             alignItems: "center",
             justifyContent: "space-between",
             paddingTop: "12px",
-            borderTop: "1px solid var(--border-light)"
+            borderTop: "1px solid #f1f5f9"
           }}
         >
           <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-            <span style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--color-primary)" }}>
+            <span style={{ fontSize: "1.2rem", fontWeight: 900, color: "#0f172a" }}>
               ${numPrice.toFixed(2)}
             </span>
             {numOrigPrice && (
-              <span style={{ fontSize: "0.82rem", color: "var(--text-muted)", textDecoration: "line-through" }}>
+              <span style={{ fontSize: "0.8rem", color: "#94a3b8", textDecoration: "line-through" }}>
                 ${numOrigPrice.toFixed(2)}
               </span>
             )}
           </div>
 
-          <div style={{ display: "flex", gap: "6px" }}>
-            <button
-              type="button"
-              className="btn-primary"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect ? onSelect(product) : onInstantBuy(product);
-              }}
-              style={{
-                fontSize: "0.8rem",
-                padding: "7px 14px",
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-                borderRadius: "var(--radius-full)"
-              }}
-            >
-              <ShoppingBag size={14} />
-              <span>View Product</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect ? onSelect(product) : onInstantBuy(product);
+            }}
+            style={{
+              fontSize: "0.8rem",
+              padding: "6px 14px",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              borderRadius: "8px",
+              background: "#0f172a",
+              color: "#ffffff",
+              border: "none",
+              fontWeight: 700,
+              cursor: "pointer",
+              transition: "background 0.15s ease"
+            }}
+          >
+            <span>View</span>
+            <ArrowUpRight size={13} />
+          </button>
         </div>
       </div>
     </div>

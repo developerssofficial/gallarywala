@@ -7,17 +7,15 @@ import {
   ShoppingBag,
   Sparkles,
   Search,
-  Flame,
-  Award,
-  Zap,
-  ShieldCheck,
   Package,
   Plus,
   Rocket,
   Crown,
   TrendingUp,
   Globe,
-  ArrowRight
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2
 } from "lucide-react";
 
 const STORE_CATEGORIES = [
@@ -80,118 +78,106 @@ export const StoreView = () => {
   };
 
   return (
-    <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "16px 20px 60px" }}>
-      {/* Creator Store Action / Onboarding Bar */}
+    <div style={{ maxWidth: "1360px", margin: "0 auto", padding: "20px 24px 80px" }}>
+      {/* 1. Top Creator Utility Bar */}
       {!userStore ? (
-        /* No Store Yet: Get First Free Store Banner */
         <div
           style={{
-            background: "linear-gradient(135deg, rgba(121, 40, 202, 0.12) 0%, rgba(255, 0, 128, 0.12) 100%)",
-            border: "1px solid var(--border-light)",
-            borderRadius: "var(--radius-xl)",
-            padding: "20px 28px",
-            marginBottom: "24px",
+            background: "#f8fafc",
+            border: "1px solid #e2e8f0",
+            borderRadius: "14px",
+            padding: "12px 20px",
+            marginBottom: "28px",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
-            gap: "16px",
-            boxShadow: "var(--shadow-sm)"
+            gap: "12px"
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-            <div
-              style={{
-                width: "48px",
-                height: "48px",
-                borderRadius: "12px",
-                background: "var(--brand-gradient)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#ffffff",
-                boxShadow: "0 6px 16px rgba(255, 0, 128, 0.3)"
-              }}
-            >
-              <Rocket size={24} />
-            </div>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <h3 style={{ fontSize: "1.15rem", fontWeight: 900, margin: 0 }}>
-                  Get Your First Free Store Today! 🛍️
-                </h3>
-                <span style={{ fontSize: "0.72rem", background: "#10b981", color: "#fff", fontWeight: 800, padding: "2px 8px", borderRadius: "var(--radius-full)" }}>
-                  100% FREE
-                </span>
-              </div>
-              <p style={{ color: "var(--text-muted)", fontSize: "0.84rem", margin: "3px 0 0 0" }}>
-                List up to <strong>5 products free</strong> with automatic organic push to all GallaryWala buyers.
-              </p>
-            </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <span style={{ fontSize: "0.72rem", background: "#0f172a", color: "#ffffff", padding: "3px 8px", borderRadius: "5px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+              Creators
+            </span>
+            <span style={{ fontSize: "0.88rem", color: "#334155", fontWeight: 600 }}>
+              Launch your official merchandise storefront with up to 5 free product listings.
+            </span>
           </div>
 
           <button
             type="button"
-            className="btn-primary"
             onClick={() => setIsCreateStoreOpen(true)}
-            style={{ padding: "10px 22px", fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "6px" }}
+            style={{
+              background: "#0f172a",
+              color: "#ffffff",
+              border: "none",
+              padding: "7px 16px",
+              borderRadius: "8px",
+              fontSize: "0.84rem",
+              fontWeight: 700,
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              cursor: "pointer",
+              transition: "background 0.15s ease"
+            }}
           >
-            <Sparkles size={16} />
-            <span>Launch Free Store in 30s</span>
+            <span>Open Free Store</span>
+            <ArrowRight size={14} />
           </button>
         </div>
       ) : (
-        /* Has Store: Creator Dashboard Bar */
+        /* Creator Active Merchant Dashboard */
         <div
           style={{
-            background: "var(--bg-card)",
-            border: "1px solid var(--border-light)",
-            borderRadius: "var(--radius-xl)",
-            padding: "16px 24px",
-            marginBottom: "24px",
+            background: "#ffffff",
+            border: "1px solid #e2e8f0",
+            borderRadius: "14px",
+            padding: "14px 22px",
+            marginBottom: "28px",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
             gap: "14px",
-            boxShadow: "var(--shadow-sm)"
+            boxShadow: "0 1px 3px rgba(0,0,0,0.04)"
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
             <div
               style={{
-                width: "42px",
-                height: "42px",
-                borderRadius: "50%",
-                background: userStore.tier === "pro" ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)" : "var(--color-primary)",
-                color: "#fff",
+                width: "38px",
+                height: "38px",
+                borderRadius: "10px",
+                background: userStore.tier === "pro" ? "#0f172a" : "#f1f5f9",
+                color: userStore.tier === "pro" ? "#eab308" : "#0f172a",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontWeight: 900,
-                fontSize: "1.1rem"
+                fontWeight: 900
               }}
             >
-              {userStore.tier === "pro" ? <Crown size={20} /> : <ShoppingBag size={20} />}
+              {userStore.tier === "pro" ? <Crown size={18} /> : <ShoppingBag size={18} />}
             </div>
+
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <span style={{ fontWeight: 800, fontSize: "1rem" }}>{userStore.name}</span>
-                <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>({userStore.handle})</span>
+                <span style={{ fontWeight: 800, fontSize: "0.95rem", color: "#0f172a" }}>{userStore.name}</span>
+                <span style={{ fontSize: "0.78rem", color: "#64748b" }}>({userStore.handle})</span>
                 {userStore.tier === "pro" ? (
-                  <span style={{ fontSize: "0.7rem", background: "rgba(234, 179, 8, 0.15)", color: "#eab308", fontWeight: 800, padding: "2px 8px", borderRadius: "6px" }}>
-                    👑 PRO SEO-BOOSTED
+                  <span style={{ fontSize: "0.68rem", background: "#fef3c7", color: "#92400e", fontWeight: 800, padding: "2px 7px", borderRadius: "4px" }}>
+                    PRO SEO STORE
                   </span>
                 ) : (
-                  <span style={{ fontSize: "0.7rem", background: "rgba(16, 185, 129, 0.12)", color: "#10b981", fontWeight: 800, padding: "2px 8px", borderRadius: "6px" }}>
-                    FREE TIER ({myProdsCount}/5 PRODUCTS)
+                  <span style={{ fontSize: "0.68rem", background: "#f1f5f9", color: "#334155", fontWeight: 800, padding: "2px 7px", borderRadius: "4px" }}>
+                    FREE PLAN ({myProdsCount}/5 PRODUCTS)
                   </span>
                 )}
               </div>
-              <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "2px" }}>
+              <div style={{ fontSize: "0.78rem", color: "#64748b", marginTop: "2px" }}>
                 {userStore.tier === "free"
-                  ? `${Math.max(0, 5 - myProdsCount)} free product slot(s) remaining. Upgrade to Pro for unlimited listings & Google SEO push.`
-                  : "Unlimited product listings & top priority Google SEO search indexing active."}
+                  ? `${Math.max(0, 5 - myProdsCount)} free slot(s) remaining. Upgrade to Pro for unlimited drops & SEO indexing.`
+                  : "All drops are active with priority search ranking and Google schema."}
               </div>
             </div>
           </div>
@@ -200,110 +186,91 @@ export const StoreView = () => {
             {userStore.tier === "free" && (
               <button
                 type="button"
-                className="nav-tab"
                 onClick={() => upgradeStoreTier("pro")}
                 style={{
-                  fontSize: "0.8rem",
-                  padding: "8px 14px",
-                  border: "1px solid rgba(234, 179, 8, 0.4)",
-                  color: "#d97706",
-                  background: "rgba(234, 179, 8, 0.08)",
-                  fontWeight: 700
+                  fontSize: "0.82rem",
+                  padding: "7px 14px",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "8px",
+                  color: "#7928ca",
+                  background: "#ffffff",
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  cursor: "pointer"
                 }}
               >
-                <Crown size={14} style={{ display: "inline", marginRight: "4px" }} />
-                Upgrade to Pro (SEO Boost)
+                <Crown size={14} color="#eab308" />
+                <span>Upgrade to Pro</span>
               </button>
             )}
 
             <button
               type="button"
-              className="btn-primary"
               onClick={() => setIsAddProductOpen(true)}
-              style={{ fontSize: "0.85rem", padding: "8px 18px", display: "flex", alignItems: "center", gap: "6px" }}
+              style={{
+                background: "#0f172a",
+                color: "#ffffff",
+                border: "none",
+                fontSize: "0.84rem",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                fontWeight: 700,
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                cursor: "pointer"
+              }}
             >
-              <Plus size={16} />
-              <span>+ List New Product</span>
+              <Plus size={15} />
+              <span>Add Product Drop</span>
             </button>
           </div>
         </div>
       )}
 
-      {/* Hero Store Banner */}
-      <div
-        style={{
-          background: "linear-gradient(135deg, #0c0e14 0%, #1a1e2e 50%, #251e3e 100%)",
-          borderRadius: "var(--radius-xl)",
-          padding: "36px 32px",
-          color: "#ffffff",
-          marginBottom: "32px",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
-          position: "relative",
-          overflow: "hidden"
-        }}
-      >
-        <div style={{ maxWidth: "700px", position: "relative", zIndex: 2 }}>
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px",
-              background: "rgba(255,255,255,0.12)",
-              backdropFilter: "blur(10px)",
-              padding: "6px 12px",
-              borderRadius: "var(--radius-full)",
-              fontSize: "0.78rem",
-              fontWeight: 800,
-              letterSpacing: "0.5px",
-              marginBottom: "14px",
-              color: "#00dfd8"
-            }}
-          >
-            <Sparkles size={14} />
-            <span>GALLARYWALA PRODUCT MARKETPLACE</span>
+      {/* 2. Editorial Marketplace Header */}
+      <div style={{ marginBottom: "32px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "20px" }}>
+          <div>
+            <div style={{ fontSize: "0.75rem", fontWeight: 800, color: "#64748b", letterSpacing: "1px", textTransform: "uppercase", marginBottom: "8px" }}>
+              GallaryWala Drops & Merch
+            </div>
+            <h1 style={{ fontSize: "2rem", fontWeight: 900, color: "#0f172a", margin: "0 0 6px 0", letterSpacing: "-0.03em" }}>
+              Creator Merchandise & Apparel Drops
+            </h1>
+            <p style={{ margin: 0, color: "#475569", fontSize: "0.95rem" }}>
+              Physical streetwear drops, archival canvas prints, desk pads, and creator toolkits.
+            </p>
           </div>
 
-          <h1
-            style={{
-              fontSize: "clamp(1.7rem, 3.2vw, 2.4rem)",
-              fontWeight: 900,
-              lineHeight: 1.15,
-              letterSpacing: "-0.5px",
-              marginBottom: "10px",
-              color: "#ffffff"
-            }}
-          >
-            Creator Merchandise & Physical Apparel Drops
-          </h1>
-
-          <p style={{ color: "#cbd5e1", fontSize: "0.95rem", lineHeight: 1.5, marginBottom: "22px" }}>
-            Explore verified creator merch, heavyweight vintage tees, framed canvas prints, desk pads, and digital preset kits.
-          </p>
-
-          {/* Search bar inside Hero */}
+          {/* Search bar */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               background: "#ffffff",
-              borderRadius: "var(--radius-full)",
-              padding: "6px 8px 6px 18px",
-              maxWidth: "500px",
-              boxShadow: "0 10px 25px rgba(0,0,0,0.2)"
+              border: "1.5px solid #e2e8f0",
+              borderRadius: "10px",
+              padding: "8px 14px",
+              width: "100%",
+              maxWidth: "360px",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.04)"
             }}
           >
-            <Search size={18} color="#64748b" style={{ flexShrink: 0, marginRight: "10px" }} />
+            <Search size={16} color="#94a3b8" style={{ flexShrink: 0, marginRight: "8px" }} />
             <input
               type="text"
-              placeholder="Search products by title, creator, apparel, canvas..."
+              placeholder="Search products, apparel, creators..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
                 flex: 1,
                 border: "none",
                 outline: "none",
-                fontSize: "0.9rem",
-                color: "#0c0e14",
+                fontSize: "0.88rem",
+                color: "#0f172a",
                 background: "transparent"
               }}
             />
@@ -311,61 +278,17 @@ export const StoreView = () => {
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                style={{ background: "transparent", border: "none", color: "#64748b", cursor: "pointer", padding: "4px 8px" }}
+                style={{ background: "transparent", border: "none", color: "#94a3b8", cursor: "pointer", padding: "2px 4px", fontSize: "0.8rem" }}
               >
                 ✕
               </button>
             )}
           </div>
         </div>
-
-        {/* 2-Tier Highlight Benefits */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "16px",
-            marginTop: "28px",
-            paddingTop: "20px",
-            borderTop: "1px solid rgba(255,255,255,0.12)",
-            position: "relative",
-            zIndex: 2
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "rgba(16, 185, 129, 0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: "#10b981" }}>
-              <Package size={18} />
-            </div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: "0.85rem" }}>Free 5 Products Store</div>
-              <div style={{ fontSize: "0.72rem", color: "#94a3b8" }}>Start selling with zero upfront fee</div>
-            </div>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "rgba(234, 179, 8, 0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: "#facc15" }}>
-              <Globe size={18} />
-            </div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: "0.85rem" }}>Pro SEO Priority Push</div>
-              <div style={{ fontSize: "0.72rem", color: "#94a3b8" }}>Ranked on Google & featured banners</div>
-            </div>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "rgba(0, 223, 216, 0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: "#00dfd8" }}>
-              <TrendingUp size={18} />
-            </div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: "0.85rem" }}>80%+ Creator Payout</div>
-              <div style={{ fontSize: "0.72rem", color: "#94a3b8" }}>Instant payouts via PayPal & Bank</div>
-            </div>
-          </div>
-        </div>
       </div>
 
-      {/* Category Navigation Pills */}
-      <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "12px", marginBottom: "24px" }}>
+      {/* 3. Category Filter Strip */}
+      <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px", marginBottom: "28px" }}>
         {STORE_CATEGORIES.map((cat) => {
           const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
           return (
@@ -373,14 +296,17 @@ export const StoreView = () => {
               key={cat}
               type="button"
               onClick={() => setSelectedCategory(cat)}
-              className={isActive ? "btn-primary" : "nav-tab"}
               style={{
-                borderRadius: "var(--radius-full)",
-                fontSize: "0.82rem",
+                borderRadius: "8px",
+                fontSize: "0.84rem",
                 fontWeight: 700,
                 padding: "8px 16px",
                 whiteSpace: "nowrap",
-                border: isActive ? "none" : "1px solid var(--border-light)"
+                cursor: "pointer",
+                background: isActive ? "#0f172a" : "#ffffff",
+                color: isActive ? "#ffffff" : "#475569",
+                border: isActive ? "1px solid #0f172a" : "1px solid #e2e8f0",
+                transition: "all 0.15s ease"
               }}
             >
               {cat}
@@ -389,77 +315,69 @@ export const StoreView = () => {
         })}
       </div>
 
-      {/* Products Grid */}
-      <div style={{ marginBottom: "48px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: 800, margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
-            <Flame size={20} color="#ff416c" />
-            <span>Active Store Products ({filteredProducts.length})</span>
-          </h2>
-          <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-            Showing live creator listings
+      {/* 4. Products Grid */}
+      <div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
+          <span style={{ fontSize: "0.88rem", fontWeight: 800, color: "#0f172a" }}>
+            {filteredProducts.length} {filteredProducts.length === 1 ? "Product" : "Products"} Available
+          </span>
+          <span style={{ fontSize: "0.78rem", color: "#64748b" }}>
+            Verified independent creator drops
           </span>
         </div>
 
         {filteredProducts.length === 0 ? (
           <div
             style={{
-              padding: "70px 24px",
+              padding: "60px 24px",
               textAlign: "center",
-              background: "var(--bg-surface)",
-              borderRadius: "var(--radius-xl)",
-              border: "1px dashed var(--border-light)",
+              background: "#f8fafc",
+              borderRadius: "16px",
+              border: "1px dashed #cbd5e1",
               margin: "20px 0"
             }}
           >
             <div
               style={{
-                width: "64px",
-                height: "64px",
-                borderRadius: "50%",
-                background: "rgba(121, 40, 202, 0.1)",
-                color: "var(--color-primary)",
+                width: "48px",
+                height: "48px",
+                borderRadius: "12px",
+                background: "#e2e8f0",
+                color: "#64748b",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                margin: "0 auto 16px auto"
+                margin: "0 auto 14px auto"
               }}
             >
-              <Package size={32} />
+              <Package size={24} />
             </div>
-            <h3 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0 0 8px 0", color: "var(--text-main)" }}>
-              No Products Listed in this Category Yet 🛍️
+            <h3 style={{ fontSize: "1.15rem", fontWeight: 800, margin: "0 0 6px 0", color: "#0f172a" }}>
+              No products found in this collection
             </h3>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", maxWidth: "450px", margin: "0 auto 24px auto", lineHeight: 1.5 }}>
-              Be the first creator to list physical apparel, canvas prints, or creator suites! Free stores can list up to 5 products.
+            <p style={{ color: "#64748b", fontSize: "0.88rem", maxWidth: "420px", margin: "0 auto 20px auto", lineHeight: 1.5 }}>
+              Try searching with another keyword or explore other creator categories.
             </p>
 
-            <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
-              <button
-                type="button"
-                className="btn-primary"
-                onClick={() => {
-                  if (!userStore) {
-                    setIsCreateStoreOpen(true);
-                  } else {
-                    setIsAddProductOpen(true);
-                  }
-                }}
-                style={{ padding: "10px 24px", fontSize: "0.92rem", display: "flex", alignItems: "center", gap: "6px" }}
-              >
-                <Plus size={16} />
-                <span>{userStore ? "+ List Your First Product" : "Launch Your Free Store Now"}</span>
-              </button>
-
-              <button
-                type="button"
-                className="nav-tab"
-                onClick={() => setActiveView("gallery")}
-                style={{ padding: "10px 20px", fontSize: "0.9rem", border: "1px solid var(--border-light)" }}
-              >
-                Browse 4K Gallery Wallpapers
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCategory("All Products");
+                setSearchQuery("");
+              }}
+              style={{
+                background: "#0f172a",
+                color: "#fff",
+                border: "none",
+                padding: "8px 18px",
+                borderRadius: "8px",
+                fontSize: "0.85rem",
+                fontWeight: 700,
+                cursor: "pointer"
+              }}
+            >
+              View All Products
+            </button>
           </div>
         ) : (
           <div
@@ -481,7 +399,7 @@ export const StoreView = () => {
         )}
       </div>
 
-      {/* Product Details & Checkout Modal */}
+      {/* 5. Product Details & Checkout Modal */}
       <StoreProductModal
         product={selectedProduct}
         isOpen={isModalOpen}

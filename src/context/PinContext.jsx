@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { INITIAL_PINS, INITIAL_BOARDS } from "../data/mockPins";
+import { INITIAL_STORE_PRODUCTS } from "../data/mockStoreProducts";
 import confetti from "canvas-confetti";
 import {
   getSupabaseConfig,
@@ -611,9 +612,13 @@ export const PinProvider = ({ children }) => {
   const [marketplaceProducts, setMarketplaceProducts] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.MARKETPLACE_PRODUCTS);
-      return saved ? JSON.parse(saved) : [];
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      return INITIAL_STORE_PRODUCTS;
     } catch {
-      return [];
+      return INITIAL_STORE_PRODUCTS;
     }
   });
 
