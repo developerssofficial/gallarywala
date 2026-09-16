@@ -5,7 +5,8 @@ import {
   Plus,
   Bookmark,
   Settings,
-  Sparkles
+  Sparkles,
+  ShoppingBag
 } from "lucide-react";
 
 export const MobileBottomNav = () => {
@@ -75,17 +76,17 @@ export const MobileBottomNav = () => {
         </button>
       </div>
 
-      {/* 4. Creator Studio / Monetization */}
+      {/* 4. Store / Products Marketplace */}
       <button
         type="button"
-        className="mobile-nav-btn"
+        className={`mobile-nav-btn ${activeView === "store" ? "active" : ""}`}
         onClick={() => {
-          setSettingsTab("monetization");
-          setIsSettingsOpen(true);
+          setActiveView("store");
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }}
       >
-        <Sparkles size={22} />
-        <span>Earnings</span>
+        <ShoppingBag size={22} />
+        <span>Store</span>
       </button>
 
       {/* 5. Settings & Profile */}

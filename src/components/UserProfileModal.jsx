@@ -14,9 +14,13 @@ import {
   ShoppingBag,
   BadgeCheck,
   Download,
-  CreditCard
+  CreditCard,
+  Package
 } from "lucide-react";
 import { PinCard } from "./PinCard";
+import { INITIAL_STORE_PRODUCTS } from "../data/mockStoreProducts";
+import { StoreProductCard } from "./StoreProductCard";
+import { StoreProductModal } from "./StoreProductModal";
 
 export const UserProfileModal = () => {
   const {
@@ -39,9 +43,11 @@ export const UserProfileModal = () => {
     isUserVerified
   } = usePins();
 
-  const [activeTab, setActiveTab] = useState("boards"); // 'boards' | 'created' | 'liked' | 'purchased'
+  const [activeTab, setActiveTab] = useState("boards"); // 'boards' | 'created' | 'shop' | 'liked' | 'purchased'
   const [newBoardName, setNewBoardName] = useState("");
   const [isCreatingBoard, setIsCreatingBoard] = useState(false);
+  const [selectedStoreProd, setSelectedStoreProd] = useState(null);
+  const [isStoreProdModalOpen, setIsStoreProdModalOpen] = useState(false);
 
   if (!isProfileOpen) return null;
 
@@ -53,6 +59,13 @@ export const UserProfileModal = () => {
     (p) =>
       p.author?.username === `@${userHandle}` ||
       (currentUser && p.author?.name === userFullName)
+  );
+  const myStoreProducts = INITIAL_STORE_PRODUCTS.filter(
+    (p) =>
+      p.author?.username === `@${userHandle}` ||
+      p.author?.name?.toLowerCase() === userFullName?.toLowerCase() ||
+      userHandle === "gallarywala" ||
+      userHandle === "admin"
   );
   const myLikedPins = pins.filter((p) => likedPinIds.includes(p.id));
   const myPurchasedPins = pins.filter((p) => purchasedPinIds.includes(p.id));
@@ -188,6 +201,13 @@ export const UserProfileModal = () => {
             >
               <Sparkles size={15} style={{ display: "inline", marginRight: "6px" }} />
               Created ({myCreatedPins.length})
+            </button>
+            <button
+              className={`category-pill ${activeTab === "shop" ? "active" : ""}`}
+              onClick={() => setActiveTab("shop")}
+            >
+              <Package size={15} style={{ display: "inline", marginRight: "6px" }} />
+              Creator Shop ({myStoreProducts.length})
             </button>
             <button
               className={`category-pill ${activeTab === "liked" ? "active" : ""}`}
@@ -493,7 +513,107 @@ export const UserProfileModal = () => {
             )}
           </div>
         )}
+
+        {/* Tab 5: Creator Shop / Products */}
+        {activeTab === "shop" && (
+          <div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "20px",
+                flexWrap: "wrap",
+                gap: "10px"
+              }}
+            >
+              <div>
+                <h3 style={{ fontSize: "1.15rem", fontWeight: 800, margin: "0 0 4px 0" }}>
+                  Creator Storefront & Products
+                </h3>
+                <p style={{ color: "var(--text-muted)", fontSize: "0.82rem", margin: 0 }}>
+                  Official merchandise, physical apparel, and digital creator suites available for order.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => {
+                  setIsProfileOpen(false);
+                  setActiveView("store");
+                }}
+                style={{ fontSize: "0.82rem", padding: "8px 16px" }}
+              >
+                <ShoppingBag size={15} />
+                <span>Visit Main Store</span>
+              </button>
+            </div>
+
+            {myStoreProducts.length === 0 ? (
+              <div
+                style={{
+                  padding: "48px 20px",
+                  textAlign: "center",
+                  background: "var(--bg-surface)",
+                  borderRadius: "var(--radius-lg)",
+                  border: "1px dashed var(--border-light)",
+                  color: "var(--text-muted)"
+                }}
+              >
+                <Package size={38} color="var(--color-primary)" style={{ marginBottom: "12px", opacity: 0.8 }} />
+                <h4 style={{ fontSize: "1.05rem", fontWeight: 700, color: "var(--text-main)", marginBottom: "6px" }}>
+                  No store products listed yet
+                </h4>
+                <p style={{ fontSize: "0.85rem", maxWidth: "380px", margin: "0 auto 16px auto" }}>
+                  Enable monetization in settings to list physical merch, custom apparel, and digital tools in your creator store.
+                </p>
+                <button
+                  type="button"
+                  className="nav-tab"
+                  onClick={() => {
+                    setIsProfileOpen(false);
+                    setSettingsTab("monetization");
+                    setIsSettingsOpen(true);
+                  }}
+                  style={{ border: "1px solid var(--border-light)", fontSize: "0.85rem", padding: "8px 16px" }}
+                >
+                  Configure Store & Payouts
+                </button>
+              </div>
+            ) : (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+                  gap: "18px"
+                }}
+              >
+                {myStoreProducts.map((prod) => (
+                  <StoreProductCard
+                    key={prod.id}
+                    product={prod}
+                    onSelect={(p) => {
+                      setSelectedStoreProd(p);
+                      setIsStoreProdModalOpen(true);
+                    }}
+                    onInstantBuy={(p) => {
+                      setSelectedStoreProd(p);
+                      setIsStoreProdModalOpen(true);
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
+
+      <StoreProductModal
+        product={selectedStoreProd}
+        isOpen={isStoreProdModalOpen}
+        onClose={() => setIsStoreProdModalOpen(false)}
+      />
     </div>
   );
 };
