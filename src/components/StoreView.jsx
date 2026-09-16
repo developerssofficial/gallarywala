@@ -452,20 +452,21 @@ export const StoreView = () => {
         </div>
 
         {/* 4. FEATURED CREATOR SHOPIFY STOREFRONTS CAROUSEL */}
-        <div style={{ marginBottom: "42px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-            <div>
-              <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#64748b", letterSpacing: "1px", textTransform: "uppercase" }}>
-                Verified Creator Shops
+        {allStores.length > 0 && (
+          <div style={{ marginBottom: "42px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div>
+                <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#64748b", letterSpacing: "1px", textTransform: "uppercase" }}>
+                  Verified Creator Shops
+                </span>
+                <h3 style={{ fontSize: "1.3rem", fontWeight: 900, color: "#0f172a", margin: "2px 0 0 0" }}>
+                  Featured Creator Storefronts
+                </h3>
+              </div>
+              <span style={{ fontSize: "0.82rem", color: "#64748b" }}>
+                {allStores.length} Active Creator Brands
               </span>
-              <h3 style={{ fontSize: "1.3rem", fontWeight: 900, color: "#0f172a", margin: "2px 0 0 0" }}>
-                Featured Creator Storefronts
-              </h3>
             </div>
-            <span style={{ fontSize: "0.82rem", color: "#64748b" }}>
-              {allStores.length} Active Creator Brands
-            </span>
-          </div>
 
           <div
             style={{
@@ -550,6 +551,7 @@ export const StoreView = () => {
             ))}
           </div>
         </div>
+        )}
 
         {/* 5. Shopify Story Bubbles / Visual Category Selector */}
         <div style={{ marginBottom: "32px" }}>

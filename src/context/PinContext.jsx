@@ -45,8 +45,8 @@ const STORAGE_KEYS = {
   ADMIN_PIN: "gallarywala_admin_pin_v4",
   ADMIN_AUTH: "gallarywala_admin_session_v4",
   VERIFIED_USERS: "gallarywala_verified_users_v1",
-  USER_STORE: "gallarywala_user_store_v2",
-  MARKETPLACE_PRODUCTS: "gallarywala_marketplace_products_v2"
+  USER_STORE: "gallarywala_user_store_v3",
+  MARKETPLACE_PRODUCTS: "gallarywala_marketplace_products_v3"
 };
 
 const normalizePin = (pin) => {
@@ -614,11 +614,13 @@ export const PinProvider = ({ children }) => {
       const saved = localStorage.getItem(STORAGE_KEYS.MARKETPLACE_PRODUCTS);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) {
+          return parsed.filter((p) => !p.id?.startsWith("drop_"));
+        }
       }
-      return INITIAL_STORE_PRODUCTS;
+      return [];
     } catch {
-      return INITIAL_STORE_PRODUCTS;
+      return [];
     }
   });
 
