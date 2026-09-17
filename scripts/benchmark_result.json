@@ -1,0 +1,24 @@
+{
+  "httpStatus": 200,
+  "desktopLoadTimeMs": 5780,
+  "mobileLoadTimeMs": 3477,
+  "metrics": {
+    "fcp": 1452,
+    "domInteractive": 1155,
+    "domComplete": 1391,
+    "transferSize": 1654,
+    "encodedBodySize": 1354,
+    "decodedBodySize": 4178,
+    "totalDomElements": 584,
+    "imagesCount": 14,
+    "imagesWithAlt": 14,
+    "hasTitle": true,
+    "titleText": "GallaryWala — Visual Discovery, 4K Wallpapers & Digital Art Marketplace",
+    "hasMetaDesc": true,
+    "metaDescText": "Discover, download, and license ultra high-resolution 4K wallpapers, anime art, cyberpunk renders, and commercial visual media on GallaryWala.",
+    "canonicalUrl": "https://gallarywala.vercel.app",
+    "ogTitle": "GallaryWala — Visual Discovery, 4K Wallpapers & Digital Art Marketplace",
+    "ogImage": "https://gallarywala.vercel.app/logo.png",
+    "hasSchemaJson": true
+  }
+}

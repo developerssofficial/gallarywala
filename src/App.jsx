@@ -17,10 +17,6 @@ import { InvoiceModal } from "./components/InvoiceModal";
 import { ReportModal } from "./components/ReportModal";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { BoardView } from "./components/BoardView";
-import { StoreView } from "./components/StoreView";
-import { CreateStoreModal } from "./components/CreateStoreModal";
-import { AddProductModal } from "./components/AddProductModal";
-import { EditStoreModal } from "./components/EditStoreModal";
 import { ToastContainer } from "./components/Toast";
 import { Footer } from "./components/Footer";
 
@@ -38,7 +34,6 @@ const MainContent = () => {
       
       <main className="main-content">
         {activeView === "gallery" && <MasonryGrid />}
-        {activeView === "store" && <StoreView />}
         {activeView === "admin" && <AdminPanel />}
         {activeView === "board" && <BoardView />}
       </main>
@@ -58,9 +53,6 @@ const MainContent = () => {
       <PurchaseCheckoutModal />
       <InvoiceModal />
       <ReportModal />
-      <CreateStoreModal />
-      <AddProductModal />
-      <EditStoreModal />
       <ToastContainer />
 
       {/* Backend Infrastructure Modals (Owner/Admin Only) */}

@@ -15,8 +15,7 @@ import {
   LogOut,
   ChevronDown,
   Settings,
-  Heart,
-  ShoppingBag
+  Heart
 } from "lucide-react";
 
 export const Navbar = () => {
@@ -40,9 +39,7 @@ export const Navbar = () => {
     handleSignOut,
     isUserVerified,
     setIsAuthModalOpen,
-    showToast,
-    userStore,
-    setIsCreateStoreOpen
+    showToast
   } = usePins();
 
   const searchInputRef = useRef(null);
@@ -190,37 +187,6 @@ export const Navbar = () => {
 
         {/* Nav Actions */}
         <div className="nav-actions">
-          {/* Store / Marketplace Tab */}
-          <button
-            className={`nav-tab hide-on-mobile ${activeView === "store" ? "active" : ""}`}
-            onClick={() => {
-              if (activeView !== "store") {
-                setActiveView("store");
-                if (!userStore) {
-                  setIsCreateStoreOpen(true);
-                }
-              } else {
-                setActiveView("gallery");
-              }
-            }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              padding: "7px 15px",
-              borderRadius: "var(--radius-full)",
-              fontSize: "0.85rem",
-              fontWeight: 800,
-              background: activeView === "store" ? "var(--color-primary)" : "var(--bg-surface)",
-              color: activeView === "store" ? "#ffffff" : "var(--text-main)",
-              border: "1px solid var(--border-light)"
-            }}
-            title="GallaryWala Store & Products Marketplace"
-          >
-            <ShoppingBag size={15} />
-            <span>Store</span>
-          </button>
-
           {/* Create Button (Desktop) - Requires Google/Email Account */}
           <button
             className="btn-primary desktop-create-btn hide-on-mobile"

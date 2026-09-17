@@ -5,8 +5,7 @@ import {
   Plus,
   Bookmark,
   Settings,
-  Sparkles,
-  ShoppingBag
+  Sparkles
 } from "lucide-react";
 
 export const MobileBottomNav = () => {
@@ -21,9 +20,7 @@ export const MobileBottomNav = () => {
     setSelectedCategory,
     currentUser,
     setIsAuthModalOpen,
-    showToast,
-    userStore,
-    setIsCreateStoreOpen
+    showToast
   } = usePins();
 
   const totalSavedPins = boards.reduce((acc, b) => acc + (b.pinIds?.length || 0), 0);
@@ -78,23 +75,7 @@ export const MobileBottomNav = () => {
         </button>
       </div>
 
-      {/* 4. Store / Products Marketplace */}
-      <button
-        type="button"
-        className={`mobile-nav-btn ${activeView === "store" ? "active" : ""}`}
-        onClick={() => {
-          setActiveView("store");
-          if (!userStore) {
-            setIsCreateStoreOpen(true);
-          }
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }}
-      >
-        <ShoppingBag size={22} />
-        <span>Store</span>
-      </button>
-
-      {/* 5. Settings & Profile */}
+      {/* 4. Settings & Profile */}
       <button
         type="button"
         className="mobile-nav-btn"

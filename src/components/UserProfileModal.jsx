@@ -18,9 +18,6 @@ import {
   Package
 } from "lucide-react";
 import { PinCard } from "./PinCard";
-import { INITIAL_STORE_PRODUCTS } from "../data/mockStoreProducts";
-import { StoreProductCard } from "./StoreProductCard";
-import { StoreProductModal } from "./StoreProductModal";
 
 export const UserProfileModal = () => {
   const {
@@ -40,18 +37,12 @@ export const UserProfileModal = () => {
     setSettingsTab,
     handleSignOut,
     downloadImage,
-    isUserVerified,
-    marketplaceProducts = [],
-    userStore,
-    setIsCreateStoreOpen,
-    setIsAddProductOpen
+    isUserVerified
   } = usePins();
 
-  const [activeTab, setActiveTab] = useState("boards"); // 'boards' | 'created' | 'shop' | 'liked' | 'purchased'
+  const [activeTab, setActiveTab] = useState("boards"); // 'boards' | 'created' | 'liked' | 'purchased'
   const [newBoardName, setNewBoardName] = useState("");
   const [isCreatingBoard, setIsCreatingBoard] = useState(false);
-  const [selectedStoreProd, setSelectedStoreProd] = useState(null);
-  const [isStoreProdModalOpen, setIsStoreProdModalOpen] = useState(false);
 
   if (!isProfileOpen) return null;
 

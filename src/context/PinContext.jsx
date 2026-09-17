@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { INITIAL_PINS, INITIAL_BOARDS } from "../data/mockPins";
-import { INITIAL_STORE_PRODUCTS, INITIAL_CREATOR_STORES } from "../data/mockStoreProducts";
 import confetti from "canvas-confetti";
 import {
   getSupabaseConfig,
@@ -44,9 +43,7 @@ const STORAGE_KEYS = {
   THEME: "gallarywala_theme_v4",
   ADMIN_PIN: "gallarywala_admin_pin_v4",
   ADMIN_AUTH: "gallarywala_admin_session_v4",
-  VERIFIED_USERS: "gallarywala_verified_users_v1",
-  USER_STORE: "gallarywala_user_store_v3",
-  MARKETPLACE_PRODUCTS: "gallarywala_marketplace_products_v3"
+  VERIFIED_USERS: "gallarywala_verified_users_v1"
 };
 
 const normalizePin = (pin) => {
@@ -183,48 +180,22 @@ export const PinProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
   const [adminTab, setAdminTab] = useState("catalog"); // 'catalog' | 'badges'
 
-  // Dynamic initial view & storefront based on current window location
+  // Dynamic initial view based on current window location
   const [activeView, setActiveView] = useState(() => {
     try {
       const path = (window.location.pathname || "").toLowerCase();
-      if (path.startsWith("/store")) return "store";
       if (path.startsWith("/admin")) return "admin";
       if (path.startsWith("/board")) return "board";
     } catch (e) {}
     return "gallery";
   });
 
-  const [activeStorefront, setActiveStorefront] = useState(() => {
-    try {
-      const path = window.location.pathname || "";
-      if (path.toLowerCase().startsWith("/store")) {
-        const parts = path.split("/").filter(Boolean);
-        const handlePart = parts[1];
-        if (handlePart) {
-          return handlePart.startsWith("@") ? handlePart : `@${handlePart}`;
-        }
-      }
-    } catch (e) {}
-    return null;
-  });
-
   // Synced View Navigator with URL History pushState & dynamic title
-  const handleSetActiveView = (viewOrFn, storefrontHandle = null) => {
+  const handleSetActiveView = (viewOrFn) => {
     setActiveView((prev) => {
       const nextView = typeof viewOrFn === "function" ? viewOrFn(prev) : viewOrFn;
       try {
-        if (nextView === "store") {
-          const targetStorefront = storefrontHandle || activeStorefront;
-          const path = targetStorefront
-            ? `/store/${targetStorefront.startsWith("@") ? targetStorefront : `@${targetStorefront}`}`
-            : "/store";
-          if (window.location.pathname !== path) {
-            window.history.pushState({ view: "store", storefront: targetStorefront }, "", path);
-          }
-          document.title = targetStorefront
-            ? `${targetStorefront}'s Official Storefront | GallaryWala`
-            : "Creator Drops & Merchandise Store | GallaryWala";
-        } else if (nextView === "admin") {
+        if (nextView === "admin") {
           if (window.location.pathname !== "/admin") {
             window.history.pushState({ view: "admin" }, "", "/admin");
           }
@@ -236,7 +207,6 @@ export const PinProvider = ({ children }) => {
           document.title = "Saved Visuals & Boards | GallaryWala";
         } else {
           // Gallery view
-          setActiveStorefront(null);
           const url = new URL(window.location.href);
           if (url.pathname !== "/") {
             window.history.pushState({}, "", "/" + (url.search ? url.search : ""));
@@ -250,28 +220,6 @@ export const PinProvider = ({ children }) => {
       }
       return nextView;
     });
-  };
-
-  // Synced Storefront Navigator with /store/@handle URL support
-  const handleSetActiveStorefront = (storefront) => {
-    setActiveStorefront(storefront);
-    try {
-      if (storefront) {
-        const clean = storefront.startsWith("@") ? storefront : `@${storefront}`;
-        const path = `/store/${clean}`;
-        if (window.location.pathname !== path) {
-          window.history.pushState({ view: "store", storefront: clean }, "", path);
-        }
-        document.title = `${clean}'s Official Storefront | GallaryWala`;
-      } else {
-        if (activeView === "store" && window.location.pathname !== "/store") {
-          window.history.pushState({ view: "store" }, "", "/store");
-          document.title = "Creator Drops & Merchandise Store | GallaryWala";
-        }
-      }
-    } catch (e) {
-      console.error("Storefront URL routing error", e);
-    }
   };
 
   // Enhanced setActivePin wrapper to automatically sync URL (?pin=pin_id) & document.title
@@ -339,23 +287,7 @@ export const PinProvider = ({ children }) => {
           setActivePin(null);
         }
 
-        // 2. Store & Dedicated Storefront Routing (/store, /store/@handle)
-        if (path.startsWith("/store") || search.includes("view=store")) {
-          const parts = window.location.pathname.split("/").filter(Boolean);
-          const handlePart = parts[1];
-          setActiveView("store");
-          if (handlePart) {
-            const formatted = handlePart.startsWith("@") ? handlePart : `@${handlePart}`;
-            setActiveStorefront(formatted);
-            document.title = `${formatted}'s Official Storefront | GallaryWala`;
-          } else {
-            setActiveStorefront(null);
-            document.title = "Creator Drops & Merchandise Store | GallaryWala";
-          }
-          return;
-        }
-
-        // 3. Badges & Admin Portal Routing
+        // 2. Badges & Admin Portal Routing
         const isBadgeUrl =
           path.includes("/badges") ||
           path.includes("/badge-panel") ||
@@ -712,182 +644,6 @@ export const PinProvider = ({ children }) => {
 
     showToast(`🎉 Commercial License Unlocked! Invoice: ${invoiceNumber}`, "success");
     return completeOrder;
-  };
-
-  // 9. Store & Creator Marketplace State (2-Tier Free vs Pro SEO Boosted)
-  const [userStore, setUserStore] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.USER_STORE);
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
-
-  const [marketplaceProducts, setMarketplaceProducts] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.MARKETPLACE_PRODUCTS);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          return parsed.filter((p) => !p.id?.startsWith("drop_"));
-        }
-      }
-      return [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [isCreateStoreOpen, setIsCreateStoreOpen] = useState(false);
-  const [isAddProductOpen, setIsAddProductOpen] = useState(false);
-  const [isEditStoreOpen, setIsEditStoreOpen] = useState(false);
-  const [selectedStoreProduct, setSelectedStoreProduct] = useState(null);
-  const [isStoreProductModalOpen, setIsStoreProductModalOpen] = useState(false);
-
-  // All verified creator stores including user's custom store
-  const allStores = React.useMemo(() => {
-    if (userStore) {
-      const exists = INITIAL_CREATOR_STORES.some((s) => s.handle === userStore.handle);
-      if (!exists) {
-        return [userStore, ...INITIAL_CREATOR_STORES];
-      }
-    }
-    return INITIAL_CREATOR_STORES;
-  }, [userStore]);
-
-  useEffect(() => {
-    try {
-      if (userStore) {
-        localStorage.setItem(STORAGE_KEYS.USER_STORE, JSON.stringify(userStore));
-      } else {
-        localStorage.removeItem(STORAGE_KEYS.USER_STORE);
-      }
-    } catch (e) {
-      console.warn("Storage error", e);
-    }
-  }, [userStore]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.MARKETPLACE_PRODUCTS, JSON.stringify(marketplaceProducts));
-    } catch (e) {
-      console.warn("Storage error", e);
-    }
-  }, [marketplaceProducts]);
-
-  const createCreatorStore = ({ name, handle, bio, category = "Creator Merch", bannerUrl, logoUrl }) => {
-    const cleanHandle = (handle || name || "creator").trim().replace(/^@/, "").toLowerCase().replace(/\s+/g, "_");
-    const newStore = {
-      id: "store_" + Math.random().toString(36).substring(2, 9),
-      name: (name || "Creator Store").trim(),
-      handle: `@${cleanHandle}`,
-      tagline: (bio || "Official creator merchandise, apparel & digital drops.").trim(),
-      bio: (bio || "Official creator merchandise and digital assets.").trim(),
-      announcement: "⚡ Welcome to our official store • Fast Tracked Shipping",
-      category,
-      tier: "free", // 'free' | 'pro'
-      bannerUrl: bannerUrl || "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1600&q=85",
-      logoUrl: logoUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(cleanHandle)}`,
-      rating: 5.0,
-      ordersCount: 0,
-      isVerified: false,
-      socialLinks: {
-        instagram: "",
-        twitter: "",
-        youtube: "",
-        website: ""
-      },
-      createdAt: new Date().toISOString(),
-      productsCount: 0
-    };
-    setUserStore(newStore);
-    try {
-      confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
-    } catch (err) {}
-    showToast(`🎉 Congratulations! Your Free Store "@${cleanHandle}" is now live! List up to 5 products free.`, "success");
-    return newStore;
-  };
-
-  const updateCreatorStore = (updatedFields) => {
-    setUserStore((prev) => {
-      if (!prev) return prev;
-      const updated = {
-        ...prev,
-        ...updatedFields,
-        handle: updatedFields.handle ? (updatedFields.handle.startsWith("@") ? updatedFields.handle : `@${updatedFields.handle}`) : prev.handle
-      };
-      return updated;
-    });
-    showToast("✨ Storefront settings & branding updated successfully!", "success");
-  };
-
-  const upgradeStoreTier = (targetTier = "pro") => {
-    setUserStore((prev) => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        tier: targetTier
-      };
-    });
-
-    // Mark all my existing products as SEO Boosted
-    setMarketplaceProducts((prev) =>
-      prev.map((p) => {
-        if (p.author?.username === userStore?.handle || p.storeId === userStore?.id) {
-          return { ...p, isProBoosted: true };
-        }
-        return p;
-      })
-    );
-
-    try {
-      confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
-    } catch (err) {}
-    showToast("👑 Upgraded to PRO Store! Unlimited product listings and SEO priority boost unlocked!", "success");
-  };
-
-  const addStoreProduct = (prodData) => {
-    const myProds = marketplaceProducts.filter(
-      (p) => p.author?.username === userStore?.handle || p.storeId === userStore?.id
-    );
-
-    // Free Store Limit: 5 Products
-    if (userStore?.tier === "free" && myProds.length >= 5) {
-      showToast("Free Store Limit Reached (5/5 Products). Upgrade to Pro for Unlimited Products & SEO Push! 🚀", "warning");
-      return { success: false, limitReached: true };
-    }
-
-    const isPro = userStore?.tier === "pro";
-
-    const newProduct = {
-      ...prodData,
-      id: prodData.id || "prod_" + Math.random().toString(36).substring(2, 9),
-      storeId: userStore?.id || "store_official",
-      author: {
-        name: userStore?.name || currentUser?.user_metadata?.full_name || "Creator",
-        username: userStore?.handle || `@${currentUser?.user_metadata?.username || "creator"}`,
-        avatar: currentUser?.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(userStore?.handle || "creator")}`,
-        isVerified: isPro || isUserVerified(userStore?.handle)
-      },
-      isProBoosted: isPro,
-      badge: isPro ? "⭐ PRO BOOSTED" : (prodData.badge || "NEW"),
-      rating: 5.0,
-      reviewsCount: 1,
-      salesCount: 0,
-      createdAt: new Date().toISOString()
-    };
-
-    setMarketplaceProducts((prev) => [newProduct, ...prev]);
-    setUserStore((prev) => prev ? { ...prev, productsCount: (prev.productsCount || 0) + 1 } : prev);
-    showToast(`🎉 Product "${newProduct.title}" successfully listed in your store!`, "success");
-    return { success: true, product: newProduct };
-  };
-
-  const deleteStoreProduct = (productId) => {
-    setMarketplaceProducts((prev) => prev.filter((p) => p.id !== productId));
-    setUserStore((prev) => prev ? { ...prev, productsCount: Math.max(0, (prev.productsCount || 1) - 1) } : prev);
-    showToast("Product removed from store.", "info");
   };
 
   // Supabase Auth State Listener & Images Fetcher
@@ -1546,29 +1302,7 @@ export const PinProvider = ({ children }) => {
         isPinOwner,
         myUploadedPinIds,
         isLoading,
-        filteredPins,
-        userStore,
-        setUserStore,
-        marketplaceProducts,
-        setMarketplaceProducts,
-        allStores,
-        activeStorefront,
-        setActiveStorefront: handleSetActiveStorefront,
-        isCreateStoreOpen,
-        setIsCreateStoreOpen,
-        isAddProductOpen,
-        setIsAddProductOpen,
-        isEditStoreOpen,
-        setIsEditStoreOpen,
-        selectedStoreProduct,
-        setSelectedStoreProduct,
-        isStoreProductModalOpen,
-        setIsStoreProductModalOpen,
-        createCreatorStore,
-        updateCreatorStore,
-        upgradeStoreTier,
-        addStoreProduct,
-        deleteStoreProduct
+        filteredPins
       }}
     >
       {children}
