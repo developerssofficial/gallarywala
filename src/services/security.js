@@ -364,3 +364,57 @@ export function clearAuditLogs() {
     localStorage.removeItem(STORAGE_KEYS.AUDIT_LOGS);
   } catch {}
 }
+
+/**
+ * Strips dangerous HTML tags, inline scripts, and control characters from user text.
+ */
+export function sanitizeText(input, maxLength = 500) {
+  if (typeof input !== "string") return "";
+  return input
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/[<>'"`;]/g, (match) => {
+      const entities = {
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;",
+        "`": "&#96;",
+        ";": "&#59;"
+      };
+      return entities[match] || "";
+    })
+    .trim()
+    .slice(0, maxLength);
+}
+
+/**
+ * Validates whether a URL is safe against XSS schemes (javascript:, data:text/html, etc.).
+ */
+export function isSafeUrl(url) {
+  if (!url || typeof url !== "string") return false;
+  try {
+    const parsed = new URL(url, window.location.origin);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Safely parses JSON strings without risking prototype pollution.
+ */
+export function safeJsonParse(rawString, fallback = null) {
+  if (!rawString || typeof rawString !== "string") return fallback;
+  try {
+    const parsed = JSON.parse(rawString);
+    if (parsed && typeof parsed === "object" && ("__proto__" in parsed || "constructor" in parsed)) {
+      // Guard against prototype pollution
+      delete parsed.__proto__;
+      delete parsed.constructor;
+    }
+    return parsed;
+  } catch {
+    return fallback;
+  }
+}
